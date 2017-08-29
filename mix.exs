@@ -1,10 +1,16 @@
 defmodule Samly.Mixfile do
   use Mix.Project
 
+  @version "0.1.1"
+  @description "SAML plug"
+  @source_url "https://github.com/handnot2/samly"
+
   def project do
     [
       app: :samly,
-      version: "0.1.0",
+      version: @version,
+      description: @description,
+      package: package(),
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps()
@@ -23,6 +29,17 @@ defmodule Samly.Mixfile do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+    ]
+  end
+
+  defp package() do
+    [
+      maintainers: ["handnot2"],
+      files: ["config", "lib", "LICENSE", "mix.exs", "README.md"],
+      licenses: ["MIT"],
+      links: %{
+        "GitHub" => @source_url,
+      }
     ]
   end
 end
