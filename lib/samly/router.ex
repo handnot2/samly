@@ -169,7 +169,7 @@ defmodule Samly.Router do
 
     ie? = get_req_header(conn, "user-agent") == ["MSIE"]
 
-    saml_url = encode_http_redirect(idp_url, signed_xml_payload, :undefined, relay_state)
+    saml_url = encode_http_redirect(idp_url, signed_xml_payload, "n/a", relay_state)
     if ie? && byte_size(saml_url) > 2042 do
       resp_body = encode_http_post(idp_url, signed_xml_payload, relay_state)
       conn |> send_resp(200, resp_body)

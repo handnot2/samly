@@ -1,7 +1,7 @@
 defmodule Samly.Mixfile do
   use Mix.Project
 
-  @version "0.2.0"
+  @version "0.3.0"
   @description "SAML plug"
   @source_url "https://github.com/handnot2/samly"
 
@@ -28,8 +28,7 @@ defmodule Samly.Mixfile do
   defp deps do
     [
       {:plug, "~> 1.4"},
-      {:cowboy, "~> 1.1", override: true},
-      {:esaml, github: "VendorHawk/esaml"},
+      {:esaml, "~> 3.0"},
       {:ex_doc, "~> 0.16", only: :dev},
     ]
   end
