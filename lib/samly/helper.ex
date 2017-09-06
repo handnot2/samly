@@ -18,10 +18,10 @@ defmodule Samly.Helper do
     :xmerl.export([:esaml_sp.generate_metadata(sp)], :xmerl_xml)
   end
 
-  def gen_idp_signon_req(sp, idp_metadata) do
-    idp_signon_url = Esaml.esaml_idp_metadata(idp_metadata, :login_location)
-    xml_frag = :esaml_sp.generate_authn_request(idp_signon_url, sp)
-    {idp_signon_url, xml_frag}
+  def gen_idp_signin_req(sp, idp_metadata) do
+    idp_signin_url = Esaml.esaml_idp_metadata(idp_metadata, :login_location)
+    xml_frag = :esaml_sp.generate_authn_request(idp_signin_url, sp)
+    {idp_signin_url, xml_frag}
   end
 
   def gen_idp_signout_req(sp, idp_metadata, nameid) do

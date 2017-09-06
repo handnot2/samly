@@ -8,7 +8,7 @@ defmodule Samly.State do
   end
 
   def gen_id() do
-    :crypto.strong_rand_bytes(24) |> Base.url_encode64()
+    24 |> :crypto.strong_rand_bytes() |> Base.url_encode64()
   end
 
   def get_by_nameid(nameid) do

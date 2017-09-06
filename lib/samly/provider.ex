@@ -15,24 +15,30 @@ defmodule Samly.Provider do
   def init([]) do
     State.init()
 
-    sp_certfile = System.get_env("SAML_SP_CERTFILE") || "ssl/server.crt"
-    sp_keyfile  = System.get_env("SAML_SP_KEYFILE")  || "ssl/server.pem"
     sp_base_url = System.get_env("SAML_SP_BASE_URL")
+    sp_certfile = System.get_env("SAML_SP_CERTFILE") || "samly.crt"
+    sp_keyfile  = System.get_env("SAML_SP_KEYFILE")  || "samly.pem"
+    idp_metadatafile = System.get_env("SAML_IDP_METADATA_FILE") || "idp_metadata.xml"
 
-    idp_metadata_xml = System.get_env("SAML_IDP_METADATA_FILE") |> load_metadata()
-    {:ok, idp_metadata} = idp_metadata_from_xml(idp_metadata_xml)
-
-    trusted_fingerprints = idp_cert_fingerprints(idp_metadata)
-    {:ok, sp} = create_sp(sp_certfile, sp_keyfile, sp_base_url, trusted_fingerprints)
-
-    Application.put_env(:samly, :sp, sp)
-    Application.put_env(:samly, :idp_metadata, idp_metadata)
+    with  {:idp_metadata_file, {:ok, metadata_xml}} <-
+            {:idp_metadata_file, File.read(idp_metadatafile)},
+          {:idp_metadata_parsing, {:ok, idp_metadata}} <-
+            {:idp_metadata_parsing, idp_metadata_from_xml(metadata_xml)},
+          trusted_fingerprints = idp_cert_fingerprints(idp_metadata),
+          {:ok, sp} <- create_sp(sp_certfile, sp_keyfile, sp_base_url, trusted_fingerprints)
+    do
+      Application.put_env(:samly, :sp, sp)
+      Application.put_env(:samly, :idp_metadata, idp_metadata)
+    else
+      {:idp_metadata_file, {:error, reason}} ->
+        Logger.error("Failed to read IDP metadata XML file: #{reason}")
+      {:idp_metadata_parsing, {:error, reason}} ->
+        Logger.error("Invalid IDP metadata XML: #{reason}")
+      error ->
+        Logger.error("Failed in Samly.Provider: #{error}")
+    end
 
     {:ok, %{}}
-  end
-
-  defp load_metadata(file) do
-    File.read!(file)
   end
 
   def load_sp_priv_key(file) do
@@ -55,17 +61,18 @@ defmodule Samly.Provider do
       key: key,
       certificate: cert,
       trusted_fingerprints: trusted_fingerprints,
-      consume_uri: sp_base_url ++ '/consume',
-      metadata_uri: sp_base_url ++ '/metadata',
-      logout_uri: sp_base_url ++ '/logout',
+      consume_uri: sp_base_url ++ '/sp/consume',
+      metadata_uri: sp_base_url ++ '/sp/metadata',
+      logout_uri: sp_base_url ++ '/sp/logout',
+      # TODO: get this from config
       org: Esaml.esaml_org(
-        name: 'Noa Cara',
-        displayname: 'Noa Cara',
+        name: 'Samly SP',
+        displayname: 'Samly SP',
         url: sp_base_url
       ),
       tech: Esaml.esaml_contact(
-        name: 'Noa Cara Admin',
-        email: 'admin@cara.my.noa'
+        name: 'Samly SP Admin',
+        email: 'admin@samly'
       )
     )
 
@@ -73,10 +80,14 @@ defmodule Samly.Provider do
   end
 
   def idp_metadata_from_xml(metadata_xml) when is_binary(metadata_xml) do
-    {xml, _} = metadata_xml
-    |>  String.to_charlist()
-    |>  :xmerl_scan.string(namespace_conformant: true)
-    :esaml.decode_idp_metadata(xml)
+    try do
+      {xml, _} = metadata_xml
+      |>  String.to_charlist()
+      |>  :xmerl_scan.string(namespace_conformant: true)
+      :esaml.decode_idp_metadata(xml)
+    rescue
+      _ -> {:error, :invalid_metadata_xml}
+    end
   end
 
   def idp_cert_fingerprints(idp_metadata) do
@@ -88,6 +99,6 @@ defmodule Samly.Provider do
   end
 
   defp cert_fingerprint(dercert) do
-    "sha256:" <> (:crypto.hash(:sha256, dercert) |> Base.encode64())
+    "sha256:" <> (:sha256 |> :crypto.hash(dercert) |> Base.encode64())
   end
 end
