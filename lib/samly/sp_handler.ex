@@ -2,8 +2,8 @@ defmodule Samly.SPHandler do
   @moduledoc false
 
   import Plug.Conn
-  alias Samly.Helper
-  alias Samly.State
+  alias Plug.Conn
+  alias Samly.{Helper, State}
 
   import Samly.RouterUtil, only: [send_saml_request: 4, redirect: 3]
 
@@ -24,18 +24,24 @@ defmodule Samly.SPHandler do
     saml_response = conn.body_params["SAMLResponse"]
     relay_state   = conn.body_params["RelayState"]
 
+    assertion_pipeline = Application.get_env(:samly, :assertion_pipeline)
+
     with  ^relay_state when relay_state != nil <- get_session(conn, "relay_state"),
           target_url when target_url != nil <- get_session(conn, "target_url"),
-          {:ok, resp} <- Helper.decode_idp_auth_resp(sp, saml_encoding, saml_response)
+          {:ok, assertion} <- Helper.decode_idp_auth_resp(sp, saml_encoding, saml_response),
+          conn = conn |> put_private(:samly_assertion, assertion),
+          {:halted, %Conn{halted: false} = conn} <-
+            {:halted, pipethrough(conn, assertion_pipeline)}
     do
-      %{nameid: nameid, attributes: assertions} = resp
-      State.put(nameid, assertions)
-
+      assertion = conn.private[:samly_assertion]
+      nameid = assertion.subject.name
+      State.put(nameid, assertion)
       conn
       |>  configure_session(renew: true)
       |>  put_session("samly_nameid", nameid)
       |>  redirect(302, target_url)
     else
+      {:halted, conn} -> conn
       {:error, reason} ->
         conn
         |>  send_resp(403, "access_denied #{inspect reason}")
@@ -43,6 +49,11 @@ defmodule Samly.SPHandler do
         conn
         |>  send_resp(403, "access_denied")
     end
+  end
+
+  defp pipethrough(conn, nil), do: conn
+  defp pipethrough(conn, assertion_pipeline) do
+    assertion_pipeline.call(conn, [])
   end
 
   def handle_logout_response(conn) do

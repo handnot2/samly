@@ -4,7 +4,7 @@ defmodule Samly.Helper do
   import Application, only: [get_env: 2]
 
   require Samly.Esaml
-  alias Samly.Esaml
+  alias Samly.{Assertion, Esaml}
 
   def get_sp() do
     get_env(:samly, :sp)
@@ -38,14 +38,9 @@ defmodule Samly.Helper do
 
   def decode_idp_auth_resp(sp, saml_encoding, saml_response) do
     with  {:ok, xml_frag} <- decode_saml_payload(saml_encoding, saml_response),
-          {:ok, assertions} <- :esaml_sp.validate_assertion(xml_frag, sp)
+          {:ok, assertion_rec} <- :esaml_sp.validate_assertion(xml_frag, sp)
     do
-      Esaml.esaml_assertion(
-        subject: subject,
-        attributes: attributes
-      ) = assertions
-      Esaml.esaml_subject(name: name) = subject
-      {:ok, %{attributes: attributes, nameid: name}}
+      {:ok, Assertion.from_rec(assertion_rec)}
     else
       error -> {:error, {:invalid_request, "#{inspect error}"}}
     end
