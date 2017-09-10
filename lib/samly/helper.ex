@@ -6,8 +6,39 @@ defmodule Samly.Helper do
   require Samly.Esaml
   alias Samly.{Assertion, Esaml}
 
+  def get_metadata_uri(sp_base_url) when is_list(sp_base_url) do
+    sp_base_url ++ '/sp/metadata'
+  end
+
+  def get_consume_uri(sp_base_url) when is_list(sp_base_url) do
+    sp_base_url ++ '/sp/consume'
+  end
+
+  def get_logout_uri(sp_base_url) when is_list(sp_base_url) do
+    sp_base_url ++ '/sp/logout'
+  end
+
   def get_sp() do
     get_env(:samly, :sp)
+  end
+
+  def ensure_sp_uris_set(sp, conn) do
+    case Esaml.esaml_sp(sp, :metadata_uri) do
+      [?/ | _] ->
+        uri = %URI{
+          scheme: Atom.to_string(conn.scheme),
+          host: conn.host,
+          port: conn.port,
+          path: "/sso"
+        }
+        base_url = URI.to_string(uri) |> String.to_charlist()
+        Esaml.esaml_sp(sp,
+          metadata_uri: get_metadata_uri(base_url),
+          consume_uri: get_consume_uri(base_url),
+          logout_uri: get_logout_uri(base_url)
+        )
+      _ -> sp
+    end
   end
 
   def get_idp_metadata() do

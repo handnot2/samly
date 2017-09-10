@@ -1,7 +1,7 @@
 defmodule Samly.Mixfile do
   use Mix.Project
 
-  @version "0.5.0"
+  @version "0.6.0"
   @description "SAML plug"
   @source_url "https://github.com/handnot2/samly"
 
@@ -36,10 +36,10 @@ defmodule Samly.Mixfile do
 
   defp docs() do
     [
-      #extras: ["README.md"],
-      #main: "readme",
+      extras: ["README.md"],
+      main: "readme",
       source_ref: "v#{@version}",
-      source_url: @source_url,
+      source_url: @source_url
     ]
   end
 

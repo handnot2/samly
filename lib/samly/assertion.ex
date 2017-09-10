@@ -9,9 +9,10 @@ defmodule Samly.Assertion do
     recipient: "",
     issuer: "",
     subject: %Subject{},
-    conditions: [],
-    attributes: [],
-    authn: []
+    conditions: %{},
+    attributes: %{},
+    authn: %{},
+    computed: %{}
   ]
 
   @type t :: %__MODULE__{
@@ -20,9 +21,10 @@ defmodule Samly.Assertion do
     recipient: String.t,
     issuer: String.t,
     subject: Subject.t,
-    conditions: Keyword.t,
-    attributes: Keyword.t,
-    authn: Keyword.t
+    conditions: map,
+    attributes: map,
+    authn: map,
+    computed: map
   }
 
   def from_rec(assertion_rec) do

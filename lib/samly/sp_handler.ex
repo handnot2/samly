@@ -3,39 +3,44 @@ defmodule Samly.SPHandler do
 
   import Plug.Conn
   alias Plug.Conn
-  alias Samly.{Helper, State}
+  require Samly.Esaml
+  alias Samly.{Assertion, Esaml, Helper, State}
 
   import Samly.RouterUtil, only: [send_saml_request: 4, redirect: 3]
 
-  require Samly.Esaml
-  alias Samly.Esaml
-
   def send_metadata(conn) do
-    metadata = Helper.get_sp() |> Helper.sp_metadata()
+    metadata = Helper.get_sp()
+    |>  Helper.ensure_sp_uris_set(conn)
+    |>  Helper.sp_metadata()
+
     conn
     |>  put_resp_header("Content-Type", "text/xml")
     |>  send_resp(200, metadata)
   end
 
   def consume_signin_response(conn) do
-    sp = Helper.get_sp()
+    sp = Helper.get_sp() |> Helper.ensure_sp_uris_set(conn)
 
     saml_encoding = conn.body_params["SAMLEncoding"]
     saml_response = conn.body_params["SAMLResponse"]
     relay_state   = conn.body_params["RelayState"]
 
-    assertion_pipeline = Application.get_env(:samly, :assertion_pipeline)
+    pipeline = Application.get_env(:samly, :pre_session_create_pipeline)
 
     with  ^relay_state when relay_state != nil <- get_session(conn, "relay_state"),
           target_url when target_url != nil <- get_session(conn, "target_url"),
           {:ok, assertion} <- Helper.decode_idp_auth_resp(sp, saml_encoding, saml_response),
           conn = conn |> put_private(:samly_assertion, assertion),
           {:halted, %Conn{halted: false} = conn} <-
-            {:halted, pipethrough(conn, assertion_pipeline)}
+            {:halted, pipethrough(conn, pipeline)}
     do
-      assertion = conn.private[:samly_assertion]
+      updated_assertion = conn.private[:samly_assertion]
+      computed = updated_assertion.computed
+      assertion = %Assertion{assertion | computed: computed}
+
       nameid = assertion.subject.name
       State.put(nameid, assertion)
+
       conn
       |>  configure_session(renew: true)
       |>  put_session("samly_nameid", nameid)
@@ -52,12 +57,12 @@ defmodule Samly.SPHandler do
   end
 
   defp pipethrough(conn, nil), do: conn
-  defp pipethrough(conn, assertion_pipeline) do
-    assertion_pipeline.call(conn, [])
+  defp pipethrough(conn, pipeline) do
+    pipeline.call(conn, [])
   end
 
   def handle_logout_response(conn) do
-    sp = Helper.get_sp()
+    sp = Helper.get_sp() |> Helper.ensure_sp_uris_set(conn)
 
     saml_encoding = conn.body_params["SAMLEncoding"]
     saml_response = conn.body_params["SAMLResponse"]
@@ -79,7 +84,7 @@ defmodule Samly.SPHandler do
 
   # non-ui logout request from IDP
   def handle_logout_request(conn) do
-    sp = Helper.get_sp()
+    sp = Helper.get_sp() |> Helper.ensure_sp_uris_set(conn)
     idp_metadata = Helper.get_idp_metadata()
 
     saml_encoding = conn.body_params["SAMLEncoding"]
@@ -90,7 +95,7 @@ defmodule Samly.SPHandler do
     do
       nameid = Esaml.esaml_logoutreq(payload, :name)
       case State.get_by_nameid(nameid) do
-        {^nameid, _assertions} ->
+        {^nameid, _saml_assertion} ->
           State.delete(nameid)
         _ -> :ok
       end

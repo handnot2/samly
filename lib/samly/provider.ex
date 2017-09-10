@@ -4,9 +4,8 @@ defmodule Samly.Provider do
   use GenServer
   require Logger
 
-  alias Samly.State
   require Samly.Esaml
-  alias Samly.Esaml
+  alias Samly.{Esaml, Helper, State}
 
   def start_link(gs_opts \\ []) do
     GenServer.start_link(__MODULE__, [], gs_opts)
@@ -14,13 +13,12 @@ defmodule Samly.Provider do
 
   def init([]) do
     opts = Application.get_env(:samly, Samly.Provider, [])
-    pipeline = opts[:assertion_pipeline]
+    pipeline = opts[:pre_session_create_pipeline]
     sp_certfile = get_opt(opts, :certfile, "SAMLY_CERTFILE", "samly.crt")
     sp_keyfile  = get_opt(opts, :keyfile, "SAMLY_KEYFILE", "samly.pem")
     idp_metadata_file = get_opt(opts, :idp_metadata_file,
       "SAMLY_IDP_METADATA_FILE", "idp_metadata.xml")
-    sp_base_url = get_opt(opts, :base_url,
-      "SAMLY_BASE_URL", "http://localhost:4000/sso")
+    sp_base_url = get_opt(opts, :base_url, "SAMLY_BASE_URL", "")
 
     State.init()
 
@@ -34,7 +32,7 @@ defmodule Samly.Provider do
       Application.put_env(:samly, :sp, sp)
       Application.put_env(:samly, :idp_metadata, idp_metadata)
       if pipeline do
-        Application.put_env(:samly, :assertion_pipeline, pipeline)
+        Application.put_env(:samly, :pre_session_create_pipeline, pipeline)
       end
     else
       {:idp_metadata_file, {:error, reason}} ->
@@ -80,9 +78,9 @@ defmodule Samly.Provider do
       sp_sign_requests: true,
       sp_sign_metadata: true,
       trusted_fingerprints: trusted_fingerprints,
-      consume_uri: sp_base_url ++ '/sp/consume',
-      metadata_uri: sp_base_url ++ '/sp/metadata',
-      logout_uri: sp_base_url ++ '/sp/logout',
+      metadata_uri: Helper.get_metadata_uri(sp_base_url),
+      consume_uri: Helper.get_consume_uri(sp_base_url),
+      logout_uri: Helper.get_logout_uri(sp_base_url),
       # TODO: get this from config
       org: Esaml.esaml_org(
         name: 'Samly SP',
@@ -95,7 +93,7 @@ defmodule Samly.Provider do
       )
     )
 
-    {:ok, sp_rec |> :esaml_sp.setup()}
+    {:ok, sp_rec}
   end
 
   defp idp_metadata_from_xml(metadata_xml) when is_binary(metadata_xml) do
@@ -114,7 +112,8 @@ defmodule Samly.Provider do
     |>  Esaml.esaml_idp_metadata(:certificate)
     |>  cert_fingerprint()
     |>  String.to_charlist()
-    [fingerprint]
+
+    [fingerprint] |> :esaml_util.convert_fingerprints()
   end
 
   defp cert_fingerprint(dercert) do

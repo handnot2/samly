@@ -63,7 +63,7 @@ defmodule Samly.AuthHandler do
   end
 
   def send_signin_req(conn) do
-    sp = Helper.get_sp()
+    sp = Helper.get_sp() |> Helper.ensure_sp_uris_set(conn)
     idp_metadata = Helper.get_idp_metadata()
 
     target_url = conn.params["target_url"] || "/"
@@ -71,7 +71,7 @@ defmodule Samly.AuthHandler do
 
     nameid = get_session(conn, "samly_nameid")
     case State.get_by_nameid(nameid) do
-      {^nameid, _assertions} ->
+      {^nameid, _saml_assertion} ->
         conn
         |>  redirect(302, target_url)
       _ ->
@@ -87,13 +87,13 @@ defmodule Samly.AuthHandler do
   end
 
   def send_signout_req(conn) do
-    sp = Helper.get_sp()
+    sp = Helper.get_sp() |> Helper.ensure_sp_uris_set(conn)
     idp_metadata = Helper.get_idp_metadata()
     target_url = conn.params["target_url"] || "/"
     nameid = get_session(conn, "samly_nameid")
 
     case State.get_by_nameid(nameid) do
-      {^nameid, _assertions} ->
+      {^nameid, _saml_assertion} ->
         {idp_signout_url, req_xml_frag} = Helper.gen_idp_signout_req(sp, idp_metadata, nameid)
 
         State.delete(nameid)

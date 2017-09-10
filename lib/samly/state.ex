@@ -13,13 +13,13 @@ defmodule Samly.State do
 
   def get_by_nameid(nameid) do
     case :ets.lookup(:esaml_nameids, nameid) do
-      [{nameid, assertions}] -> {nameid, assertions}
+      [{_nameid, _saml_assertion} = rec] -> rec
       _ -> nil
     end
   end
 
-  def put(nameid, assertions) do
-    :ets.insert(:esaml_nameids, {nameid, assertions})
+  def put(nameid, saml_assertion) do
+    :ets.insert(:esaml_nameids, {nameid, saml_assertion})
   end
 
   def delete(nameid) do
