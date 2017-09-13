@@ -1,7 +1,7 @@
 defmodule Samly.Mixfile do
   use Mix.Project
 
-  @version "0.6.0"
+  @version "0.6.1"
   @description "SAML plug"
   @source_url "https://github.com/handnot2/samly"
 

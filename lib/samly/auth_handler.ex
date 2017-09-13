@@ -1,6 +1,7 @@
 defmodule Samly.AuthHandler do
   @moduledoc false
 
+  require Logger
   import Plug.Conn
   alias Samly.Helper
   alias Samly.State
@@ -38,18 +39,13 @@ defmodule Samly.AuthHandler do
   def initiate_sso_req(conn) do
     import Plug.CSRFProtection, only: [get_csrf_token: 0]
 
-    if valid_referer?(conn) do
-      target_url = if conn.params["target_url"] do
-        conn.params["target_url"]
-        |>  URI.decode_www_form()
-        |>  URI.encode_www_form()
-      else
-        nil
-      end
-
+    with  true <- valid_referer?(conn),
+          target_url = conn.params["target_url"],
+          target_url = (if target_url, do: URI.decode_www_form(target_url), else: nil)
+    do
       opts = [
         action: conn.request_path,
-        target_url: target_url,
+        target_url: (if target_url, do: URI.encode_www_form(target_url), else: nil),
         csrf_token: get_csrf_token()
       ]
 
@@ -57,9 +53,12 @@ defmodule Samly.AuthHandler do
       |>  put_resp_header("Content-Type", "text/html")
       |>  send_resp(200, EEx.eval_string(@sso_init_resp_template, opts))
     else
-      conn
-      |>  send_resp(403, "invalid_request")
+      _ -> conn |> send_resp(403, "invalid_request")
     end
+  rescue
+    error ->
+      Logger.error("#{inspect error}")
+      conn |> send_resp(500, "request_failed")
   end
 
   def send_signin_req(conn) do
@@ -82,16 +81,22 @@ defmodule Samly.AuthHandler do
         |>  configure_session(renew: true)
         |>  put_session("relay_state", relay_state)
         |>  put_session("target_url", target_url)
-        |>  send_saml_request(idp_signin_url, req_xml_frag, relay_state)
+        |>  send_saml_request(idp_signin_url, req_xml_frag, relay_state |> URI.encode_www_form())
     end
+  rescue
+    error ->
+      Logger.error("#{inspect error}")
+      conn |> send_resp(500, "request_failed")
   end
 
   def send_signout_req(conn) do
     sp = Helper.get_sp() |> Helper.ensure_sp_uris_set(conn)
     idp_metadata = Helper.get_idp_metadata()
-    target_url = conn.params["target_url"] || "/"
-    nameid = get_session(conn, "samly_nameid")
 
+    target_url = conn.params["target_url"] || "/"
+    |>  URI.decode_www_form()
+
+    nameid = get_session(conn, "samly_nameid")
     case State.get_by_nameid(nameid) do
       {^nameid, _saml_assertion} ->
         {idp_signout_url, req_xml_frag} = Helper.gen_idp_signout_req(sp, idp_metadata, nameid)
@@ -103,10 +108,14 @@ defmodule Samly.AuthHandler do
         |>  put_session("target_url", target_url)
         |>  put_session("relay_state", relay_state)
         |>  delete_session("samly_nameid")
-        |>  send_saml_request(idp_signout_url, req_xml_frag, relay_state)
+        |>  send_saml_request(idp_signout_url, req_xml_frag, relay_state |> URI.encode_www_form())
       _ ->
         conn
         |>  send_resp(403, "access_denied")
     end
+  rescue
+    error ->
+      Logger.error("#{inspect error}")
+      conn |> send_resp(500, "request_failed")
   end
 end

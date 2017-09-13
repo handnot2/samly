@@ -1,6 +1,7 @@
 defmodule Samly.SPHandler do
   @moduledoc false
 
+  require Logger
   import Plug.Conn
   alias Plug.Conn
   require Samly.Esaml
@@ -16,6 +17,10 @@ defmodule Samly.SPHandler do
     conn
     |>  put_resp_header("Content-Type", "text/xml")
     |>  send_resp(200, metadata)
+  rescue
+    error ->
+      Logger.error("#{inspect error}")
+      conn |> send_resp(500, "request_failed")
   end
 
   def consume_signin_response(conn) do
@@ -23,7 +28,7 @@ defmodule Samly.SPHandler do
 
     saml_encoding = conn.body_params["SAMLEncoding"]
     saml_response = conn.body_params["SAMLResponse"]
-    relay_state   = conn.body_params["RelayState"]
+    relay_state   = conn.body_params["RelayState"] |> URI.decode_www_form()
 
     pipeline = Application.get_env(:samly, :pre_session_create_pipeline)
 
@@ -44,7 +49,7 @@ defmodule Samly.SPHandler do
       conn
       |>  configure_session(renew: true)
       |>  put_session("samly_nameid", nameid)
-      |>  redirect(302, target_url)
+      |>  redirect(302, target_url |> URI.decode_www_form())
     else
       {:halted, conn} -> conn
       {:error, reason} ->
@@ -54,6 +59,10 @@ defmodule Samly.SPHandler do
         conn
         |>  send_resp(403, "access_denied")
     end
+  rescue
+    error ->
+      Logger.error("#{inspect error}")
+      conn |> send_resp(500, "request_failed")
   end
 
   defp pipethrough(conn, nil), do: conn
@@ -66,7 +75,7 @@ defmodule Samly.SPHandler do
 
     saml_encoding = conn.body_params["SAMLEncoding"]
     saml_response = conn.body_params["SAMLResponse"]
-    relay_state   = conn.body_params["RelayState"]
+    relay_state   = conn.body_params["RelayState"] |> URI.decode_www_form()
 
     with  {:ok, _payload} <- Helper.decode_idp_signout_resp(sp, saml_encoding, saml_response),
           ^relay_state when relay_state != nil <- get_session(conn, "relay_state"),
@@ -74,12 +83,16 @@ defmodule Samly.SPHandler do
     do
       conn
       |>  configure_session(drop: true)
-      |>  redirect(302, target_url)
+      |>  redirect(302, target_url |> URI.decode_www_form())
     else
       error ->
         conn
         |> send_resp(403, "invalid_request #{inspect error}")
     end
+  rescue
+    error ->
+      Logger.error("#{inspect error}")
+      conn |> send_resp(500, "request_failed")
   end
 
   # non-ui logout request from IDP
@@ -110,5 +123,9 @@ defmodule Samly.SPHandler do
         conn
         |>  send_saml_request(idp_signout_url, resp_xml_frag, relay_state)
     end
+  rescue
+    error ->
+      Logger.error("#{inspect error}")
+      conn |> send_resp(500, "request_failed")
   end
 end
