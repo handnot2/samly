@@ -1,4 +1,17 @@
 defmodule Samly.Assertion do
+  @moduledoc """
+  SAML assertion returned from IDP upon successful user authentication.
+
+  The assertion attributes returned by the IdP are available in `attributes` field
+  as a map. Any computed attributes (using a Plug Pipeline by way of configuration)
+  are available in `computed` field as map.
+
+  The attributes can be accessed directly from `attributes` or `computed` maps.
+  The `Samly.get_attribute/2` function can be used as well. This function will
+  first look at the `computed` attributes. If the request attribute is not present there,
+  it will check in `attributes` next.
+  """
+
   require Samly.Esaml
   alias Samly.Esaml
   alias Samly.Subject
@@ -27,6 +40,7 @@ defmodule Samly.Assertion do
     computed: map
   }
 
+  @doc false
   def from_rec(assertion_rec) do
     Esaml.esaml_assertion(
       version: version,

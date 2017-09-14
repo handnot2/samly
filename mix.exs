@@ -1,8 +1,8 @@
 defmodule Samly.Mixfile do
   use Mix.Project
 
-  @version "0.6.1"
-  @description "SAML plug"
+  @version "0.6.2"
+  @description "SAML SP SSO made easy"
   @source_url "https://github.com/handnot2/samly"
 
   def project() do

@@ -1,4 +1,12 @@
 defmodule Samly.Subject do
+  @moduledoc """
+  The subject in a SAML 2.0 Assertion.
+
+  This is part of the `Samly.Assertion` struct. The `name` field in this struct should not
+  be used any UI directly. It might be a temporary randomly generated
+  ID from IdP. `Samly` internally uses this to deal with IdP initiated logout requests.
+  """
+
   require Samly.Esaml
   alias Samly.Esaml
 
@@ -14,6 +22,7 @@ defmodule Samly.Subject do
     notonorafter: String.t
   }
 
+  @doc false
   def from_rec(subject_rec) do
     Esaml.esaml_subject(
       name: name,

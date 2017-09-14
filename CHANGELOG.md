@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### v0.6.2
+
++   Doc updates
++   Config handling changes and corresponding tests
+
 ### v0.6.1
 
 +   `target_url` query parameter form url encoded
