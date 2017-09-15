@@ -2,6 +2,8 @@
 
 A Plug library to enable SAML 2.0 Single Sign On in a Plug/Phoenix application.
 
+[![Inline docs](http://inch-ci.org/github/handnot2/samly.svg)](http://inch-ci.org/github/handnot2/samly)
+
 This library uses Erlang [`esaml`](https://github.com/handnot2/esaml) to provide
 plug enabled routes. So, it is constrained by `esaml` capabilities - only Service
 Provider initiated login is supported. The logout operation can be either IdP

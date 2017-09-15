@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### v0.6.3
+
++   Added Inch CI
++   Corresponding doc updates
+
 ### v0.6.2
 
 +   Doc updates
