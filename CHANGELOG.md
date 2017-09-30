@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### v0.7.0
+
++   Added config options to control if requests and/or responses are signed or not
+
 ### v0.6.3
 
 +   Added Inch CI

@@ -26,6 +26,10 @@ defmodule Samly.Provider do
   config :samly, Samly.Provider,
     base_url: "http://samly.howto:4003/sso",
     #pre_session_create_pipeline: MySamlyPipeline,
+    #sign_requests: true,
+    #sign_metadata: true,
+    #signed_envelopes_in_idp_resp: true,
+    #signed_assertion_in_idp_resp: true,
     certfile: "path/to/service/provider/certificate/file",
     keyfile: "path/to/corresponding/private/key/file",
     idp_metadata_file: "path/to/idp/metadata/xml/file"
@@ -39,6 +43,10 @@ defmodule Samly.Provider do
   | SAMLY_KEYFILE  | Path to the private key for the certificate. Defaults to `samly.pem` |
   | SAMLY_IDP_METADATA_FILE | Path to the SAML IDP metadata XML file. Defaults to `idp_metadata.xml` |
   | SAMLY_BASE_URL | Set this to the base URL for your application (include `/sso`) |
+  | SAMLY_SIGN_REQUESTS | Set this to `false` if IdP is setup to receive unsigned requests |
+  | SAMLY_SIGN_METADATA | Set this to `false` if the metadata response should be unsigned |
+  | SAMLY_SIGNED_ENVELOPES_IN_IDP_RESP | Set this to `false` if IdP is sending unsigned response |
+  | SAMLY_SIGNED_ASSERTION_IN_IDP_RESP | Set this to `false` if IdP is sending unsigned response |
 
   """
 
@@ -48,11 +56,22 @@ defmodule Samly.Provider do
   require Samly.Esaml
   alias Samly.{Esaml, Helper, State}
 
-  @crt_opt :certfile
-  @key_opt :keyfile
-  @mtd_opt :idp_metadata_file
-  @url_opt :base_url
-  @pipeline_opt :pre_session_create_pipeline
+  @certfile_opt :certfile
+  @keyfile_opt :keyfile
+  @idp_metadata_file_opt :idp_metadata_file
+  @base_url_opt :base_url
+  @pre_session_create_pipeline_opt :pre_session_create_pipeline
+  @sign_requests_opt :sign_requests
+  @sign_metadata_opt :sign_metadata
+  @signed_envelopes_in_idp_resp_opt :signed_envelopes_in_idp_resp
+  @signed_assertion_in_idp_resp_opt :signed_assertion_in_idp_resp
+
+  @opt_keys [
+    @certfile_opt, @keyfile_opt, @idp_metadata_file_opt, @base_url_opt,
+    @sign_requests_opt, @sign_metadata_opt,
+    @signed_envelopes_in_idp_resp_opt, @signed_assertion_in_idp_resp_opt,
+    @pre_session_create_pipeline_opt
+  ]
 
   @doc false
   def start_link(gs_opts \\ []) do
@@ -67,8 +86,10 @@ defmodule Samly.Provider do
       {:ok, sp_rec, idp_rec} ->
         Application.put_env(:samly, :sp, sp_rec)
         Application.put_env(:samly, :idp_metadata, idp_rec)
-        if opts[@pipeline_opt] do
-          Application.put_env(:samly, :pre_session_create_pipeline, opts[@pipeline_opt])
+        if opts[@pre_session_create_pipeline_opt] do
+          Application.put_env(:samly,
+            :pre_session_create_pipeline,
+            opts[@pre_session_create_pipeline_opt])
         end
       error -> error
     end
@@ -88,11 +109,13 @@ defmodule Samly.Provider do
     end
   end
 
-  @opt_keys [:pre_session_create_pipeline, :certfile, :keyfile, :idp_metadata_file, :base_url]
   defp handle_defaults(opts) do
     get_opt_value = fn k ->
       case opts[k] do
-        nil -> {k, use_env(k) || use_default(k)}
+        nil ->
+          v = use_env(k) # value can be false, use explicity nil check
+          v = if v != nil, do: v, else: use_default(k)
+          {k, v}
         v   -> {k, v}
       end
     end
@@ -100,27 +123,48 @@ defmodule Samly.Provider do
     Enum.map(@opt_keys, get_opt_value)
   end
 
-  defp use_env(@pipeline_opt), do: nil
-  defp use_env(@crt_opt), do: System.get_env("SAMLY_CERTFILE")
-  defp use_env(@key_opt), do: System.get_env("SAMLY_KEYFILE")
-  defp use_env(@mtd_opt), do: System.get_env("SAMLY_IDP_METADATA_FILE")
-  defp use_env(@url_opt), do: System.get_env("SAMLY_BASE_URL")
+  defp use_env(@pre_session_create_pipeline_opt), do: nil
+  defp use_env(@certfile_opt), do: System.get_env("SAMLY_CERTFILE")
+  defp use_env(@keyfile_opt), do: System.get_env("SAMLY_KEYFILE")
+  defp use_env(@idp_metadata_file_opt), do: System.get_env("SAMLY_IDP_METADATA_FILE")
+  defp use_env(@base_url_opt), do: System.get_env("SAMLY_BASE_URL")
+  defp use_env(@sign_requests_opt), do: truthy_env("SAMLY_SIGN_REQUESTS")
+  defp use_env(@sign_metadata_opt), do: truthy_env("SAMLY_SIGN_METADATA")
+  defp use_env(@signed_envelopes_in_idp_resp_opt), do: truthy_env("SAMLY_SIGNED_ENVELOPES_IN_IDP_RESP")
+  defp use_env(@signed_assertion_in_idp_resp_opt), do: truthy_env("SAMLY_SIGNED_ASSERTION_IN_IDP_RESP")
 
-  defp use_default(@pipeline_opt), do: nil
+  defp truthy_env(name) do
+    value = System.get_env(name)
+    value = value && String.downcase(value)
+    case value do
+      nil -> nil
+      "true" -> true
+      "false" -> false
+      _ ->
+        Logger.warn("Samly.Provider: Ignoring #{name}=#{value}")
+        nil
+    end
+  end
+
+  defp use_default(@pre_session_create_pipeline_opt), do: nil
+  defp use_default(k) when k in [
+      @sign_requests_opt, @sign_metadata_opt,
+      @signed_envelopes_in_idp_resp_opt, @signed_assertion_in_idp_resp_opt] do
+    true
+  end
   defp use_default(opt) do
     Logger.warn("Samly.Provider: option :#{opt} not set")
 
     case opt do
-      @pipeline_opt -> nil
-      @crt_opt -> "samly.crt"
-      @key_opt -> "samly.pem"
-      @mtd_opt -> "idp_metadata.xml"
-      @url_opt -> ""
+      @certfile_opt -> "samly.crt"
+      @keyfile_opt -> "samly.pem"
+      @idp_metadata_file_opt -> "idp_metadata.xml"
+      @base_url_opt -> ""
     end
   end
 
   defp init_idp_rec(opts) do
-    mdtfile = opts[@mtd_opt]
+    mdtfile = opts[@idp_metadata_file_opt]
     with  {:reading, {:ok, xml}} <- {:reading, File.read(mdtfile)},
           {:parsing, {:ok, mdt}} <- {:parsing, idp_metadata_from_xml(xml)}
     do
@@ -162,9 +206,9 @@ defmodule Samly.Provider do
   end
 
   defp init_sp_rec(opts, trusted_fingerprints) do
-    base_url = opts[@url_opt] |> String.to_charlist()
-    keyfile  = opts[@key_opt] |> String.to_charlist()
-    crtfile  = opts[@crt_opt] |> String.to_charlist()
+    base_url = opts[@base_url_opt] |> String.to_charlist()
+    keyfile  = opts[@keyfile_opt] |> String.to_charlist()
+    crtfile  = opts[@certfile_opt] |> String.to_charlist()
     try do
       cert = load_sp_cert(crtfile)
       key  = load_sp_priv_key(keyfile)
@@ -172,8 +216,10 @@ defmodule Samly.Provider do
       sp_rec = Esaml.esaml_sp(
         key: key,
         certificate: cert,
-        sp_sign_requests: true,
-        sp_sign_metadata: true,
+        sp_sign_requests: opts[@sign_requests_opt],
+        sp_sign_metadata: opts[@sign_metadata_opt],
+        idp_signs_envelopes: opts[@signed_envelopes_in_idp_resp_opt],
+        idp_signs_assertions: opts[@signed_assertion_in_idp_resp_opt],
         trusted_fingerprints: trusted_fingerprints,
         metadata_uri: Helper.get_metadata_uri(base_url),
         consume_uri: Helper.get_consume_uri(base_url),
