@@ -25,6 +25,7 @@ defmodule Samly.Provider do
 
   config :samly, Samly.Provider,
     base_url: "http://samly.howto:4003/sso",
+    #entity_id: "urn:myapp-host:my-id",
     #pre_session_create_pipeline: MySamlyPipeline,
     #sign_requests: true,
     #sign_metadata: true,
@@ -59,6 +60,7 @@ defmodule Samly.Provider do
   @certfile_opt :certfile
   @keyfile_opt :keyfile
   @idp_metadata_file_opt :idp_metadata_file
+  @entity_id_opt :entity_id
   @base_url_opt :base_url
   @pre_session_create_pipeline_opt :pre_session_create_pipeline
   @sign_requests_opt :sign_requests
@@ -70,7 +72,7 @@ defmodule Samly.Provider do
     @certfile_opt, @keyfile_opt, @idp_metadata_file_opt, @base_url_opt,
     @sign_requests_opt, @sign_metadata_opt,
     @signed_envelopes_in_idp_resp_opt, @signed_assertion_in_idp_resp_opt,
-    @pre_session_create_pipeline_opt
+    @entity_id_opt, @pre_session_create_pipeline_opt
   ]
 
   @doc false
@@ -124,6 +126,7 @@ defmodule Samly.Provider do
   end
 
   defp use_env(@pre_session_create_pipeline_opt), do: nil
+  defp use_env(@entity_id_opt), do: nil
   defp use_env(@certfile_opt), do: System.get_env("SAMLY_CERTFILE")
   defp use_env(@keyfile_opt), do: System.get_env("SAMLY_KEYFILE")
   defp use_env(@idp_metadata_file_opt), do: System.get_env("SAMLY_IDP_METADATA_FILE")
@@ -147,6 +150,7 @@ defmodule Samly.Provider do
   end
 
   defp use_default(@pre_session_create_pipeline_opt), do: nil
+  defp use_default(@entity_id_opt), do: :undefined
   defp use_default(k) when k in [
       @sign_requests_opt, @sign_metadata_opt,
       @signed_envelopes_in_idp_resp_opt, @signed_assertion_in_idp_resp_opt] do
@@ -209,6 +213,11 @@ defmodule Samly.Provider do
     base_url = opts[@base_url_opt] |> String.to_charlist()
     keyfile  = opts[@keyfile_opt] |> String.to_charlist()
     crtfile  = opts[@certfile_opt] |> String.to_charlist()
+    entity_id = case opts[@entity_id_opt] do
+      :undefined -> :undefined
+      id -> String.to_charlist(id)
+    end
+
     try do
       cert = load_sp_cert(crtfile)
       key  = load_sp_priv_key(keyfile)
@@ -224,6 +233,7 @@ defmodule Samly.Provider do
         metadata_uri: Helper.get_metadata_uri(base_url),
         consume_uri: Helper.get_consume_uri(base_url),
         logout_uri: Helper.get_logout_uri(base_url),
+        entity_id: entity_id,
         # TODO: get this from config
         org: Esaml.esaml_org(
           name: 'Samly SP',

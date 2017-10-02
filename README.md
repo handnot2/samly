@@ -113,7 +113,7 @@ specifics.
 defp deps() do
   [
     # ...
-    {:samly, "~> 0.6"},
+    {:samly, "~> 0.7"},
   ]  
 end
 ```
@@ -154,7 +154,12 @@ The configuration information needed for `Samly` can be specified in as shown he
 
 config :samly, Samly.Provider,
   base_url: "http://samly.howto:4003/sso",
+  #entity_id: "urn:myapp-host:my-id",
   #pre_session_create_pipeline: MySamlyPipeline,
+  #sign_requests: true,
+  #sign_metadata: true,
+  #signed_envelopes_in_idp_resp: true,
+  #signed_assertion_in_idp_resp: true,
   certfile: "path/to/service/provider/certificate/file",
   keyfile: "path/to/corresponding/private/key/file",
   idp_metadata_file: "path/to/idp/metadata/xml/file"
@@ -171,6 +176,10 @@ variables described below.
 | SAMLY_KEYFILE  | Path to the private key for the certificate. Defaults to `samly.pem` |
 | SAMLY_IDP_METADATA_FILE | Path to the SAML IDP metadata XML file. Defaults to `idp_metadata.xml` |
 | SAMLY_BASE_URL | Set this to the base URL for your application (include `/sso`) |
+| SAMLY_SIGN_REQUESTS | Set this to `false` if IdP is setup to receive unsigned requests |
+| SAMLY_SIGN_METADATA | Set this to `false` if the metadata response should be unsigned |
+| SAMLY_SIGNED_ENVELOPES_IN_IDP_RESP | Set this to `false` if IdP is sending unsigned response |
+| SAMLY_SIGNED_ASSERTION_IN_IDP_RESP | Set this to `false` if IdP is sending unsigned response |
 
 #### Generating Self-Signed Certificate and Key Files for Samly
 

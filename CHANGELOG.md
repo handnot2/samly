@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### v0.7.1
+
++   Added config option (`entity_id`). OOTB uses metadata URI as entity ID. Can be specified (`urn` entity ID for example) to override the default.
+
 ### v0.7.0
 
 +   Added config options to control if requests and/or responses are signed or not
