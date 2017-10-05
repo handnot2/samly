@@ -27,6 +27,7 @@ defmodule Samly.Provider do
     base_url: "http://samly.howto:4003/sso",
     #entity_id: "urn:myapp-host:my-id",
     #pre_session_create_pipeline: MySamlyPipeline,
+    #use_redirect_for_idp_req: false,
     #sign_requests: true,
     #sign_metadata: true,
     #signed_envelopes_in_idp_resp: true,
@@ -67,12 +68,13 @@ defmodule Samly.Provider do
   @sign_metadata_opt :sign_metadata
   @signed_envelopes_in_idp_resp_opt :signed_envelopes_in_idp_resp
   @signed_assertion_in_idp_resp_opt :signed_assertion_in_idp_resp
+  @use_redirect_for_idp_req_opt :use_redirect_for_idp_req
 
   @opt_keys [
     @certfile_opt, @keyfile_opt, @idp_metadata_file_opt, @base_url_opt,
     @sign_requests_opt, @sign_metadata_opt,
     @signed_envelopes_in_idp_resp_opt, @signed_assertion_in_idp_resp_opt,
-    @entity_id_opt, @pre_session_create_pipeline_opt
+    @entity_id_opt, @pre_session_create_pipeline_opt, @use_redirect_for_idp_req_opt
   ]
 
   @doc false
@@ -92,6 +94,11 @@ defmodule Samly.Provider do
           Application.put_env(:samly,
             :pre_session_create_pipeline,
             opts[@pre_session_create_pipeline_opt])
+        end
+        if opts[@use_redirect_for_idp_req_opt] do
+          Application.put_env(:samly,
+            :use_redirect_for_idp_req,
+            opts[@use_redirect_for_idp_req_opt])
         end
       error -> error
     end
@@ -135,6 +142,7 @@ defmodule Samly.Provider do
   defp use_env(@sign_metadata_opt), do: truthy_env("SAMLY_SIGN_METADATA")
   defp use_env(@signed_envelopes_in_idp_resp_opt), do: truthy_env("SAMLY_SIGNED_ENVELOPES_IN_IDP_RESP")
   defp use_env(@signed_assertion_in_idp_resp_opt), do: truthy_env("SAMLY_SIGNED_ASSERTION_IN_IDP_RESP")
+  defp use_env(@use_redirect_for_idp_req_opt), do: truthy_env("SAMLY_USE_REDIRECT_FOR_IDP_REQ")
 
   defp truthy_env(name) do
     value = System.get_env(name)
@@ -150,6 +158,7 @@ defmodule Samly.Provider do
   end
 
   defp use_default(@pre_session_create_pipeline_opt), do: nil
+  defp use_default(@use_redirect_for_idp_req_opt), do: false
   defp use_default(@entity_id_opt), do: :undefined
   defp use_default(k) when k in [
       @sign_requests_opt, @sign_metadata_opt,

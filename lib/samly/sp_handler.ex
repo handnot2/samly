@@ -7,7 +7,7 @@ defmodule Samly.SPHandler do
   require Samly.Esaml
   alias Samly.{Assertion, Esaml, Helper, State}
 
-  import Samly.RouterUtil, only: [send_saml_request: 4, redirect: 3]
+  import Samly.RouterUtil, only: [send_saml_request: 5, redirect: 3]
 
   def send_metadata(conn) do
     metadata = Helper.get_sp()
@@ -116,12 +116,14 @@ defmodule Samly.SPHandler do
 
       conn
       |>  configure_session(drop: true)
-      |>  send_saml_request(idp_signout_url, resp_xml_frag, relay_state)
+      |>  send_saml_request(idp_signout_url, Helper.use_redirect_for_idp_req(),
+            resp_xml_frag, relay_state)
     else
       _error ->
         {idp_signout_url, resp_xml_frag} = Helper.gen_idp_signout_resp(sp, idp_metadata, :denied)
         conn
-        |>  send_saml_request(idp_signout_url, resp_xml_frag, relay_state)
+        |>  send_saml_request(idp_signout_url, Helper.use_redirect_for_idp_req(),
+              resp_xml_frag, relay_state)
     end
   rescue
     error ->

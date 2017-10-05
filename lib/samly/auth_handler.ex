@@ -6,7 +6,7 @@ defmodule Samly.AuthHandler do
   alias Samly.Helper
   alias Samly.State
 
-  import Samly.RouterUtil, only: [send_saml_request: 4, redirect: 3]
+  import Samly.RouterUtil, only: [send_saml_request: 5, redirect: 3]
 
   @sso_init_resp_template """
   <body onload=\"document.forms[0].submit()\">
@@ -81,7 +81,8 @@ defmodule Samly.AuthHandler do
         |>  configure_session(renew: true)
         |>  put_session("relay_state", relay_state)
         |>  put_session("target_url", target_url)
-        |>  send_saml_request(idp_signin_url, req_xml_frag, relay_state |> URI.encode_www_form())
+        |>  send_saml_request(idp_signin_url, Helper.use_redirect_for_idp_req(),
+              req_xml_frag, relay_state |> URI.encode_www_form())
     end
   rescue
     error ->
@@ -108,7 +109,8 @@ defmodule Samly.AuthHandler do
         |>  put_session("target_url", target_url)
         |>  put_session("relay_state", relay_state)
         |>  delete_session("samly_nameid")
-        |>  send_saml_request(idp_signout_url, req_xml_frag, relay_state |> URI.encode_www_form())
+        |>  send_saml_request(idp_signout_url, Helper.use_redirect_for_idp_req(),
+              req_xml_frag, relay_state |> URI.encode_www_form())
       _ ->
         conn
         |>  send_resp(403, "access_denied")

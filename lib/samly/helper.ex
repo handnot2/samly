@@ -6,6 +6,10 @@ defmodule Samly.Helper do
   require Samly.Esaml
   alias Samly.{Assertion, Esaml}
 
+  def use_redirect_for_idp_req() do
+    Application.get_env(:samly, :use_redirect_for_idp_req, false)
+  end
+
   def get_metadata_uri(sp_base_url) when is_list(sp_base_url) do
     sp_base_url ++ '/sp/metadata'
   end

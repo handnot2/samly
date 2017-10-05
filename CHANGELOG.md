@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### v0.7.2
+
++   Added `use_redirect_for_idp_req` config parameter. By default `Samly` uses HTTP POST when sending requests to IdP. Set this config parameter to `true` if HTTP redirection should be used instead.
+
 ### v0.7.1
 
 +   Added config option (`entity_id`). OOTB uses metadata URI as entity ID. Can be specified (`urn` entity ID for example) to override the default.
