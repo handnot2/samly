@@ -2,15 +2,14 @@ defmodule Samly.Router do
   @moduledoc false
 
   use Plug.Router
-  alias Samly.Helper
 
   plug :secure_samly
-  plug :check_provider_state
   plug :match
+  plug :check_provider_state
   plug :dispatch
 
-  forward "/auth", to: Samly.AuthRouter
-  forward "/sp", to: Samly.SPRouter
+  forward "/:idp_id/auth", to: Samly.AuthRouter
+  forward "/:idp_id/sp", to: Samly.SPRouter
 
   match _ do
     conn |> send_resp(404, "not_found")
@@ -29,15 +28,16 @@ defmodule Samly.Router do
   end
 
   defp check_provider_state(conn, _opts) do
-    sp = Helper.get_sp()
-    idp_metadata = Helper.get_idp_metadata()
+    identity_providers = Application.get_env(:samly, :identity_providers)
+    idp = Map.get(identity_providers, conn.params["idp_id"])
 
-    if sp == nil || idp_metadata == nil do
-      conn
-      |>  send_resp(500, "Samly Provider not initialized")
-      |>  halt()
-    else
-      conn
+    cond do
+      Enum.empty?(identity_providers) ->
+        conn |> send_resp(500, "Samly Provider not initialized") |> halt()
+      idp == nil ->
+        conn |> send_resp(403, "invalid_request unknown IdP") |> halt()
+      true ->
+        conn
     end
   end
 end

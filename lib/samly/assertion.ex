@@ -25,7 +25,8 @@ defmodule Samly.Assertion do
     conditions: %{},
     attributes: %{},
     authn: %{},
-    computed: %{}
+    computed: %{},
+    idp_id: ""
   ]
 
   @type t :: %__MODULE__{
@@ -37,7 +38,8 @@ defmodule Samly.Assertion do
     conditions: map,
     attributes: map,
     authn: map,
-    computed: map
+    computed: map,
+    idp_id: String.t
   }
 
   @doc false
