@@ -7,6 +7,11 @@ defmodule Samly.SpData do
     entity_id: :undefined,
     certfile: nil,
     keyfile: nil,
+    contact_name: nil,
+    contact_email: nil,
+    org_name: nil,
+    org_displayname: nil,
+    org_url: nil,
     cert: nil,
     key: nil
   ]
@@ -16,11 +21,22 @@ defmodule Samly.SpData do
     entity_id: nil | :undefined | String.t,
     certfile: nil | String.t,
     keyfile: nil | String.t,
+    contact_name: nil | String.t,
+    contact_email: nil | String.t,
+    org_name: nil | String.t,
+    org_displayname: nil | String.t,
+    org_url: nil | String.t,
     cert: nil | binary,
     key: nil | tuple
   }
 
   @type id :: String.t
+
+  @default_contact_name "Samly SP Admin"
+  @default_contact_email "admin@samly"
+  @default_org_name "Samly SP"
+  @default_org_displayname "SAML SP built with Samly"
+  @default_org_url "https://github.com/handnot2/samly"
 
   @spec load_service_providers(list(map)) :: %{required(id) => t}
   def load_service_providers(providers) do
@@ -35,7 +51,12 @@ defmodule Samly.SpData do
       id: Map.get(provider, :id, nil),
       entity_id: Map.get(provider, :entity_id, nil),
       certfile: Map.get(provider, :certfile, nil),
-      keyfile: Map.get(provider, :keyfile, nil)
+      keyfile: Map.get(provider, :keyfile, nil),
+      contact_name: Map.get(provider, :contact_name, @default_contact_name),
+      contact_email: Map.get(provider, :contact_email, @default_contact_email),
+      org_name: Map.get(provider, :org_name, @default_org_name),
+      org_displayname: Map.get(provider, :org_displayname, @default_org_displayname),
+      org_url: Map.get(provider, :org_url, @default_org_url),
     }
 
     sp = %__MODULE__{sp

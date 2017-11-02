@@ -68,6 +68,6 @@ defmodule Samly.Assertion do
   end
 
   defp stringize(proplist) do
-    proplist |> Enum.map(fn {k, v} -> {k, List.to_string(v)} end) |> Enum.into(%{})
+    proplist |> Enum.map(fn {k, v} -> {to_string(k), List.to_string(v)} end) |> Enum.into(%{})
   end
 end

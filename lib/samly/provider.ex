@@ -68,6 +68,17 @@ defmodule Samly.Provider do
   def init([]) do
     State.init()
     opts = Application.get_env(:samly, Samly.Provider, [])
+
+    # must be done prior to loading the providers
+    idp_id_from = case opts[:idp_id_from] do
+      nil -> :path_segment
+      value when value in [:subdomain, :path_segment] -> value
+      unknown ->
+        Logger.warn("[Samly] invalid_data idp_id_from: #{inspect unknown}. Using :path_segment")
+        :path_segment
+    end
+    Application.put_env(:samly, :idp_id_from, idp_id_from)
+
     service_providers = Samly.SpData.load_service_providers(
       opts[:service_providers] || []
     )

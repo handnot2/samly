@@ -18,6 +18,7 @@ defmodule Samly.IdpData do
   defstruct [
     id: nil,
     sp_id: nil,
+    base_url: nil,
     metadata_file: nil,
     pre_session_create_pipeline: nil,
     use_redirect_for_req: false,
@@ -33,6 +34,7 @@ defmodule Samly.IdpData do
   @type t :: %__MODULE__{
     id: nil | String.t,
     sp_id: nil | String.t,
+    base_url: nil | String.t,
     metadata_file: nil | String.t,
     pre_session_create_pipeline: nil | module,
     use_redirect_for_req: boolean,
@@ -55,11 +57,16 @@ defmodule Samly.IdpData do
     |> Enum.into(%{})
   end
 
+  @default_idp_metadata_file "idp_metadata.xml"
+
   @spec load_idp_data(map, %{required(id) => SpData.t}, binary)
     :: {id, IdpData.t} | no_return
-  defp load_idp_data(%{} = idp_entry, service_providers, base_url) do
+  defp load_idp_data(%{} = idp_entry, service_providers, default_base_url) do
     with  idp_id when idp_id != nil <- Map.get(idp_entry, :id),
-          metadata_file when metadata_file != nil <- Map.get(idp_entry, :metadata_file),
+          base_url when (base_url == nil or is_binary(base_url)) <-
+            Map.get(idp_entry, :base_url, default_base_url),
+          metadata_file when metadata_file != nil <-
+            Map.get(idp_entry, :metadata_file, @default_idp_metadata_file),
           pl when (pl == nil or is_atom(pl)) <- Map.get(idp_entry, :pre_session_create_pipeline),
           {:reading, {:ok, xml}} <- {:reading, File.read(metadata_file)},
           {:parsing, {:ok, mdt}} <- {:parsing, idp_metadata_from_xml(xml)},
@@ -76,6 +83,7 @@ defmodule Samly.IdpData do
       idp = %__MODULE__{idp
         | id: idp_id,
           sp_id: sp_id,
+          base_url: base_url,
           metadata_file: metadata_file,
           pre_session_create_pipeline: pl,
           fingerprints: idp_cert_fingerprints(mdt),
@@ -126,6 +134,9 @@ defmodule Samly.IdpData do
       id -> String.to_charlist(id)
     end
 
+    idp_id_from = Application.get_env(:samly, :idp_id_from)
+    path_segment_idp_id = if idp_id_from == :subdomain, do: nil, else: idp.id
+
     sp_rec = Esaml.esaml_sp(
       key: sp.key,
       certificate: sp.cert,
@@ -134,19 +145,19 @@ defmodule Samly.IdpData do
       idp_signs_envelopes: idp.signed_envelopes_in_resp,
       idp_signs_assertions: idp.signed_assertion_in_resp,
       trusted_fingerprints: idp.fingerprints,
-      metadata_uri: Helper.get_metadata_uri(base_url, idp.id),
-      consume_uri: Helper.get_consume_uri(base_url, idp.id),
-      logout_uri: Helper.get_logout_uri(base_url, idp.id),
+      metadata_uri: Helper.get_metadata_uri(base_url, path_segment_idp_id),
+      consume_uri: Helper.get_consume_uri(base_url, path_segment_idp_id),
+      logout_uri: Helper.get_logout_uri(base_url, path_segment_idp_id),
       entity_id: entity_id,
-      # TODO: get this from config
       org: Esaml.esaml_org(
-        name: 'Samly SP',
-        displayname: 'Samly SP',
-        url: base_url),
+        name: String.to_charlist(sp.org_name),
+        displayname: String.to_charlist(sp.org_displayname),
+        url: String.to_charlist(sp.org_url)),
       tech: Esaml.esaml_contact(
-        name: 'Samly SP Admin',
-        email: 'admin@samly')
+        name: String.to_charlist(sp.contact_name),
+        email: String.to_charlist(sp.contact_email))
     )
+
     sp_rec
   end
 end

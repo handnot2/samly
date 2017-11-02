@@ -5,7 +5,7 @@ defmodule Samly.AuthHandler do
   import Plug.Conn
   alias Samly.{Assertion, IdpData, Helper, State}
 
-  import Samly.RouterUtil, only: [send_saml_request: 5, redirect: 3]
+  import Samly.RouterUtil, only: [ensure_sp_uris_set: 2, send_saml_request: 5, redirect: 3]
 
   @sso_init_resp_template """
   <body onload=\"document.forms[0].submit()\">
@@ -61,9 +61,9 @@ defmodule Samly.AuthHandler do
   end
 
   def send_signin_req(conn) do
-    idp_id = conn.params["idp_id"]
-    %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp = Helper.get_idp(idp_id)
-    sp = sp_rec |> Helper.ensure_sp_uris_set(conn, idp_id)
+    %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
+    %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
+    sp = ensure_sp_uris_set(sp_rec, conn)
 
     target_url = conn.params["target_url"] || "/"
     |>  URI.decode_www_form()
@@ -92,9 +92,9 @@ defmodule Samly.AuthHandler do
   end
 
   def send_signout_req(conn) do
-    idp_id = conn.params["idp_id"]
-    %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp = Helper.get_idp(idp_id)
-    sp = sp_rec |> Helper.ensure_sp_uris_set(conn, idp_id)
+    %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
+    %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
+    sp = ensure_sp_uris_set(sp_rec, conn)
 
     target_url = conn.params["target_url"] || "/"
     |>  URI.decode_www_form()

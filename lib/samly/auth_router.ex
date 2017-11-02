@@ -3,26 +3,32 @@ defmodule Samly.AuthRouter do
 
   use Plug.Router
   import Plug.Conn
+  import Samly.RouterUtil, only: [check_idp_id: 2]
 
   plug :fetch_session
   plug Plug.CSRFProtection
   plug :match
+  plug :check_idp_id
   plug :dispatch
 
-  get "/signin" do
-    Samly.AuthHandler.initiate_sso_req(conn)
+  get "/signin/*idp_id_seg" do
+    conn
+    |> Samly.AuthHandler.initiate_sso_req()
   end
 
-  post "/signin" do
-    Samly.AuthHandler.send_signin_req(conn)
+  post "/signin/*idp_id_seg" do
+    conn
+    |> Samly.AuthHandler.send_signin_req()
   end
 
-  get "/signout" do
-    Samly.AuthHandler.initiate_sso_req(conn)
+  get "/signout/*idp_id_seg" do
+    conn
+    |> Samly.AuthHandler.initiate_sso_req()
   end
 
-  post "/signout" do
-    Samly.AuthHandler.send_signout_req(conn)
+  post "/signout/*idp_id_seg" do
+    conn
+    |> Samly.AuthHandler.send_signout_req()
   end
 
   match _ do

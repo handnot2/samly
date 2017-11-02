@@ -7,17 +7,14 @@ defmodule Samly.SPHandler do
   require Samly.Esaml
   alias Samly.{Assertion, Esaml, Helper, State, IdpData}
 
-  import Samly.RouterUtil, only: [send_saml_request: 5, redirect: 3]
+  import Samly.RouterUtil, only: [ensure_sp_uris_set: 2, send_saml_request: 5, redirect: 3]
 
   def send_metadata(conn) do
-    idp_id = conn.params["idp_id"]
-    %IdpData{esaml_idp_rec: _idp_rec, esaml_sp_rec: sp_rec} = Helper.get_idp(idp_id)
-    sp = sp_rec |> Helper.ensure_sp_uris_set(conn, idp_id)
+    %IdpData{} = idp = conn.private[:samly_idp]
+    %IdpData{esaml_idp_rec: _idp_rec, esaml_sp_rec: sp_rec} = idp
+    sp = ensure_sp_uris_set(sp_rec, conn)
 
-    metadata =
-      sp
-      |>  Helper.ensure_sp_uris_set(conn, conn.params["idp_id"])
-      |>  Helper.sp_metadata()
+    metadata = Helper.sp_metadata(sp)
 
     conn
     |>  put_resp_header("Content-Type", "text/xml")
@@ -29,9 +26,9 @@ defmodule Samly.SPHandler do
   end
 
   def consume_signin_response(conn) do
-    idp_id = conn.params["idp_id"]
-    %IdpData{pre_session_create_pipeline: pipeline, esaml_sp_rec: sp_rec} = Helper.get_idp(idp_id)
-    sp = sp_rec |> Helper.ensure_sp_uris_set(conn, idp_id)
+    %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
+    %IdpData{pre_session_create_pipeline: pipeline, esaml_sp_rec: sp_rec} = idp
+    sp = ensure_sp_uris_set(sp_rec, conn)
 
     saml_encoding = conn.body_params["SAMLEncoding"]
     saml_response = conn.body_params["SAMLResponse"]
@@ -81,9 +78,9 @@ defmodule Samly.SPHandler do
   end
 
   def handle_logout_response(conn) do
-    idp_id = conn.params["idp_id"]
-    %IdpData{esaml_idp_rec: _idp_rec, esaml_sp_rec: sp_rec} = Helper.get_idp(idp_id)
-    sp = sp_rec |> Helper.ensure_sp_uris_set(conn, idp_id)
+    %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
+    %IdpData{esaml_idp_rec: _idp_rec, esaml_sp_rec: sp_rec} = idp
+    sp = ensure_sp_uris_set(sp_rec, conn)
 
     saml_encoding = conn.body_params["SAMLEncoding"]
     saml_response = conn.body_params["SAMLResponse"]
@@ -110,9 +107,9 @@ defmodule Samly.SPHandler do
 
   # non-ui logout request from IDP
   def handle_logout_request(conn) do
-    idp_id = conn.params["idp_id"]
-    %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp = Helper.get_idp(idp_id)
-    sp = sp_rec |> Helper.ensure_sp_uris_set(conn, idp_id)
+    %IdpData{id: idp_id} = idp = conn.private[:samly_idp]
+    %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
+    sp = ensure_sp_uris_set(sp_rec, conn)
 
     saml_encoding = conn.body_params["SAMLEncoding"]
     saml_request  = conn.body_params["SAMLRequest"]
