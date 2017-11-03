@@ -1,7 +1,7 @@
 defmodule Samly.Mixfile do
   use Mix.Project
 
-  @version "0.8.0-rc2"
+  @version "0.8.0"
   @description "SAML SP SSO made easy"
   @source_url "https://github.com/handnot2/samly"
 
@@ -30,7 +30,7 @@ defmodule Samly.Mixfile do
     [
       {:plug, "~> 1.4"},
       {:esaml, "~> 3.1"},
-      {:ex_doc, "~> 0.16", only: :dev},
+      {:ex_doc, "~> 0.18", only: :dev},
       {:inch_ex, "~> 0.5", only: :docs},
     ]
   end
