@@ -1,6 +1,6 @@
 # Samly
 
-A Plug library to enable SAML 2.0 Single Sign On in a Plug/Phoenix application.
+SAML 2.0 SP SSO made easy. This is a Plug library that can be used to enable SAML 2.0 Single Sign On in a Plug/Phoenix application.
 
 [![Inline docs](http://inch-ci.org/github/handnot2/samly.svg)](http://inch-ci.org/github/handnot2/samly)
 
@@ -19,6 +19,8 @@ defp deps() do
   ]
 end
 ```
+
+If you are usig `Samly` v0.7.x, checkout: [`Migrating from v0.7.x to v0.8.0`](https://github.com/handnot2/samly/wiki/Migrate-Samly-v0.7.x-to-v0.8.0).
 
 ## Supervision Tree
 
@@ -100,16 +102,20 @@ part changes. The URLs for this model are:
 
 | Description | URL |
 |:----|:----|
-| Sign-in button/link in Web UI | `http://do-good.org/sso/auth/signin/affiliates` |
-| Sign-out button/link in Web UI | `http://do-good.org/sso/auth/signout/affiliates` |
+| Sign-in button/link in Web UI | `/sso/auth/signin/affiliates` |
+| Sign-out button/link in Web UI | `/sso/auth/signout/affiliates` |
+| SP Metadata URL | `http://do-good.org/sso/sp/metadata/affiliates` |
 | SAML Assertion Consumer Service | `http://do-good.org/sso/sp/consume/affiliates` |
 | SAML SingleLogout Service | `http://do-good.org/sso/sp/logout/affiliates` |
-| SP Metadata URL | `http://do-good.org/sso/sp/metadata/affiliates` |
 
 The path segment model is the default one in `Samly`. If there is only one Identity Provider, use this mode.
 
 > These URL routes are automatically created based on the configuration information and
 > the above mentioned router scope definition.
+>
+> Use the Sign-in and Sign-out URLs shown above in your application's Web UI buttons/links.
+> When the end-user clicks on these buttons/links, the HTTP `GET` request is handled by `Samly`
+> which internally does a `POST` that in turn sends the appropriate SAML request to the IdP.
 
 #### Subdomain in Host Name
 
@@ -118,17 +124,16 @@ in this model look different.
 
 | Description | URL |
 |:----|:----|
-| Sign-in button/link in Web UI | `http://ngo.do-good.org/sso/auth/signin` |
-| Sign-out button/link in Web UI | `http://ngo.do-good.org/sso/auth/signout` |
+| Sign-in button/link in Web UI | `/sso/auth/signin` |
+| Sign-out button/link in Web UI | `/sso/auth/signout` |
+| SP Metadata URL | `http://ngo.do-good.org/sso/sp/metadata` |
 | SAML Assertion Consumer Service | `http://ngo.do-good.org/sso/sp/consume` |
 | SAML SingleLogout Service | `http://ngo.do-good.org/sso/sp/logout` |
-| SP Metadata URL | `http://ngo.do-good.org/sso/sp/metadata` |
 
-> Use the Sign-in and Sign-out URLs shown above in your application's Web UI buttons/links.
-> When the end-user clicks on these buttons/links, the HTTP `GET` request is handled by `Samly`
-> which internally does a `POST` that in turn sends the appropriate SAML request to the IdP.
 > Take a look at [`samly_howto`](https://github.com/handnot2/samly_howto) - a reference/demo
 > application on how to use this library.
+>
+> Make sure to use HTTPS URLs in production deployments.
 
 ## Samly Configuration
 
@@ -286,6 +291,11 @@ config :samly, Samly.Provider,
     > Make sure to configure the IdP to use `SHA256`. `Samly`
     > will reject (`access_denied`) IdP responses using `SHA1`.
 +   `esaml` provides additional checks such as trusted certificate verification, recipient verification among others.
++   By default, `Samly` signs the SAML requests it sends to the Identity Provider. It also
+    expects the SAML reqsponses to be signed (both assertion and envelopes). If your IdP is
+    not configured to sign, you will have to explicitly turn them off in the configuration.
+    It is highly recommended to turn signing on in production deployments.
++   Make sure to use HTTPS URLs in production deployments.
 
 ## FAQ
 
@@ -332,6 +342,10 @@ cd samly_howto
 
 ./gencert.sh
 
+# Get NPM assets
+
+cd assets && npm install && cd ..
+
 # Fetch the IdP metadata XML. `Samly` needs this to make sure that it can
 # validate the request/responses to/from IdP.
 
@@ -347,6 +361,13 @@ HOST=samly.howto PORT=4003 iex -S mix phx.server
 > the IdP before you explore this application using a browser.
 
 Open `http://samly.howto:4003` in your browser and check out the app.
+
+> It is recommended that you use the `SamlyHowto` application to
+> sort out any configuration issues by making this demo application work
+> successfully with your Identity Provider (IdP) before attempting your
+> application.
+>
+> This demo application supports experimentation with multiple IdPs.
 
 #### How to register the service provider with IdP
 
