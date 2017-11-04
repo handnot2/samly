@@ -1,52 +1,40 @@
 defmodule Samly.Helper do
   @moduledoc false
 
-  import Application, only: [get_env: 2]
-
   require Samly.Esaml
-  alias Samly.{Assertion, Esaml}
+  alias Samly.{Assertion, Esaml, IdpData}
 
-  def use_redirect_for_idp_req() do
-    Application.get_env(:samly, :use_redirect_for_idp_req, false)
+  @spec get_idp(binary) :: nil | IdpData.t
+  def get_idp(idp_id) do
+    idps = Application.get_env(:samly, :identity_providers, %{})
+    Map.get(idps, idp_id)
   end
 
-  def get_metadata_uri(sp_base_url) when is_list(sp_base_url) do
-    sp_base_url ++ '/sp/metadata'
+  @spec get_metadata_uri(nil | binary, binary) :: nil | charlist
+  def get_metadata_uri(nil, _idp_id), do: nil
+  def get_metadata_uri(sp_base_url, nil) when is_binary(sp_base_url) do
+    "#{sp_base_url}/sp/metadata" |> String.to_charlist()
+  end
+  def get_metadata_uri(sp_base_url, idp_id) when is_binary(sp_base_url) do
+    "#{sp_base_url}/sp/metadata/#{idp_id}" |> String.to_charlist()
   end
 
-  def get_consume_uri(sp_base_url) when is_list(sp_base_url) do
-    sp_base_url ++ '/sp/consume'
+  @spec get_consume_uri(nil | binary, binary) :: nil | charlist
+  def get_consume_uri(nil, _idp_id), do: nil
+  def get_consume_uri(sp_base_url, nil) when is_binary(sp_base_url) do
+    "#{sp_base_url}/sp/consume" |> String.to_charlist()
+  end
+  def get_consume_uri(sp_base_url, idp_id) when is_binary(sp_base_url) do
+    "#{sp_base_url}/sp/consume/#{idp_id}" |> String.to_charlist()
   end
 
-  def get_logout_uri(sp_base_url) when is_list(sp_base_url) do
-    sp_base_url ++ '/sp/logout'
+  @spec get_logout_uri(nil | binary, binary) :: nil | charlist
+  def get_logout_uri(nil, _idp_id), do: nil
+  def get_logout_uri(sp_base_url, nil) when is_binary(sp_base_url) do
+    "#{sp_base_url}/sp/logout" |> String.to_charlist()
   end
-
-  def get_sp() do
-    get_env(:samly, :sp)
-  end
-
-  def ensure_sp_uris_set(sp, conn) do
-    case Esaml.esaml_sp(sp, :metadata_uri) do
-      [?/ | _] ->
-        uri = %URI{
-          scheme: Atom.to_string(conn.scheme),
-          host: conn.host,
-          port: conn.port,
-          path: "/sso"
-        }
-        base_url = URI.to_string(uri) |> String.to_charlist()
-        Esaml.esaml_sp(sp,
-          metadata_uri: get_metadata_uri(base_url),
-          consume_uri: get_consume_uri(base_url),
-          logout_uri: get_logout_uri(base_url)
-        )
-      _ -> sp
-    end
-  end
-
-  def get_idp_metadata() do
-    get_env(:samly, :idp_metadata)
+  def get_logout_uri(sp_base_url, idp_id) when is_binary(sp_base_url) do
+    "#{sp_base_url}/sp/logout/#{idp_id}" |> String.to_charlist()
   end
 
   def sp_metadata(sp) do

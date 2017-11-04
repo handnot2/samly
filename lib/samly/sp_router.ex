@@ -3,21 +3,25 @@ defmodule Samly.SPRouter do
 
   use Plug.Router
   import Plug.Conn
+  import Samly.RouterUtil, only: [check_idp_id: 2]
 
   plug :fetch_session
   plug :match
+  plug :check_idp_id
   plug :dispatch
 
-  get "/metadata" do
+  get "/metadata/*idp_id_seg" do
     # TODO: Make a release task to generate SP metadata
-    Samly.SPHandler.send_metadata(conn)
+    conn
+    |> Samly.SPHandler.send_metadata()
   end
 
-  post "/consume" do
-    Samly.SPHandler.consume_signin_response(conn)
+  post "/consume/*idp_id_seg" do
+    conn
+    |> Samly.SPHandler.consume_signin_response()
   end
 
-  post "/logout" do
+  post "/logout/*idp_id_seg" do
     cond do
       conn.params["SAMLResponse"] != nil ->
         Samly.SPHandler.handle_logout_response(conn)

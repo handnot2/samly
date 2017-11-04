@@ -25,7 +25,8 @@ defmodule Samly.Assertion do
     conditions: %{},
     attributes: %{},
     authn: %{},
-    computed: %{}
+    computed: %{},
+    idp_id: ""
   ]
 
   @type t :: %__MODULE__{
@@ -37,7 +38,8 @@ defmodule Samly.Assertion do
     conditions: map,
     attributes: map,
     authn: map,
-    computed: map
+    computed: map,
+    idp_id: String.t
   }
 
   @doc false
@@ -66,6 +68,6 @@ defmodule Samly.Assertion do
   end
 
   defp stringize(proplist) do
-    proplist |> Enum.map(fn {k, v} -> {k, List.to_string(v)} end) |> Enum.into(%{})
+    proplist |> Enum.map(fn {k, v} -> {to_string(k), List.to_string(v)} end) |> Enum.into(%{})
   end
 end
