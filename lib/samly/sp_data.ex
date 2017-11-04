@@ -1,4 +1,6 @@
 defmodule Samly.SpData do
+  @moduledoc false
+
   require Logger
   alias Samly.ConfigError
 

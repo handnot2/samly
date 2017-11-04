@@ -1,4 +1,6 @@
 defmodule Samly.ConfigError do
+  @moduledoc false
+
   defexception [:message]
 
   @spec exception(map) :: Exception.t

@@ -1,4 +1,6 @@
 defmodule Samly.IdpData do
+  @moduledoc false
+
   require Logger
   alias Samly.IdpData
   alias Samly.SpData
