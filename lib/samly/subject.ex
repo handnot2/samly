@@ -10,17 +10,15 @@ defmodule Samly.Subject do
   require Samly.Esaml
   alias Samly.Esaml
 
-  defstruct [
-    name: "",
-    confirmation_method: :bearer,
-    notonorafter: ""
-  ]
+  defstruct name: "",
+            confirmation_method: :bearer,
+            notonorafter: ""
 
   @type t :: %__MODULE__{
-    name: String.t,
-    confirmation_method: atom,
-    notonorafter: String.t
-  }
+          name: String.t(),
+          confirmation_method: atom,
+          notonorafter: String.t()
+        }
 
   @doc false
   def from_rec(subject_rec) do

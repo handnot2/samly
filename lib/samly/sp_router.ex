@@ -12,23 +12,18 @@ defmodule Samly.SPRouter do
 
   get "/metadata/*idp_id_seg" do
     # TODO: Make a release task to generate SP metadata
-    conn
-    |> Samly.SPHandler.send_metadata()
+    conn |> Samly.SPHandler.send_metadata()
   end
 
   post "/consume/*idp_id_seg" do
-    conn
-    |> Samly.SPHandler.consume_signin_response()
+    conn |> Samly.SPHandler.consume_signin_response()
   end
 
   post "/logout/*idp_id_seg" do
     cond do
-      conn.params["SAMLResponse"] != nil ->
-        Samly.SPHandler.handle_logout_response(conn)
-      conn.params["SAMLRequest"] != nil ->
-        Samly.SPHandler.handle_logout_request(conn)
-      true ->
-        conn |> send_resp(403, "invalid_request")
+      conn.params["SAMLResponse"] != nil -> Samly.SPHandler.handle_logout_response(conn)
+      conn.params["SAMLRequest"] != nil -> Samly.SPHandler.handle_logout_request(conn)
+      true -> conn |> send_resp(403, "invalid_request")
     end
   end
 

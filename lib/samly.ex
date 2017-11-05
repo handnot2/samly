@@ -17,9 +17,10 @@ defmodule Samly do
 
   - conn: Plug connection
   """
-  @spec get_active_assertion(Conn.t) :: Assertion.t
+  @spec get_active_assertion(Conn.t()) :: Assertion.t()
   def get_active_assertion(conn) do
     nameid = conn |> Conn.get_session("samly_nameid")
+
     case State.get_by_nameid(nameid) do
       {^nameid, saml_assertion} -> saml_assertion
       _ -> nil
@@ -37,8 +38,9 @@ defmodule Samly do
   -   assertion: SAML assertion obtained by calling `get_active_assertion/1`
   -   name: Attribute name
   """
-  @spec get_attribute(nil | Assertion.t, String.t) :: nil | String.t
+  @spec get_attribute(nil | Assertion.t(), String.t()) :: nil | String.t()
   def get_attribute(nil, _name), do: nil
+
   def get_attribute(%Assertion{} = assertion, name) do
     computed = assertion.computed
     attributes = assertion.attributes

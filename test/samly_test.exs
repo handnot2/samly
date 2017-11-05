@@ -4,7 +4,7 @@ defmodule SamlyTest do
 
   @test_opts [
     certfile: "test/data/test.crt",
-    keyfile:  "test/data/test.pem",
+    keyfile: "test/data/test.pem",
     idp_metadata_file: "test/data/idp_metadata.xml",
     base_url: "http://my.app:4000/sso"
   ]
