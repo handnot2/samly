@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### v0.8.2
+
++   Handle namespaces in Identity Provider Metadata XML file
+
 ### v0.8.0
 
 +   Added support for multiple Identity Providers. Check issue: #4.

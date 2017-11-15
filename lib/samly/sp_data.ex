@@ -2,35 +2,38 @@ defmodule Samly.SpData do
   @moduledoc false
 
   require Logger
-  alias Samly.ConfigError
+  require Samly.Esaml
+  alias Samly.SpData
 
-  defstruct id: nil,
-            entity_id: :undefined,
-            certfile: nil,
-            keyfile: nil,
-            contact_name: nil,
-            contact_email: nil,
-            org_name: nil,
-            org_displayname: nil,
-            org_url: nil,
-            cert: nil,
-            key: nil
+  defstruct id: "",
+            entity_id: "",
+            certfile: "",
+            keyfile: "",
+            contact_name: "",
+            contact_email: "",
+            org_name: "",
+            org_displayname: "",
+            org_url: "",
+            cert: :undefined,
+            key: :undefined,
+            valid?: true
 
   @type t :: %__MODULE__{
-          id: nil | String.t(),
-          entity_id: nil | :undefined | String.t(),
-          certfile: nil | String.t(),
-          keyfile: nil | String.t(),
-          contact_name: nil | String.t(),
-          contact_email: nil | String.t(),
-          org_name: nil | String.t(),
-          org_displayname: nil | String.t(),
-          org_url: nil | String.t(),
-          cert: nil | binary,
-          key: nil | tuple
+          id: binary(),
+          entity_id: binary(),
+          certfile: binary(),
+          keyfile: binary(),
+          contact_name: binary(),
+          contact_email: binary(),
+          org_name: binary(),
+          org_displayname: binary(),
+          org_url: binary(),
+          cert: :undefined | binary(),
+          key: :undefined | :RSAPrivateKey,
+          valid?: boolean()
         }
 
-  @type id :: String.t()
+  @type id :: binary
 
   @default_contact_name "Samly SP Admin"
   @default_contact_email "admin@samly"
@@ -38,53 +41,65 @@ defmodule Samly.SpData do
   @default_org_displayname "SAML SP built with Samly"
   @default_org_url "https://github.com/handnot2/samly"
 
-  @spec load_service_providers(list(map)) :: %{required(id) => t}
-  def load_service_providers(providers) do
-    providers
-    |> Enum.map(&load_sp/1)
+  @spec load_providers(list(map)) :: %{required(id) => t}
+  def load_providers(prov_configs) do
+    prov_configs
+    |> Enum.map(&load_provider/1)
+    |> Enum.filter(fn sp_data -> sp_data.valid? end)
+    |> Enum.map(fn sp_data -> {sp_data.id, sp_data} end)
     |> Enum.into(%{})
   end
 
-  @spec load_sp(map) :: {String.t(), t} | no_return
-  defp load_sp(%{} = provider) do
-    sp = %__MODULE__{
-      id: Map.get(provider, :id, nil),
-      entity_id: Map.get(provider, :entity_id, nil),
-      certfile: Map.get(provider, :certfile, nil),
-      keyfile: Map.get(provider, :keyfile, nil),
-      contact_name: Map.get(provider, :contact_name, @default_contact_name),
-      contact_email: Map.get(provider, :contact_email, @default_contact_email),
-      org_name: Map.get(provider, :org_name, @default_org_name),
-      org_displayname: Map.get(provider, :org_displayname, @default_org_displayname),
-      org_url: Map.get(provider, :org_url, @default_org_url)
+  @spec load_provider(map) :: %SpData{} | no_return
+  def load_provider(%{} = opts_map) do
+    sp_data = %__MODULE__{
+      id: Map.get(opts_map, :id, ""),
+      entity_id: Map.get(opts_map, :entity_id, ""),
+      certfile: Map.get(opts_map, :certfile, ""),
+      keyfile: Map.get(opts_map, :keyfile, ""),
+      contact_name: Map.get(opts_map, :contact_name, @default_contact_name),
+      contact_email: Map.get(opts_map, :contact_email, @default_contact_email),
+      org_name: Map.get(opts_map, :org_name, @default_org_name),
+      org_displayname: Map.get(opts_map, :org_displayname, @default_org_displayname),
+      org_url: Map.get(opts_map, :org_url, @default_org_url)
     }
 
-    sp = %__MODULE__{sp | cert: load_cert(sp.certfile, sp.id), key: load_key(sp.keyfile, sp.id)}
-
-    if sp.id == nil || sp.certfile == nil || sp.keyfile == nil do
-      raise ConfigError, provider
-    end
-
-    {sp.id, sp}
+    sp_data |> set_id(opts_map) |> load_cert(opts_map) |> load_key(opts_map)
   end
 
-  defp load_key(file, label) do
-    try do
-      file |> :esaml_util.load_private_key()
-    rescue
-      _error ->
-        Logger.error("[Samly] Failed load SP keyfile: #{label}:#{file}")
-        nil
+  @spec set_id(%SpData{}, map()) :: %SpData{}
+  defp set_id(%SpData{} = sp_data, %{} = opts_map) do
+    case Map.get(opts_map, :id, "") do
+      "" ->
+        Logger.error("[Samly] Invalid SP Config: #{inspect(opts_map)}")
+        %SpData{sp_data | valid?: false}
+
+      id ->
+        %SpData{sp_data | id: id}
     end
   end
 
-  defp load_cert(file, label) do
+  @spec load_cert(%SpData{}, map()) :: %SpData{}
+  defp load_cert(%SpData{certfile: certfile} = sp_data, %{} = opts_map) do
     try do
-      file |> :esaml_util.load_certificate()
+      cert = :esaml_util.load_certificate(certfile)
+      %SpData{sp_data | cert: cert}
     rescue
       _error ->
-        Logger.error("[Samly] Failed load SP certfile: #{label}:#{file}")
-        nil
+        Logger.error("[Samly] Failed load SP certfile: #{inspect(opts_map)}")
+        %SpData{sp_data | valid?: false}
+    end
+  end
+
+  @spec load_key(%SpData{}, map()) :: %SpData{}
+  defp load_key(%SpData{keyfile: keyfile} = sp_data, %{} = opts_map) do
+    try do
+      key = :esaml_util.load_private_key(keyfile)
+      %SpData{sp_data | key: key}
+    rescue
+      _error ->
+        Logger.error("[Samly] Failed load SP keyfile: #{inspect(opts_map)}")
+        %SpData{sp_data | key: :undefined, valid?: false}
     end
   end
 end

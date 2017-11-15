@@ -1,20 +1,17 @@
 defmodule Samly.IdpData do
   @moduledoc false
 
+  import SweetXml
   require Logger
   require Samly.Esaml
-  alias Samly.{ConfigError, Esaml, Helper, IdpData, SpData}
+  alias Samly.{Esaml, Helper, IdpData, SpData}
 
-  @boolean_attrs [
-    :use_redirect_for_req,
-    :sign_requests,
-    :sign_metadata,
-    :signed_assertion_in_resp,
-    :signed_envelopes_in_resp
-  ]
+  @type nameid_formats :: :esaml.name_format()
+  @type certs :: [binary()]
+  @type url :: nil | binary()
 
-  defstruct id: nil,
-            sp_id: nil,
+  defstruct id: "",
+            sp_id: "",
             base_url: nil,
             metadata_file: nil,
             pre_session_create_pipeline: nil,
@@ -23,148 +20,321 @@ defmodule Samly.IdpData do
             sign_metadata: true,
             signed_assertion_in_resp: true,
             signed_envelopes_in_resp: true,
+            entity_id: "",
+            signed_requests: "",
+            certs: [],
+            sso_redirect_url: nil,
+            sso_post_url: nil,
+            slo_redirect_url: nil,
+            slo_post_url: nil,
+            nameid_format: :unknown,
             fingerprints: [],
-            esaml_idp_rec: nil,
-            esaml_sp_rec: nil
+            esaml_idp_rec: Esaml.esaml_idp_metadata(),
+            esaml_sp_rec: Esaml.esaml_sp(),
+            valid?: false
 
   @type t :: %__MODULE__{
-          id: nil | String.t(),
-          sp_id: nil | String.t(),
-          base_url: nil | String.t(),
-          metadata_file: nil | String.t(),
-          pre_session_create_pipeline: nil | module,
-          use_redirect_for_req: boolean,
-          sign_requests: boolean,
-          sign_metadata: boolean,
-          signed_assertion_in_resp: boolean,
-          signed_envelopes_in_resp: boolean,
-          fingerprints: keyword(binary),
-          esaml_idp_rec: nil | tuple,
-          esaml_sp_rec: nil | tuple
+          id: binary(),
+          sp_id: binary(),
+          base_url: nil | binary(),
+          metadata_file: nil | binary(),
+          pre_session_create_pipeline: nil | module(),
+          use_redirect_for_req: boolean(),
+          sign_requests: boolean(),
+          sign_metadata: boolean(),
+          signed_assertion_in_resp: boolean(),
+          signed_envelopes_in_resp: boolean(),
+          entity_id: binary(),
+          signed_requests: binary(),
+          certs: certs(),
+          sso_redirect_url: url(),
+          sso_post_url: url(),
+          slo_redirect_url: url(),
+          slo_post_url: url(),
+          nameid_format: nameid_formats(),
+          fingerprints: [binary()],
+          esaml_idp_rec: :esaml_idp_metadata,
+          esaml_sp_rec: :esaml_sp,
+          valid?: boolean()
         }
 
-  @type id :: String.t()
+  @entdesc "md:EntityDescriptor"
+  @idpdesc "md:IDPSSODescriptor"
+  @signedreq "WantAuthnRequestsSigned"
+  @nameid "md:NameIDFormat"
+  @keydesc "md:KeyDescriptor"
+  @ssos "md:SingleSignOnService"
+  @slos "md:SingleLogoutService"
+  @redirect "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+  @post "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
 
-  @spec load_identity_providers(list(map), %{required(id) => SpData.t()}, binary) :: %{
-          required(id) => __MODULE__.t()
-        }
-  def load_identity_providers(prov_config, service_providers, base_url) do
+  @entity_id_selector ~x"//#{@entdesc}/@entityID"sl
+  @nameid_format_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@nameid}/text()"s
+  @req_signed_selector ~x"//#{@entdesc}/#{@idpdesc}/@#{@signedreq}"s
+  @sso_redirect_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@redirect}']/@Location"s
+  @sso_post_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@post}']/@Location"s
+  @slo_redirect_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@redirect}']/@Location"s
+  @slo_post_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@post}']/@Location"s
+  @signing_keys_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@keydesc}[@use != 'encryption']"l
+  @enc_keys_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@keydesc}[@use = 'encryption']"l
+  @cert_selector ~x"./ds:KeyInfo/ds:X509Data/ds:X509Certificate/text()"s
+
+  @type id :: binary()
+
+  @spec load_providers([map], %{required(id()) => %SpData{}}) ::
+          %{required(id()) => %IdpData{}} | no_return()
+  def load_providers(prov_config, service_providers) do
     prov_config
-    |> Enum.map(fn idp -> load_idp_data(idp, service_providers, base_url) end)
+    |> Enum.map(fn idp_config -> load_provider(idp_config, service_providers) end)
+    |> Enum.filter(fn idp_data -> idp_data.valid? end)
+    |> Enum.map(fn idp_data -> {idp_data.id, idp_data} end)
     |> Enum.into(%{})
   end
 
-  @default_idp_metadata_file "idp_metadata.xml"
+  @spec load_provider(map(), %{required(id()) => %SpData{}}) :: %IdpData{} | no_return
+  def load_provider(idp_config, service_providers) do
+    %IdpData{}
+    |> save_idp_config(idp_config)
+    |> load_metadata(idp_config)
+    |> update_esaml_recs(service_providers, idp_config)
+  end
 
-  @spec load_idp_data(map, %{required(id) => SpData.t()}, binary) :: {id, IdpData.t()} | no_return
-  defp load_idp_data(%{} = idp_entry, service_providers, default_base_url) do
-    with idp_id when idp_id != nil <- Map.get(idp_entry, :id),
-         base_url when base_url == nil or is_binary(base_url) <-
-           Map.get(idp_entry, :base_url, default_base_url),
-         metadata_file when metadata_file != nil <-
-           Map.get(idp_entry, :metadata_file, @default_idp_metadata_file),
-         pl when pl == nil or is_atom(pl) <- Map.get(idp_entry, :pre_session_create_pipeline),
-         {:reading, {:ok, xml}} <- {:reading, File.read(metadata_file)},
-         {:parsing, {:ok, mdt}} <- {:parsing, idp_metadata_from_xml(xml)},
-         sp_id when sp_id != nil <- Map.get(idp_entry, :sp_id, nil),
-         sp when sp != nil <- Map.get(service_providers, sp_id, nil) do
-      idp =
-        @boolean_attrs
-        |> Enum.reduce(%__MODULE__{}, fn attr, idp ->
-             v = Map.get(idp_entry, attr)
-             if is_boolean(v), do: Map.put(idp, attr, v), else: idp
-           end)
+  @spec save_idp_config(%IdpData{}, map()) :: %IdpData{}
+  defp save_idp_config(idp_data, %{id: id, sp_id: sp_id} = opts_map)
+       when is_binary(id) and is_binary(sp_id) do
+    %IdpData{idp_data | id: id, sp_id: sp_id, base_url: Map.get(opts_map, :base_url)}
+    |> set_metadata_file(opts_map)
+    |> set_pipeline(opts_map)
+    |> set_boolean_attr(opts_map, :use_redirect_for_req)
+    |> set_boolean_attr(opts_map, :sign_requests)
+    |> set_boolean_attr(opts_map, :sign_metadata)
+    |> set_boolean_attr(opts_map, :signed_assertion_in_resp)
+    |> set_boolean_attr(opts_map, :signed_envelopes_in_resp)
+  end
 
-      idp = %__MODULE__{
-        idp
-        | id: idp_id,
-          sp_id: sp_id,
-          base_url: base_url,
-          metadata_file: metadata_file,
-          pre_session_create_pipeline: pl,
-          fingerprints: idp_cert_fingerprints(mdt),
-          esaml_idp_rec: mdt
-      }
-
-      {idp.id, %__MODULE__{idp | esaml_sp_rec: get_esaml_sp_rec(sp, idp, base_url)}}
+  @spec load_metadata(%IdpData{}, map()) :: %IdpData{}
+  defp load_metadata(idp_data, _opts_map) do
+    with {:reading, {:ok, raw_xml}} <- {:reading, File.read(idp_data.metadata_file)},
+         {:parsing, {:ok, idp_data}} <- {:parsing, from_xml(raw_xml, idp_data)} do
+      idp_data
     else
       {:reading, {:error, reason}} ->
         Logger.error("[Samly] Failed to read metadata_file: #{inspect(reason)}")
-        raise ConfigError, idp_entry
+        idp_data
 
       {:parsing, {:error, reason}} ->
         Logger.error("[Samly] Invalid metadata_file content: #{inspect(reason)}")
-        raise ConfigError, idp_entry
+        idp_data
+    end
+  end
+
+  @spec update_esaml_recs(%IdpData{}, %{required(id()) => %SpData{}}, map()) :: %IdpData{}
+  defp update_esaml_recs(idp_data, service_providers, opts_map) do
+    case Map.get(service_providers, idp_data.sp_id) do
+      %SpData{} = sp ->
+        idp_data = %IdpData{idp_data | esaml_idp_rec: to_esaml_idp_metadata(idp_data, opts_map)}
+        idp_data = %IdpData{idp_data | esaml_sp_rec: get_esaml_sp(sp, idp_data)}
+        %IdpData{idp_data | valid?: true}
 
       _ ->
-        raise ConfigError, idp_entry
+        Logger.error("[Samly] Unknown/invalid sp_id: #{idp_data.sp_id}")
+        idp_data
     end
   end
 
-  defp idp_metadata_from_xml(metadata_xml) when is_binary(metadata_xml) do
-    try do
-      {xml, _} =
-        metadata_xml
-        |> String.to_charlist()
-        |> :xmerl_scan.string(namespace_conformant: true)
+  @default_metadata_file "idp_metadata.xml"
 
-      :esaml.decode_idp_metadata(xml)
-    rescue
-      _ -> {:error, :invalid_metadata_xml}
-    end
+  @spec set_metadata_file(%IdpData{}, map()) :: %IdpData{}
+  defp set_metadata_file(%IdpData{} = idp_data, %{} = opts_map) do
+    %IdpData{idp_data | metadata_file: Map.get(opts_map, :metadata_file, @default_metadata_file)}
   end
 
-  defp idp_cert_fingerprints(idp_metadata) do
-    fingerprint =
-      idp_metadata
-      |> Esaml.esaml_idp_metadata(:certificate)
-      |> cert_fingerprint()
-      |> String.to_charlist()
+  @spec set_pipeline(%IdpData{}, map()) :: %IdpData{}
+  defp set_pipeline(%IdpData{} = idp_data, %{} = opts_map) do
+    pipeline = Map.get(opts_map, :pre_session_create_pipeline)
+    %IdpData{idp_data | pre_session_create_pipeline: pipeline}
+  end
 
-    [fingerprint] |> :esaml_util.convert_fingerprints()
+  @spec set_boolean_attr(%IdpData{}, map(), atom()) :: %IdpData{}
+  defp set_boolean_attr(%IdpData{} = idp_data, %{} = opts_map, attr_name) when is_atom(attr_name) do
+    v = Map.get(opts_map, attr_name)
+    if is_boolean(v), do: Map.put(idp_data, attr_name, v), else: idp_data
+  end
+
+  @spec from_xml(binary, %IdpData{}) :: {:ok, %IdpData{}}
+  def from_xml(metadata_xml, idp_data) when is_binary(metadata_xml) do
+    xml_opts = [
+      space: :normalize,
+      namespace_conformant: true,
+      comments: false,
+      default_attrs: true
+    ]
+
+    md_xml = SweetXml.parse(metadata_xml, xml_opts)
+    signing_certs = get_signing_certs(md_xml)
+
+    {:ok, %IdpData{
+      idp_data
+      | entity_id: get_entity_id(md_xml),
+        signed_requests: get_req_signed(md_xml),
+        certs: signing_certs,
+        fingerprints: idp_cert_fingerprints(signing_certs),
+        sso_redirect_url: get_sso_redirect_url(md_xml),
+        sso_post_url: get_sso_post_url(md_xml),
+        slo_redirect_url: get_slo_redirect_url(md_xml),
+        slo_post_url: get_slo_post_url(md_xml),
+        nameid_format: get_nameid_format(md_xml)
+    }}
+  end
+
+  # @spec to_esaml_idp_metadata(IdpData.t(), map()) :: :esaml_idp_metadata
+  defp to_esaml_idp_metadata(%IdpData{} = idp_data, %{} = idp_config) do
+    {sso_url, slo_url} = get_sso_slo_urls(idp_data, idp_config)
+    sso_url = if sso_url, do: String.to_charlist(sso_url), else: []
+    slo_url = if slo_url, do: String.to_charlist(slo_url), else: :undefined
+
+    Esaml.esaml_idp_metadata(
+      entity_id: String.to_charlist(idp_data.entity_id),
+      login_location: sso_url,
+      logout_location: slo_url,
+      name_format: idp_data.nameid_format
+    )
+  end
+
+  defp get_sso_slo_urls(%IdpData{} = idp_data, %{use_redirect_for_req: true}) do
+    {idp_data.sso_redirect_url, idp_data.slo_redirect_url}
+  end
+
+  defp get_sso_slo_urls(%IdpData{} = idp_data, %{use_redirect_for_req: false}) do
+    {idp_data.sso_post_url, idp_data.slo_post_url}
+  end
+
+  defp get_sso_slo_urls(%IdpData{} = idp_data, _opts_map) do
+    {
+      idp_data.sso_post_url || idp_data.sso_redirect_url,
+      idp_data.slo_post_url || idp_data.slo_redirect_url
+    }
+  end
+
+  @spec nameid_map(nil | binary) :: nameid_formats()
+  defp nameid_map("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"), do: :email
+  defp nameid_map("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"), do: :x509
+  defp nameid_map("urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos"), do: :krb
+  defp nameid_map("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"), do: :persistent
+  defp nameid_map("urn:oasis:names:tc:SAML:2.0:nameid-format:transient"), do: :transient
+
+  defp nameid_map("urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName"),
+    do: :windows
+
+  defp nameid_map(_unknown), do: :unknown
+
+  @spec idp_cert_fingerprints(certs()) :: [binary()]
+  defp idp_cert_fingerprints(certs) when is_list(certs) do
+    certs
+    |> Enum.map(&Base.decode64!/1)
+    |> Enum.map(&cert_fingerprint/1)
+    |> Enum.map(&String.to_charlist/1)
+    |> :esaml_util.convert_fingerprints()
   end
 
   defp cert_fingerprint(dercert) do
     "sha256:" <> (:sha256 |> :crypto.hash(dercert) |> Base.encode64())
   end
 
-  def get_esaml_sp_rec(%SpData{} = sp, %IdpData{} = idp, base_url) do
-    entity_id =
-      case sp.entity_id do
-        nil -> :undefined
-        :undefined -> :undefined
-        id -> String.to_charlist(id)
-      end
-
+  # @spec get_esaml_sp(%SpData{}, %IdpData{}) :: :esaml_sp
+  defp get_esaml_sp(%SpData{} = sp_data, %IdpData{} = idp_data) do
     idp_id_from = Application.get_env(:samly, :idp_id_from)
-    path_segment_idp_id = if idp_id_from == :subdomain, do: nil, else: idp.id
+    path_segment_idp_id = if idp_id_from == :subdomain, do: nil, else: idp_data.id
 
-    sp_rec =
-      Esaml.esaml_sp(
-        key: sp.key,
-        certificate: sp.cert,
-        sp_sign_requests: idp.sign_requests,
-        sp_sign_metadata: idp.sign_metadata,
-        idp_signs_envelopes: idp.signed_envelopes_in_resp,
-        idp_signs_assertions: idp.signed_assertion_in_resp,
-        trusted_fingerprints: idp.fingerprints,
-        metadata_uri: Helper.get_metadata_uri(base_url, path_segment_idp_id),
-        consume_uri: Helper.get_consume_uri(base_url, path_segment_idp_id),
-        logout_uri: Helper.get_logout_uri(base_url, path_segment_idp_id),
-        entity_id: entity_id,
-        org:
-          Esaml.esaml_org(
-            name: String.to_charlist(sp.org_name),
-            displayname: String.to_charlist(sp.org_displayname),
-            url: String.to_charlist(sp.org_url)
-          ),
-        tech:
-          Esaml.esaml_contact(
-            name: String.to_charlist(sp.contact_name),
-            email: String.to_charlist(sp.contact_email)
-          )
-      )
+    Esaml.esaml_sp(
+      org:
+        Esaml.esaml_org(
+          name: String.to_charlist(sp_data.org_name),
+          displayname: String.to_charlist(sp_data.org_displayname),
+          url: String.to_charlist(sp_data.org_url)
+        ),
+      tech:
+        Esaml.esaml_contact(
+          name: String.to_charlist(sp_data.contact_name),
+          email: String.to_charlist(sp_data.contact_email)
+        ),
+      key: sp_data.key,
+      certificate: sp_data.cert,
+      sp_sign_requests: idp_data.sign_requests,
+      sp_sign_metadata: idp_data.sign_metadata,
+      idp_signs_envelopes: idp_data.signed_envelopes_in_resp,
+      idp_signs_assertions: idp_data.signed_assertion_in_resp,
+      trusted_fingerprints: idp_data.fingerprints,
+      metadata_uri: Helper.get_metadata_uri(idp_data.base_url, path_segment_idp_id),
+      consume_uri: Helper.get_consume_uri(idp_data.base_url, path_segment_idp_id),
+      logout_uri: Helper.get_logout_uri(idp_data.base_url, path_segment_idp_id),
+      entity_id: String.to_charlist(sp_data.entity_id)
+    )
+  end
 
-    sp_rec
+  @spec get_entity_id(:xmlElement) :: binary()
+  def get_entity_id(md_elem) do
+    md_elem |> xpath(@entity_id_selector |> add_ns()) |> hd() |> String.trim()
+  end
+
+  @spec get_nameid_format(:xmlElement) :: nameid_formats()
+  def get_nameid_format(md_elem) do
+    get_data(md_elem, @nameid_format_selector) |> nameid_map()
+  end
+
+  @spec get_req_signed(:xmlElement) :: binary()
+  def get_req_signed(md_elem), do: get_data(md_elem, @req_signed_selector)
+
+  @spec get_signing_certs(:xmlElement) :: certs()
+  def get_signing_certs(md_elem), do: get_certs(md_elem, @signing_keys_selector)
+
+  @spec get_enc_certs(:xmlElement) :: certs()
+  def get_enc_certs(md_elem), do: get_certs(md_elem, @enc_keys_selector)
+
+  @spec get_certs(:xmlElement, %SweetXpath{}) :: certs()
+  defp get_certs(md_elem, key_selector) do
+    md_elem
+    |> xpath(key_selector |> add_ns())
+    |> Enum.map(fn e ->
+         # Extract base64 encoded cert from XML (strip away any whitespace)
+         cert = xpath(e, @cert_selector |> add_ns())
+
+         cert
+         |> String.split()
+         |> Enum.map(&String.trim/1)
+         |> Enum.join()
+       end)
+  end
+
+  @spec get_sso_redirect_url(:xmlElement) :: url()
+  def get_sso_redirect_url(md_elem), do: get_url(md_elem, @sso_redirect_url_selector)
+
+  @spec get_sso_post_url(:xmlElement) :: url()
+  def get_sso_post_url(md_elem), do: get_url(md_elem, @sso_post_url_selector)
+
+  @spec get_slo_redirect_url(:xmlElement) :: url()
+  def get_slo_redirect_url(md_elem), do: get_url(md_elem, @slo_redirect_url_selector)
+
+  @spec get_slo_post_url(:xmlElement) :: url()
+  def get_slo_post_url(md_elem), do: get_url(md_elem, @slo_post_url_selector)
+
+  @spec get_url(:xmlElement, %SweetXpath{}) :: url()
+  defp get_url(md_elem, selector) do
+    case get_data(md_elem, selector) do
+      "" -> nil
+      url -> url
+    end
+  end
+
+  @spec get_data(:xmlElement, %SweetXpath{}) :: binary()
+  def get_data(md_elem, selector) do
+    md_elem |> xpath(selector |> add_ns()) |> String.trim()
+  end
+
+  @spec add_ns(%SweetXpath{}) :: %SweetXpath{}
+  defp add_ns(xpath) do
+    xpath
+    |> SweetXml.add_namespace("md", "urn:oasis:names:tc:SAML:2.0:metadata")
+    |> SweetXml.add_namespace("ds", "http://www.w3.org/2000/09/xmldsig#")
   end
 end

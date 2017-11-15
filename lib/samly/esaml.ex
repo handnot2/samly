@@ -5,6 +5,8 @@ defmodule Samly.Esaml do
   import Record, only: [defrecord: 2, extract: 2]
 
   @esaml_hrl "esaml/include/esaml.hrl"
+  @public_key_hrl "public_key/include/OTP-PUB-KEY.hrl"
+
   defrecord :esaml_org, extract(:esaml_org, from_lib: @esaml_hrl)
   defrecord :esaml_contact, extract(:esaml_contact, from_lib: @esaml_hrl)
   defrecord :esaml_sp_metadata, extract(:esaml_sp_metadata, from_lib: @esaml_hrl)
@@ -16,4 +18,5 @@ defmodule Samly.Esaml do
   defrecord :esaml_logoutresp, extract(:esaml_logoutresp, from_lib: @esaml_hrl)
   defrecord :esaml_response, extract(:esaml_response, from_lib: @esaml_hrl)
   defrecord :esaml_sp, extract(:esaml_sp, from_lib: @esaml_hrl)
+  defrecord :RSAPrivateKey, extract(:RSAPrivateKey, from_lib: @public_key_hrl)
 end

@@ -53,14 +53,10 @@ defmodule Samly.Provider do
 
     Application.put_env(:samly, :idp_id_from, idp_id_from)
 
-    service_providers = Samly.SpData.load_service_providers(opts[:service_providers] || [])
+    service_providers = Samly.SpData.load_providers(opts[:service_providers] || [])
 
     identity_providers =
-      Samly.IdpData.load_identity_providers(
-        opts[:identity_providers] || [],
-        service_providers,
-        opts[:base_url]
-      )
+      Samly.IdpData.load_providers(opts[:identity_providers] || [], service_providers)
 
     Application.put_env(:samly, :service_providers, service_providers)
     Application.put_env(:samly, :identity_providers, identity_providers)

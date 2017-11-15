@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<EntityDescriptor
+  xmlns="urn:oasis:names:tc:SAML:2.0:metadata"
+  entityID="https://app.onelogin.com/saml/metadata/123456">
+  <IDPSSODescriptor
+    xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+    protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <KeyDescriptor use="signing">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>
+MIIDEDCCAfigAwIBAgIVALIKvj2cp9VIRuWNKjHwGiV1ITxfMA0GCSqGSIb3DQEB
+CwUAMBQxEjAQBgNVBAMMCXNhbWx5LmlkcDAeFw0xNzExMDcxNTE3NDNaFw0zNzEx
+MDcxNTE3NDNaMBQxEjAQBgNVBAMMCXNhbWx5LmlkcDCCASIwDQYJKoZIhvcNAQEB
+BQADggEPADCCAQoCggEBALmLey0ZWrMYz2O+CTTjr97UcDkaaUzbIfTjw2/0HofU
+czVl5b3ElzOjnB0pJ6xl8s27Qyctdq0EZrlmR9hHKUnF2U9v95rG005Cx+QQVdsg
+OaZjDZsmC7eLABQcLdfLP3f42dOozxCH9bBQcs+f/ndrumxdL2sIXflmer4mXfEg
+57+HCRL3+s9y07fxdi2LB2ac5gVI8HJbIo8bPOeCyWLYc3UpSZUsxTZouK/wjft0
+TMNJ0gu5TCptiyxxZRhJcg6gm2L77d6rjbnax8fWqj/YNMlXkT7BagUxbPbEklAY
+YzIKnt6egw8SpOURgAJynZDl4cYxM1QynfIuWaYi5gECAwEAAaNZMFcwHQYDVR0O
+BBYEFJhsexKytkNruELg386zOyW1icH1MDYGA1UdEQQvMC2CCXNhbWx5LmlkcIYg
+aHR0cHM6Ly9zYW1seS5pZHAvaWRwL3NoaWJib2xldGgwDQYJKoZIhvcNAQELBQAD
+ggEBAAhCAuNPhWsrd/b3MSRK+I5GGe0eDSkpQiCT0ULbqucW+BHj0by0DOy6yP98
+0mfATI6eDJ/LUpT+Wenxljujy5nh0EPu6t6RG/MvWTplnr0//m+41L8tQXEZtZkM
+NKkrFieiUBe+rcDx7xywzGUvM0qWRdTyD7Yb0JUU8bZKnIFAEZ+mm8Fu1KfXI6kK
+sdeh/6gdpah9v2mermegdNfGpktWtXOukvmR4M8ZYLEyAwGQQAuqJcUnOUwuVMFU
+chLUXbAfJUduUkGQ3WKw/SNKyv/7Z2ayr7wlkEA7fxIIrLaJzSm928y9wB9s7Irr
+78rpJG67hSRlA+CGTGZyksrk2fE=
+</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </KeyDescriptor>
+    <SingleLogoutService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+      Location="https://xyz.onelogin.com/trust/saml2/http-redirect/slo/123456"/>
+
+    <NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</NameIDFormat>
+
+    <SingleSignOnService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+      Location="https://xyz.onelogin.com/trust/saml2/http-redirect/sso/123456"/>
+    <SingleSignOnService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+      Location="https://xyz.onelogin.com/trust/saml2/http-post/sso/123456"/>
+    <SingleSignOnService
+      Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP"
+      Location="https://xyz.onelogin.com/trust/saml2/soap/sso/123456"/>
+  </IDPSSODescriptor>
+</EntityDescriptor>
