@@ -246,6 +246,12 @@ defmodule Samly.IdpData do
     idp_id_from = Application.get_env(:samly, :idp_id_from)
     path_segment_idp_id = if idp_id_from == :subdomain, do: nil, else: idp_data.id
 
+    sp_entity_id =
+      case sp_data.entity_id do
+        "" -> :undefined
+        id -> String.to_charlist(id)
+      end
+
     Esaml.esaml_sp(
       org:
         Esaml.esaml_org(
@@ -268,7 +274,7 @@ defmodule Samly.IdpData do
       metadata_uri: Helper.get_metadata_uri(idp_data.base_url, path_segment_idp_id),
       consume_uri: Helper.get_consume_uri(idp_data.base_url, path_segment_idp_id),
       logout_uri: Helper.get_logout_uri(idp_data.base_url, path_segment_idp_id),
-      entity_id: String.to_charlist(sp_data.entity_id)
+      entity_id: sp_entity_id
     )
   end
 

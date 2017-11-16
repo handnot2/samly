@@ -10,6 +10,12 @@ defmodule SamlyIdpDataTest do
     keyfile: "test/data/test.pem"
   }
 
+  @sp_config2 %{
+    id: "sp2",
+    certfile: "test/data/test.crt",
+    keyfile: "test/data/test.pem"
+  }
+
   @idp_config1 %{
     id: "idp1",
     sp_id: "sp1",
@@ -17,9 +23,17 @@ defmodule SamlyIdpDataTest do
     metadata_file: "test/data/idp_metadata.xml"
   }
 
+  @idp_config2 %{
+    id: "idp2",
+    sp_id: "sp2",
+    base_url: "http://samly.howto:4003/sso",
+    metadata_file: "test/data/idp_metadata.xml"
+  }
+
   setup context do
-    sp_data = SpData.load_provider(@sp_config1)
-    [sps: %{sp_data.id => sp_data}] |> Enum.into(context)
+    sp_data1 = SpData.load_provider(@sp_config1)
+    sp_data2 = SpData.load_provider(@sp_config2)
+    [sps: %{sp_data1.id => sp_data1, sp_data2.id => sp_data2}] |> Enum.into(context)
   end
 
   test "valid-idp-config-1", %{sps: sps} do
@@ -144,6 +158,13 @@ defmodule SamlyIdpDataTest do
 
     assert sso_url |> List.to_string() |> String.ends_with?("/SAML2/Redirect/SSO")
     assert slo_url |> List.to_string() |> String.ends_with?("/SAML2/Redirect/SLO")
+  end
+
+  test "sp entity_id test-1", %{sps: sps} do
+    %IdpData{} = idp_data = IdpData.load_provider(@idp_config2, sps)
+    assert idp_data.valid?
+    Esaml.esaml_sp(entity_id: entity_id) = idp_data.esaml_sp_rec
+    assert entity_id == :undefined
   end
 
   @tag :skip
