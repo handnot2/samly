@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### v0.8.3
+
++   Generates SP metadata XML that passes XSD validation
+
 ### v0.8.2
 
 +   Handle namespaces in Identity Provider Metadata XML file
