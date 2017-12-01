@@ -3,7 +3,7 @@ defmodule Samly.AuthHandler do
 
   require Logger
   import Plug.Conn
-  alias Samly.{Assertion, IdpData, Helper, State}
+  alias Samly.{Assertion, IdpData, Helper, State, Subject}
 
   import Samly.RouterUtil, only: [ensure_sp_uris_set: 2, send_saml_request: 5, redirect: 3]
 
@@ -105,8 +105,10 @@ defmodule Samly.AuthHandler do
     nameid = get_session(conn, "samly_nameid")
 
     case State.get_by_nameid(nameid) do
-      {^nameid, %Assertion{idp_id: ^idp_id}} ->
-        {idp_signout_url, req_xml_frag} = Helper.gen_idp_signout_req(sp, idp_rec, nameid)
+      {^nameid, %Assertion{idp_id: ^idp_id, authn: authn, subject: subject}} ->
+        session_index = Map.get(authn, "session_index", "")
+        subject_rec = Subject.to_rec(subject)
+        {idp_signout_url, req_xml_frag} = Helper.gen_idp_signout_req(sp, idp_rec, subject_rec, session_index)
 
         State.delete(nameid)
         relay_state = State.gen_id()

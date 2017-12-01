@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### v0.8.4
+
++   Shibboleth Single Logout session match related fix. Uptake `esaml v3.3.0`.
+
 ### v0.8.3
 
 +   Generates SP metadata XML that passes XSD validation

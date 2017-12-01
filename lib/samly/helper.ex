@@ -49,13 +49,15 @@ defmodule Samly.Helper do
 
   def gen_idp_signin_req(sp, idp_metadata) do
     idp_signin_url = Esaml.esaml_idp_metadata(idp_metadata, :login_location)
-    xml_frag = :esaml_sp.generate_authn_request(idp_signin_url, sp)
+    # TODO: Expose an config
+    name_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+    xml_frag = :esaml_sp.generate_authn_request(idp_signin_url, sp, name_format)
     {idp_signin_url, xml_frag}
   end
 
-  def gen_idp_signout_req(sp, idp_metadata, nameid) do
+  def gen_idp_signout_req(sp, idp_metadata, subject_rec, session_index) do
     idp_signout_url = Esaml.esaml_idp_metadata(idp_metadata, :logout_location)
-    xml_frag = :esaml_sp.generate_logout_request(idp_signout_url, nameid, sp)
+    xml_frag = :esaml_sp.generate_logout_request(idp_signout_url, session_index, subject_rec, sp)
     {idp_signout_url, xml_frag}
   end
 
