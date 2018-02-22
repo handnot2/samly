@@ -83,11 +83,11 @@ defmodule Samly.AuthHandler do
         |> put_session("idp_id", idp_id)
         |> put_session("target_url", target_url)
         |> send_saml_request(
-             idp_signin_url,
-             idp.use_redirect_for_req,
-             req_xml_frag,
-             relay_state |> URI.encode_www_form()
-           )
+          idp_signin_url,
+          idp.use_redirect_for_req,
+          req_xml_frag,
+          relay_state |> URI.encode_www_form()
+        )
     end
 
     # rescue
@@ -108,7 +108,9 @@ defmodule Samly.AuthHandler do
       {^nameid, %Assertion{idp_id: ^idp_id, authn: authn, subject: subject}} ->
         session_index = Map.get(authn, "session_index", "")
         subject_rec = Subject.to_rec(subject)
-        {idp_signout_url, req_xml_frag} = Helper.gen_idp_signout_req(sp, idp_rec, subject_rec, session_index)
+
+        {idp_signout_url, req_xml_frag} =
+          Helper.gen_idp_signout_req(sp, idp_rec, subject_rec, session_index)
 
         State.delete(nameid)
         relay_state = State.gen_id()
@@ -119,11 +121,11 @@ defmodule Samly.AuthHandler do
         |> put_session("idp_id", idp_id)
         |> delete_session("samly_nameid")
         |> send_saml_request(
-             idp_signout_url,
-             idp.use_redirect_for_req,
-             req_xml_frag,
-             relay_state |> URI.encode_www_form()
-           )
+          idp_signout_url,
+          idp.use_redirect_for_req,
+          req_xml_frag,
+          relay_state |> URI.encode_www_form()
+        )
 
       _ ->
         conn |> send_resp(403, "access_denied")

@@ -137,11 +137,11 @@ defmodule Samly.SPHandler do
 
         conn
         |> send_saml_request(
-             idp_signout_url,
-             idp.use_redirect_for_req,
-             resp_xml_frag,
-             relay_state
-           )
+          idp_signout_url,
+          idp.use_redirect_for_req,
+          resp_xml_frag,
+          relay_state
+        )
     end
 
     # rescue

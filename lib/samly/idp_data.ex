@@ -156,7 +156,8 @@ defmodule Samly.IdpData do
   end
 
   @spec set_boolean_attr(%IdpData{}, map(), atom()) :: %IdpData{}
-  defp set_boolean_attr(%IdpData{} = idp_data, %{} = opts_map, attr_name) when is_atom(attr_name) do
+  defp set_boolean_attr(%IdpData{} = idp_data, %{} = opts_map, attr_name)
+       when is_atom(attr_name) do
     v = Map.get(opts_map, attr_name)
     if is_boolean(v), do: Map.put(idp_data, attr_name, v), else: idp_data
   end
@@ -173,18 +174,19 @@ defmodule Samly.IdpData do
     md_xml = SweetXml.parse(metadata_xml, xml_opts)
     signing_certs = get_signing_certs(md_xml)
 
-    {:ok, %IdpData{
-      idp_data
-      | entity_id: get_entity_id(md_xml),
-        signed_requests: get_req_signed(md_xml),
-        certs: signing_certs,
-        fingerprints: idp_cert_fingerprints(signing_certs),
-        sso_redirect_url: get_sso_redirect_url(md_xml),
-        sso_post_url: get_sso_post_url(md_xml),
-        slo_redirect_url: get_slo_redirect_url(md_xml),
-        slo_post_url: get_slo_post_url(md_xml),
-        nameid_format: get_nameid_format(md_xml)
-    }}
+    {:ok,
+     %IdpData{
+       idp_data
+       | entity_id: get_entity_id(md_xml),
+         signed_requests: get_req_signed(md_xml),
+         certs: signing_certs,
+         fingerprints: idp_cert_fingerprints(signing_certs),
+         sso_redirect_url: get_sso_redirect_url(md_xml),
+         sso_post_url: get_sso_post_url(md_xml),
+         slo_redirect_url: get_slo_redirect_url(md_xml),
+         slo_post_url: get_slo_post_url(md_xml),
+         nameid_format: get_nameid_format(md_xml)
+     }}
   end
 
   # @spec to_esaml_idp_metadata(IdpData.t(), map()) :: :esaml_idp_metadata
@@ -302,14 +304,14 @@ defmodule Samly.IdpData do
     md_elem
     |> xpath(key_selector |> add_ns())
     |> Enum.map(fn e ->
-         # Extract base64 encoded cert from XML (strip away any whitespace)
-         cert = xpath(e, @cert_selector |> add_ns())
+      # Extract base64 encoded cert from XML (strip away any whitespace)
+      cert = xpath(e, @cert_selector |> add_ns())
 
-         cert
-         |> String.split()
-         |> Enum.map(&String.trim/1)
-         |> Enum.join()
-       end)
+      cert
+      |> String.split()
+      |> Enum.map(&String.trim/1)
+      |> Enum.join()
+    end)
   end
 
   @spec get_sso_redirect_url(:xmlElement) :: url()
