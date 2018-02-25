@@ -25,40 +25,24 @@ defmodule Samly.AuthHandler do
   </body>
   """
 
-  def valid_referer?(conn) do
-    referer =
-      case conn |> get_req_header("referer") do
-        [uri] -> URI.parse(uri)
-        _ -> %URI{}
-      end
-
-    [request_authority] = conn |> get_req_header("host")
-    request_authority == referer.authority && referer.scheme == Atom.to_string(conn.scheme)
-  end
-
   def initiate_sso_req(conn) do
     import Plug.CSRFProtection, only: [get_csrf_token: 0]
 
-    with true <- valid_referer?(conn), target_url = conn.params["target_url"] do
-      target_url = if target_url, do: URI.decode_www_form(target_url), else: nil
+    target_url =
+      case conn.params["target_url"] do
+        nil -> nil
+        url -> URI.decode_www_form(url)
+      end
 
-      opts = [
-        action: conn.request_path,
-        target_url: target_url,
-        csrf_token: get_csrf_token()
-      ]
+    opts = [
+      action: conn.request_path,
+      target_url: target_url,
+      csrf_token: get_csrf_token()
+    ]
 
-      conn
-      |> put_resp_header("Content-Type", "text/html")
-      |> send_resp(200, EEx.eval_string(@sso_init_resp_template, opts))
-    else
-      _ -> conn |> send_resp(403, "invalid_request")
-    end
-
-    # rescue
-    #   error ->
-    #     Logger.error("#{inspect error}")
-    #     conn |> send_resp(500, "request_failed")
+    conn
+    |> put_resp_header("Content-Type", "text/html")
+    |> send_resp(200, EEx.eval_string(@sso_init_resp_template, opts))
   end
 
   def send_signin_req(conn) do
