@@ -15,7 +15,8 @@ defmodule Samly.Subject do
             sp_name_qualifier: :undefined,
             name_format: :undefined,
             confirmation_method: :bearer,
-            notonorafter: ""
+            notonorafter: "",
+            in_response_to: ""
 
   @type t :: %__MODULE__{
           name: String.t(),
@@ -23,7 +24,8 @@ defmodule Samly.Subject do
           sp_name_qualifier: :undefined | String.t(),
           name_format: :undefined | String.t(),
           confirmation_method: atom,
-          notonorafter: String.t()
+          notonorafter: String.t(),
+          in_response_to: String.t()
         }
 
   @doc false
@@ -34,7 +36,8 @@ defmodule Samly.Subject do
       sp_name_qualifier: sp_name_qualifier,
       name_format: name_format,
       confirmation_method: confirmation_method,
-      notonorafter: notonorafter
+      notonorafter: notonorafter,
+      in_response_to: in_response_to
     ) = subject_rec
 
     %__MODULE__{
@@ -43,7 +46,8 @@ defmodule Samly.Subject do
       sp_name_qualifier: to_string_or_undefined(sp_name_qualifier),
       name_format: to_string_or_undefined(name_format),
       confirmation_method: confirmation_method,
-      notonorafter: notonorafter |> List.to_string()
+      notonorafter: notonorafter |> List.to_string(),
+      in_response_to: in_response_to |> List.to_string()
     }
   end
 
@@ -55,7 +59,8 @@ defmodule Samly.Subject do
       sp_name_qualifier: from_string_or_undefined(subject.sp_name_qualifier),
       name_format: from_string_or_undefined(subject.name_format),
       confirmation_method: subject.confirmation_method,
-      notonorafter: String.to_charlist(subject.notonorafter)
+      notonorafter: String.to_charlist(subject.notonorafter),
+      in_response_to: String.to_charlist(subject.in_response_to)
     )
   end
 
