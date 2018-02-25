@@ -3,8 +3,16 @@ defmodule Samly.Subject do
   The subject in a SAML 2.0 Assertion.
 
   This is part of the `Samly.Assertion` struct. The `name` field in this struct should not
-  be used any UI directly. It might be a temporary randomly generated
+  be used in any UI directly. It might be a temporary randomly generated
   ID from IdP. `Samly` internally uses this to deal with IdP initiated logout requests.
+
+  If an authentication request was sent from `Samly` (SP initiated), the SAML response
+  is expected to include the original request ID. This ID is made available in
+  `Samly.Subject.in_response_to`.
+
+  If the authentication request originated from the IDP (IDP initiated), there won't
+  be a `Samly` request ID associated with it. The `Samly.Subject.in_response_to`
+  will be an empty string in that case.
   """
 
   require Samly.Esaml
