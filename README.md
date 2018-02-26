@@ -1,6 +1,6 @@
 # Samly
 
-SAML 2.0 SP SSO made easy. This is a Plug library that can be used to enable SAML 2.0 Single Sign On in a Plug/Phoenix application.
+SAML 2.0 SP SSO made easy. This is a Plug library that can be used to enable SAML 2.0 Single Sign On authentication in a Plug/Phoenix application.
 
 [![Inline docs](http://inch-ci.org/github/handnot2/samly.svg)](http://inch-ci.org/github/handnot2/samly)
 
@@ -15,7 +15,7 @@ plug enabled routes.
 defp deps() do
   [
     # ...
-    {:samly, "~> 0.8"},
+    {:samly, "~> 0.9"},
   ]
 end
 ```
@@ -79,7 +79,7 @@ tab. At the top there will be a section titled "SAML 2.0 IdP Metadata". Click
 on the `Show metadata` link. Copy the metadata XML from this page and save it
 in a local file (`idp_metadata.xml` for example).
 
-Make sure to save this XML file and provide the path to the saveed file in
+Make sure to save this XML file and provide the path to the saved file in
 `Samly` configuration.
 
 ## Identity Provider ID in Samly
@@ -166,7 +166,9 @@ config :samly, Samly.Provider,
       #sign_requests: true,
       #sign_metadata: true,
       #signed_assertion_in_resp: true,
-      #signed_envelopes_in_resp: true
+      #signed_envelopes_in_resp: true,
+      #allow_idp_initiated_flow: false,
+      #allowed_target_urls: ["http://do-good.org"]
     }
   ]
 ```
@@ -193,6 +195,8 @@ config :samly, Samly.Provider,
 | `use_redirect_for_req` | _(optional)_ Default is `false`. When this is `false`, `Samly` will POST to the IdP SAML endpoints. |
 | `signed_requests`, `signed_metadata` | _(optional)_ Default is `true`. |
 | `signed_assertion_in_resp`, `signed_envelopes_in_resp` | _(optional)_ Default is `true`. When `true`, `Samly` expects the requests and responses from IdP to be signed. |
+| `allow_idp_initiated_flow` | _(optional)_ Default is `false`. IDP initiated SSO is allowed only when this is set to `true`. |
+| `allowed_target_urls` | _(optional)_ Default is `[]`. `Samly` uses this **only** when `allow_idp_initiated_flow` parameter is set to `true`. Make sure to set this to one or more exact URLs you want to allow (whitelist). The URL to redirect the user after completing the SSO flow is sent from IDP in auth response as `relay_state`. This `relay_state` target URL is matched against this URL list. Set the value to `nil` if you do not want this whitelist capability.  |
 
 ## SAML Assertion
 
@@ -285,6 +289,8 @@ config :samly, Samly.Provider,
 
 +   `Samly` initiated sign-in/sign-out requests send `RelayState` to IdP and expect to get that back. Mismatched or missing `RelayState` in IdP responses to SP initiated requests will fail (with HTTP `403 access_denied`).
 +   Besides the `RelayState`, the request and response `idp_id`s must match. Reponse is rejected if they don't.
++   `Samly` makes the original request ID that an auth response corresponds to
+in `Samly.Subject.in_response_to` field. It is the responsibility of the consuming application to use this information along with the validity period in the assertion to check for **replay attacks**. The consuming application should use the `pre_session_create_pipeline` to perform this check. You may need a database or a distributed cache such as memcache in a clustered setup to keep track of these request IDs for their validity period to perform this check. Be aware that `in_response_to` field is **not** set when IDP initialized authorization flow is used.
 +   OOTB SAML requests and responses are signed.
 +   Signature digest method supported: `SHA256`.
     > Some Identity Providers may be using `SHA1` by default.
