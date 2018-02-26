@@ -20,6 +20,8 @@ defmodule Samly.IdpData do
             sign_metadata: true,
             signed_assertion_in_resp: true,
             signed_envelopes_in_resp: true,
+            allow_idp_initiated_flow: false,
+            allowed_target_urls: [],
             entity_id: "",
             signed_requests: "",
             certs: [],
@@ -44,6 +46,8 @@ defmodule Samly.IdpData do
           sign_metadata: boolean(),
           signed_assertion_in_resp: boolean(),
           signed_envelopes_in_resp: boolean(),
+          allow_idp_initiated_flow: boolean(),
+          allowed_target_urls: nil | [binary()],
           entity_id: binary(),
           signed_requests: binary(),
           certs: certs(),
@@ -105,11 +109,13 @@ defmodule Samly.IdpData do
     %IdpData{idp_data | id: id, sp_id: sp_id, base_url: Map.get(opts_map, :base_url)}
     |> set_metadata_file(opts_map)
     |> set_pipeline(opts_map)
+    |> set_allowed_target_urls(opts_map)
     |> set_boolean_attr(opts_map, :use_redirect_for_req)
     |> set_boolean_attr(opts_map, :sign_requests)
     |> set_boolean_attr(opts_map, :sign_metadata)
     |> set_boolean_attr(opts_map, :signed_assertion_in_resp)
     |> set_boolean_attr(opts_map, :signed_envelopes_in_resp)
+    |> set_boolean_attr(opts_map, :allow_idp_initiated_flow)
   end
 
   @spec load_metadata(%IdpData{}, map()) :: %IdpData{}
@@ -153,6 +159,16 @@ defmodule Samly.IdpData do
   defp set_pipeline(%IdpData{} = idp_data, %{} = opts_map) do
     pipeline = Map.get(opts_map, :pre_session_create_pipeline)
     %IdpData{idp_data | pre_session_create_pipeline: pipeline}
+  end
+
+  defp set_allowed_target_urls(%IdpData{} = idp_data, %{} = opts_map) do
+    target_urls =
+      case Map.get(opts_map, :allowed_target_urls, nil) do
+        nil -> nil
+        urls when is_list(urls) -> Enum.filter(urls, &is_binary/1)
+      end
+
+    %IdpData{idp_data | allowed_target_urls: target_urls}
   end
 
   @spec set_boolean_attr(%IdpData{}, map(), atom()) :: %IdpData{}

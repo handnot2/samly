@@ -34,10 +34,8 @@ defmodule Samly.SPHandler do
     saml_response = conn.body_params["SAMLResponse"]
     relay_state = conn.body_params["RelayState"] |> URI.decode_www_form()
 
-    with ^relay_state when relay_state != nil <- get_session(conn, "relay_state"),
-         ^idp_id <- get_session(conn, "idp_id"),
-         target_url when target_url != nil <- get_session(conn, "target_url"),
-         {:ok, assertion} <- Helper.decode_idp_auth_resp(sp, saml_encoding, saml_response),
+    with {:ok, assertion} <- Helper.decode_idp_auth_resp(sp, saml_encoding, saml_response),
+         :ok <- validate_authresp(conn, assertion, relay_state),
          conn = conn |> put_private(:samly_assertion, assertion),
          {:halted, %Conn{halted: false} = conn} <- {:halted, pipethrough(conn, pipeline)} do
       updated_assertion = conn.private[:samly_assertion]
@@ -47,6 +45,7 @@ defmodule Samly.SPHandler do
       # TODO: use idp_id + nameid
       nameid = assertion.subject.name
       State.put(nameid, assertion)
+      target_url = auth_target_url(conn, assertion, relay_state)
 
       conn
       |> configure_session(renew: true)
@@ -64,10 +63,59 @@ defmodule Samly.SPHandler do
     #     conn |> send_resp(500, "request_failed")
   end
 
+  # IDP-initiated flow auth response
+  @spec validate_authresp(Conn.t(), Assertion.t(), binary) :: :ok | {:error, atom}
+  defp validate_authresp(conn, %{subject: %{in_response_to: ""}}, relay_state) do
+    idp_data = conn.private[:samly_idp]
+
+    if idp_data.allow_idp_initiated_flow do
+      if idp_data.allowed_target_urls do
+        if relay_state in idp_data.allowed_target_urls do
+          :ok
+        else
+          {:error, :invalid_target_url}
+        end
+      else
+        :ok
+      end
+    else
+      {:error, :idp_first_flow_not_allowed}
+    end
+  end
+
+  # SP-initiated flow auth response
+  defp validate_authresp(conn, _assertion, relay_state) do
+    %IdpData{id: idp_id} = conn.private[:samly_idp]
+    rs_in_session = get_session(conn, "relay_state")
+    idp_id_in_session = get_session(conn, "idp_id")
+    url_in_session = get_session(conn, "target_url")
+
+    cond do
+      rs_in_session == nil || rs_in_session != relay_state ->
+        {:error, :invalid_relay_state}
+
+      idp_id_in_session == nil || idp_id_in_session != idp_id ->
+        {:error, :invalid_idp_id}
+
+      url_in_session == nil ->
+        {:error, :invalid_target_url}
+
+      true ->
+        :ok
+    end
+  end
+
   defp pipethrough(conn, nil), do: conn
 
   defp pipethrough(conn, pipeline) do
     pipeline.call(conn, [])
+  end
+
+  defp auth_target_url(_conn, %{subject: %{in_response_to: ""}}, ""), do: "/"
+  defp auth_target_url(_conn, %{subject: %{in_response_to: ""}}, url), do: url
+
+  defp auth_target_url(conn, _assertion, _relay_state) do
+    get_session(conn, "target_url") || "/"
   end
 
   def handle_logout_response(conn) do

@@ -1,5 +1,16 @@
 # CHANGELOG
 
+### v0.9.0
+
++   Issue: #12. Support for IDP initiated SSO flow.
+
++   Original auth request ID when returned in auth response is made available
+    in the assertion subject (SP initiated SSO flows). For IDP initiated
+    SSO flows, this will be an empty string.
+
++   Issue: #14. Remove built-in referer check.
+    Not specific to `Samly`. It is better handled by the consuming application.
+
 ### v0.8.4
 
 +   Shibboleth Single Logout session match related fix. Uptake `esaml v3.3.0`.

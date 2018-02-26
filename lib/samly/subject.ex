@@ -3,8 +3,16 @@ defmodule Samly.Subject do
   The subject in a SAML 2.0 Assertion.
 
   This is part of the `Samly.Assertion` struct. The `name` field in this struct should not
-  be used any UI directly. It might be a temporary randomly generated
+  be used in any UI directly. It might be a temporary randomly generated
   ID from IdP. `Samly` internally uses this to deal with IdP initiated logout requests.
+
+  If an authentication request was sent from `Samly` (SP initiated), the SAML response
+  is expected to include the original request ID. This ID is made available in
+  `Samly.Subject.in_response_to`.
+
+  If the authentication request originated from the IDP (IDP initiated), there won't
+  be a `Samly` request ID associated with it. The `Samly.Subject.in_response_to`
+  will be an empty string in that case.
   """
 
   require Samly.Esaml
@@ -15,7 +23,8 @@ defmodule Samly.Subject do
             sp_name_qualifier: :undefined,
             name_format: :undefined,
             confirmation_method: :bearer,
-            notonorafter: ""
+            notonorafter: "",
+            in_response_to: ""
 
   @type t :: %__MODULE__{
           name: String.t(),
@@ -23,7 +32,8 @@ defmodule Samly.Subject do
           sp_name_qualifier: :undefined | String.t(),
           name_format: :undefined | String.t(),
           confirmation_method: atom,
-          notonorafter: String.t()
+          notonorafter: String.t(),
+          in_response_to: String.t()
         }
 
   @doc false
@@ -34,7 +44,8 @@ defmodule Samly.Subject do
       sp_name_qualifier: sp_name_qualifier,
       name_format: name_format,
       confirmation_method: confirmation_method,
-      notonorafter: notonorafter
+      notonorafter: notonorafter,
+      in_response_to: in_response_to
     ) = subject_rec
 
     %__MODULE__{
@@ -43,7 +54,8 @@ defmodule Samly.Subject do
       sp_name_qualifier: to_string_or_undefined(sp_name_qualifier),
       name_format: to_string_or_undefined(name_format),
       confirmation_method: confirmation_method,
-      notonorafter: notonorafter |> List.to_string()
+      notonorafter: notonorafter |> List.to_string(),
+      in_response_to: in_response_to |> List.to_string()
     }
   end
 
@@ -55,7 +67,8 @@ defmodule Samly.Subject do
       sp_name_qualifier: from_string_or_undefined(subject.sp_name_qualifier),
       name_format: from_string_or_undefined(subject.name_format),
       confirmation_method: subject.confirmation_method,
-      notonorafter: String.to_charlist(subject.notonorafter)
+      notonorafter: String.to_charlist(subject.notonorafter),
+      in_response_to: String.to_charlist(subject.in_response_to)
     )
   end
 
