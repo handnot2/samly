@@ -14,6 +14,18 @@ defmodule SamlySpDataTest do
     assert sp_data.valid?
   end
 
+  test "cert-unspecified-sp-config" do
+    sp_config = %{@sp_config1 | certfile: ""}
+    %SpData{cert: :undefined} = sp_data = SpData.load_provider(sp_config)
+    assert sp_data.valid?
+  end
+
+  test "key-unspecified-sp-config" do
+    sp_config = %{@sp_config1 | keyfile: ""}
+    %SpData{key: :undefined} = sp_data = SpData.load_provider(sp_config)
+    assert sp_data.valid?
+  end
+
   test "invalid-sp-config-1" do
     sp_config = %{@sp_config1 | id: ""}
     %SpData{} = sp_data = SpData.load_provider(sp_config)
@@ -21,37 +33,25 @@ defmodule SamlySpDataTest do
   end
 
   test "invalid-sp-config-2" do
-    sp_config = %{@sp_config1 | certfile: ""}
-    %SpData{} = sp_data = SpData.load_provider(sp_config)
-    refute sp_data.valid?
-  end
-
-  test "invalid-sp-config-3" do
-    sp_config = %{@sp_config1 | keyfile: ""}
-    %SpData{} = sp_data = SpData.load_provider(sp_config)
-    refute sp_data.valid?
-  end
-
-  test "invalid-sp-config-4" do
     sp_config = %{@sp_config1 | certfile: "non-existent.crt"}
     %SpData{} = sp_data = SpData.load_provider(sp_config)
     refute sp_data.valid?
   end
 
-  test "invalid-sp-config-5" do
+  test "invalid-sp-config-3" do
     sp_config = %{@sp_config1 | keyfile: "non-existent.pem"}
     %SpData{} = sp_data = SpData.load_provider(sp_config)
     refute sp_data.valid?
   end
 
-  test "invalid-sp-config-6" do
+  test "invalid-sp-config-4" do
     sp_config = %{@sp_config1 | certfile: "test/data/test.pem"}
     %SpData{} = sp_data = SpData.load_provider(sp_config)
     refute sp_data.valid?
   end
 
   @tag :skip
-  test "invalid-sp-config-7" do
+  test "invalid-sp-config-5" do
     sp_config = %{@sp_config1 | keyfile: "test/data/test.crt"}
     %SpData{} = sp_data = SpData.load_provider(sp_config)
     refute sp_data.valid?

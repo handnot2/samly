@@ -1,5 +1,12 @@
 # CHANGELOG
 
+### v0.9.1
+
++   Remove the need for supplying certicate and key files if the requests are
+    not signed (Issue #16). Useful during development when the corresponding
+    Identity Provider is setup for unsigned requests/responses. Use signing
+    for production deployments. The defaults expect signed requests/responses.
+
 ### v0.9.0
 
 +   Issue: #12. Support for IDP initiated SSO flow.

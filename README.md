@@ -179,8 +179,8 @@ config :samly, Samly.Provider,
 | **Service Provider Parameters** | |
 | `id` | _(mandatory)_ |
 | `identity_id` | _(optional)_ If omitted, the metadata URL will be used |
-| `certfile` | _(optional)_ Defaults to "samly.crt" |
-| `keyfile` | _(optional)_ Defaults to "samly.pem" |
+| `certfile` | _(optional)_ This is needed when SAML requests/responses need to be signed. Make sure to set this in a production deployment. Could be omitted during development if your IDP is setup to not require signing. If that is the case, the following **Identity Provider Parameters** must be explicitly set to false: `sign_requests`, `sign_metadata`, `signed_assertion_in_resp`, `signed_envelopes_in_resp`|
+| `keyfile` | _(optional)_ Similar to `certfile` |
 | `contact_name` | _(optional)_ Technical contact name for the Service Provider |
 | `contact_email` | _(optional)_ Technical contact email address |
 | `org_name` | _(optional)_ SAML Service Provider (your app) Organization name |
@@ -193,7 +193,7 @@ config :samly, Samly.Provider,
 | `metadata_file` | _(mandatory)_ Path to the IdP metadata XML file obtained from the Identity Provider. |
 | `pre_session_create_pipeline` | _(optional)_ Check the customization section. |
 | `use_redirect_for_req` | _(optional)_ Default is `false`. When this is `false`, `Samly` will POST to the IdP SAML endpoints. |
-| `signed_requests`, `signed_metadata` | _(optional)_ Default is `true`. |
+| `sign_requests`, `sign_metadata` | _(optional)_ Default is `true`. |
 | `signed_assertion_in_resp`, `signed_envelopes_in_resp` | _(optional)_ Default is `true`. When `true`, `Samly` expects the requests and responses from IdP to be signed. |
 | `allow_idp_initiated_flow` | _(optional)_ Default is `false`. IDP initiated SSO is allowed only when this is set to `true`. |
 | `allowed_target_urls` | _(optional)_ Default is `[]`. `Samly` uses this **only** when `allow_idp_initiated_flow` parameter is set to `true`. Make sure to set this to one or more exact URLs you want to allow (whitelist). The URL to redirect the user after completing the SSO flow is sent from IDP in auth response as `relay_state`. This `relay_state` target URL is matched against this URL list. Set the value to `nil` if you do not want this whitelist capability.  |

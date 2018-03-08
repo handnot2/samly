@@ -140,12 +140,26 @@ defmodule Samly.IdpData do
       %SpData{} = sp ->
         idp_data = %IdpData{idp_data | esaml_idp_rec: to_esaml_idp_metadata(idp_data, opts_map)}
         idp_data = %IdpData{idp_data | esaml_sp_rec: get_esaml_sp(sp, idp_data)}
-        %IdpData{idp_data | valid?: true}
+        %IdpData{idp_data | valid?: cert_config_ok?(idp_data, sp)}
 
       _ ->
         Logger.error("[Samly] Unknown/invalid sp_id: #{idp_data.sp_id}")
         idp_data
     end
+  end
+
+  @spec cert_config_ok?(%IdpData{}, %SpData{}) :: boolean
+  defp cert_config_ok?(%IdpData{} = idp_data, %SpData{} = sp_data) do
+    if (idp_data.sign_metadata ||
+        idp_data.sign_requests ||
+        idp_data.signed_assertion_in_resp ||
+        idp_data.signed_envelopes_in_resp) &&
+        (sp_data.cert == :undefined || sp_data.key == :undefined) do
+          Logger.error("[Samly] SP cert or key missing - Skipping identity provider: #{idp_data.id}")
+          false
+        else
+          true
+        end
   end
 
   @default_metadata_file "idp_metadata.xml"

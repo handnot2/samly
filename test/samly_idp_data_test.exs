@@ -16,6 +16,20 @@ defmodule SamlyIdpDataTest do
     keyfile: "test/data/test.pem"
   }
 
+  @sp_config3 %{
+    id: "sp3",
+    keyfile: "test/data/test.pem"
+  }
+
+  @sp_config4 %{
+    id: "sp4",
+    certfile: "test/data/test.crt"
+  }
+
+  @sp_config5 %{
+    id: "sp5"
+  }
+
   @idp_config1 %{
     id: "idp1",
     sp_id: "sp1",
@@ -33,7 +47,15 @@ defmodule SamlyIdpDataTest do
   setup context do
     sp_data1 = SpData.load_provider(@sp_config1)
     sp_data2 = SpData.load_provider(@sp_config2)
-    [sps: %{sp_data1.id => sp_data1, sp_data2.id => sp_data2}] |> Enum.into(context)
+    sp_data3 = SpData.load_provider(@sp_config3)
+    sp_data4 = SpData.load_provider(@sp_config4)
+    sp_data5 = SpData.load_provider(@sp_config5)
+    [sps: %{
+      sp_data1.id => sp_data1,
+      sp_data2.id => sp_data2,
+      sp_data3.id => sp_data3,
+      sp_data4.id => sp_data4,
+      sp_data5.id => sp_data5}] |> Enum.into(context)
   end
 
   test "valid-idp-config-1", %{sps: sps} do
@@ -176,6 +198,51 @@ defmodule SamlyIdpDataTest do
 
   test "invalid-idp-config-2", %{sps: sps} do
     idp_config = %{@idp_config1 | sp_id: "unknown-sp"}
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    refute idp_data.valid?
+  end
+
+  test "valid-idp-config-signing-turned-off", %{sps: sps} do
+    idp_config =
+      Map.merge(@idp_config1, %{
+        sp_id: "sp5",
+        use_redirect_for_req: true,
+        sign_requests: false,
+        sign_metadata: false,
+        signed_assertion_in_resp: false,
+        signed_envelopes_in_resp: false
+      })
+
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    assert idp_data.valid?
+  end
+
+  test "invalid-idp-config-signing-on-cert-missing", %{sps: sps} do
+    idp_config =
+      Map.merge(@idp_config1, %{
+        sp_id: "sp3",
+        use_redirect_for_req: true,
+        sign_requests: true,
+        sign_metadata: false,
+        signed_assertion_in_resp: false,
+        signed_envelopes_in_resp: false
+      })
+
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    refute idp_data.valid?
+  end
+
+  test "invalid-idp-config-signing-on-key-missing", %{sps: sps} do
+    idp_config =
+      Map.merge(@idp_config1, %{
+        sp_id: "sp4",
+        use_redirect_for_req: true,
+        sign_requests: true,
+        sign_metadata: false,
+        signed_assertion_in_resp: false,
+        signed_envelopes_in_resp: false
+      })
+
     %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
     refute idp_data.valid?
   end
