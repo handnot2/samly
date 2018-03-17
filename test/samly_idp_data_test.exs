@@ -208,9 +208,7 @@ defmodule SamlyIdpDataTest do
         sp_id: "sp5",
         use_redirect_for_req: true,
         sign_requests: false,
-        sign_metadata: false,
-        signed_assertion_in_resp: false,
-        signed_envelopes_in_resp: false
+        sign_metadata: false
       })
 
     %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
@@ -223,9 +221,7 @@ defmodule SamlyIdpDataTest do
         sp_id: "sp3",
         use_redirect_for_req: true,
         sign_requests: true,
-        sign_metadata: false,
-        signed_assertion_in_resp: false,
-        signed_envelopes_in_resp: false
+        sign_metadata: false
       })
 
     %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
@@ -238,9 +234,7 @@ defmodule SamlyIdpDataTest do
         sp_id: "sp4",
         use_redirect_for_req: true,
         sign_requests: true,
-        sign_metadata: false,
-        signed_assertion_in_resp: false,
-        signed_envelopes_in_resp: false
+        sign_metadata: false
       })
 
     %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)

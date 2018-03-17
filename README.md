@@ -179,7 +179,7 @@ config :samly, Samly.Provider,
 | **Service Provider Parameters** | |
 | `id` | _(mandatory)_ |
 | `identity_id` | _(optional)_ If omitted, the metadata URL will be used |
-| `certfile` | _(optional)_ This is needed when SAML requests/responses need to be signed. Make sure to set this in a production deployment. Could be omitted during development if your IDP is setup to not require signing. If that is the case, the following **Identity Provider Parameters** must be explicitly set to false: `sign_requests`, `sign_metadata`, `signed_assertion_in_resp`, `signed_envelopes_in_resp`|
+| `certfile` | _(optional)_ This is needed when SAML requests/responses from `Samly` need to be signed. Make sure to **set this in a production deployment**. Could be omitted during development if your IDP is setup to not require signing. If that is the case, the following **Identity Provider Parameters** must be explicitly set to false: `sign_requests`, `sign_metadata`|
 | `keyfile` | _(optional)_ Similar to `certfile` |
 | `contact_name` | _(optional)_ Technical contact name for the Service Provider |
 | `contact_email` | _(optional)_ Technical contact email address |

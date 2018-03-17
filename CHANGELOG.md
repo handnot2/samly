@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### v0.9.2
+
++   PR merged fixing reopened Issue #16 (from @peterox)
+
 ### v0.9.1
 
 +   Remove the need for supplying certicate and key files if the requests are
