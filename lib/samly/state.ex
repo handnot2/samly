@@ -1,28 +1,17 @@
 defmodule Samly.State do
   @moduledoc false
 
-  def init() do
-    if :ets.info(:esaml_nameids) == :undefined do
-      :ets.new(:esaml_nameids, [:set, :public, :named_table])
-    end
-  end
+  @adapter Application.get_env(:samly, :state_adapter) || Samly.State.Ets
 
   def gen_id() do
     24 |> :crypto.strong_rand_bytes() |> Base.url_encode64()
   end
 
-  def get_by_nameid(nameid) do
-    case :ets.lookup(:esaml_nameids, nameid) do
-      [{_nameid, _saml_assertion} = rec] -> rec
-      _ -> nil
-    end
-  end
+  def init(), do: @adapter.init()
 
-  def put(nameid, saml_assertion) do
-    :ets.insert(:esaml_nameids, {nameid, saml_assertion})
-  end
+  def get_by_nameid(nameid), do: @adapter.get_by_nameid(nameid)
 
-  def delete(nameid) do
-    :ets.delete(:esaml_nameids, nameid)
-  end
+  def put(nameid, saml_assertion), do: @adapter.put(nameid, saml_assertion)
+
+  def delete(nameid), do: @adapter.delete(nameid)
 end
