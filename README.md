@@ -176,6 +176,8 @@ config :samly, Samly.Provider,
 | Parameters | Description |
 |:------------|:-----------|
 | `idp_id_from` | _(optional)_`:path_segment` or `:subdomain`. Default is `:path_segment`. |
+| `state_adapter` | _(optional)_ State provider. Samly comes bundled with ETS
+state provider, but you may implement your own. Default is `Samly.State.Ets`. |
 | **Service Provider Parameters** | |
 | `id` | _(mandatory)_ |
 | `identity_id` | _(optional)_ If omitted, the metadata URL will be used |
@@ -280,7 +282,7 @@ config :samly, Samly.Provider,
     %{
       # ...
       pre_session_create_pipeline: MySamlyPipeline,
-      # ...    
+      # ...
     }
   ]
 ```

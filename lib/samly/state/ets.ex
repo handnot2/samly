@@ -7,10 +7,6 @@ defmodule Samly.State.Ets do
     end
   end
 
-  def gen_id() do
-    24 |> :crypto.strong_rand_bytes() |> Base.url_encode64()
-  end
-
   def get_by_nameid(nameid) do
     case :ets.lookup(:esaml_nameids, nameid) do
       [{_nameid, _saml_assertion} = rec] -> rec

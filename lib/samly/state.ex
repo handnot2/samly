@@ -1,7 +1,7 @@
 defmodule Samly.State do
   @moduledoc false
 
-  @adapter Application.get_env(:samly, :state_adapter) || Samly.State.Ets
+  @adapter Application.get_env(:samly, Samly.Provider)[:state_adapter] || Samly.State.Ets
 
   def gen_id() do
     24 |> :crypto.strong_rand_bytes() |> Base.url_encode64()
