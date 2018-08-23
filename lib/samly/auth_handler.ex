@@ -53,7 +53,7 @@ defmodule Samly.AuthHandler do
     target_url = (conn.params["target_url"] || "/") |> URI.decode_www_form()
     nameid = get_session(conn, "samly_nameid")
 
-    case State.get_by_nameid(nameid) do
+    case State.get_by_nameid(idp_id, nameid) do
       {^nameid, %Assertion{idp_id: ^idp_id}} ->
         conn |> redirect(302, target_url)
 
@@ -88,7 +88,7 @@ defmodule Samly.AuthHandler do
     target_url = (conn.params["target_url"] || "/") |> URI.decode_www_form()
     nameid = get_session(conn, "samly_nameid")
 
-    case State.get_by_nameid(nameid) do
+    case State.get_by_nameid(idp_id, nameid) do
       {^nameid, %Assertion{idp_id: ^idp_id, authn: authn, subject: subject}} ->
         session_index = Map.get(authn, "session_index", "")
         subject_rec = Subject.to_rec(subject)

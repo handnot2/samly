@@ -17,11 +17,11 @@ defmodule Samly do
 
   - conn: Plug connection
   """
-  @spec get_active_assertion(Conn.t()) :: Assertion.t()
-  def get_active_assertion(conn) do
+  @spec get_active_assertion(Conn.t(), String.t()) :: Assertion.t()
+  def get_active_assertion(conn, idp_id) do
     nameid = conn |> Conn.get_session("samly_nameid")
 
-    case State.get_by_nameid(nameid) do
+    case State.get_by_nameid(idp_id, nameid) do
       {^nameid, saml_assertion} -> saml_assertion
       _ -> nil
     end

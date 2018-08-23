@@ -9,9 +9,9 @@ defmodule Samly.State do
 
   def init(), do: @adapter.init()
 
-  def get_by_nameid(nameid), do: @adapter.get_by_nameid(nameid)
+  def get_by_nameid(idp_id, nameid), do: @adapter.get_by_nameid(idp_id, nameid)
 
-  def put(nameid, saml_assertion), do: @adapter.put(nameid, saml_assertion)
+  def put(idp_id, nameid, saml_assertion), do: @adapter.put(idp_id, nameid, saml_assertion)
 
-  def delete(nameid), do: @adapter.delete(nameid)
+  def delete(idp_id, nameid), do: @adapter.delete(idp_id, nameid)
 end

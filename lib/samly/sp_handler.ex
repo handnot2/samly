@@ -44,7 +44,7 @@ defmodule Samly.SPHandler do
 
       # TODO: use idp_id + nameid
       nameid = assertion.subject.name
-      State.put(nameid, assertion)
+      State.put(idp_id, nameid, assertion)
       target_url = auth_target_url(conn, assertion, relay_state)
 
       conn
@@ -160,13 +160,13 @@ defmodule Samly.SPHandler do
       Esaml.esaml_logoutreq(name: nameid, issuer: _issuer) = payload
 
       return_status =
-        case State.get_by_nameid(nameid) do
+        case State.get_by_nameid(idp_id, nameid) do
           {^nameid, %Assertion{idp_id: ^idp_id}} ->
-            State.delete(nameid)
+            State.delete(idp_id, nameid)
             :success
 
           {^nameid, _saml_assertion} ->
-            State.delete(nameid)
+            State.delete(idp_id, nameid)
             :denied
 
           _ ->
