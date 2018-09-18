@@ -1,9 +1,10 @@
 defmodule Samly.Mixfile do
   use Mix.Project
 
-  @version "0.9.2"
+  @version "0.9.3"
   @description "SAML SP SSO made easy"
   @source_url "https://github.com/handnot2/samly"
+  @blog_url "https://handnot2.github.io/blog/auth/saml-auth-for-phoenix"
 
   def project() do
     [
@@ -29,7 +30,7 @@ defmodule Samly.Mixfile do
   defp deps() do
     [
       {:plug, "~> 1.4"},
-      {:esaml, "~> 3.4"},
+      {:esaml, "~> 3.6"},
       {:sweet_xml, "~> 0.6"},
       {:ex_doc, "~> 0.18", only: :dev},
       {:inch_ex, "~> 0.5", only: :docs}
@@ -51,7 +52,8 @@ defmodule Samly.Mixfile do
       files: ["config", "lib", "LICENSE", "mix.exs", "README.md"],
       licenses: ["MIT"],
       links: %{
-        "GitHub" => @source_url
+        "GitHub" => @source_url,
+        "Blog" => @blog_url
       }
     ]
   end

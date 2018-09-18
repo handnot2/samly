@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### v0.9.3
+
++   Uptake `esaml` v3.6.0 that includes fixes for schema validation errors.
+
 ### v0.9.2
 
 +   PR merged fixing reopened Issue #16 (from @peterox)
