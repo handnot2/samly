@@ -246,18 +246,6 @@ defmodule Samly.IdpData do
     }
   end
 
-  @spec nameid_map(nil | binary) :: nameid_formats()
-  defp nameid_map("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"), do: :email
-  defp nameid_map("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"), do: :x509
-  defp nameid_map("urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos"), do: :krb
-  defp nameid_map("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"), do: :persistent
-  defp nameid_map("urn:oasis:names:tc:SAML:2.0:nameid-format:transient"), do: :transient
-
-  defp nameid_map("urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName"),
-    do: :windows
-
-  defp nameid_map(_unknown), do: :unknown
-
   @spec idp_cert_fingerprints(certs()) :: [binary()]
   defp idp_cert_fingerprints(certs) when is_list(certs) do
     certs
@@ -315,7 +303,7 @@ defmodule Samly.IdpData do
 
   @spec get_nameid_format(:xmlElement) :: nameid_formats()
   def get_nameid_format(md_elem) do
-    get_data(md_elem, @nameid_format_selector) |> nameid_map()
+    get_data(md_elem, @nameid_format_selector) |> Helper.to_esaml_nameid_format()
   end
 
   @spec get_req_signed(:xmlElement) :: binary()

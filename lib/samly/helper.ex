@@ -4,6 +4,32 @@ defmodule Samly.Helper do
   require Samly.Esaml
   alias Samly.{Assertion, Esaml, IdpData}
 
+  @type nameid_formats :: :esaml.name_format()
+
+  @spec to_esaml_nameid_format(nil | binary) :: nameid_formats()
+  def to_esaml_nameid_format("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"), do: :email
+  def to_esaml_nameid_format("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"), do: :x509
+  def to_esaml_nameid_format("urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos"), do: :krb
+  def to_esaml_nameid_format("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"), do: :persistent
+  def to_esaml_nameid_format("urn:oasis:names:tc:SAML:2.0:nameid-format:transient"), do: :transient
+
+  def to_esaml_nameid_format("urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName"),
+    do: :windows
+
+  def to_esaml_nameid_format(_unknown), do: :unknown
+
+  @spec from_esaml_nameid_format(nameid_formats() | :unknown) :: charlist() | :unknown
+  def from_esaml_nameid_format(:x509), do: 'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName'
+  def from_esaml_nameid_format(:krb), do: 'urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos'
+  def from_esaml_nameid_format(:persistent), do: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+  def from_esaml_nameid_format(:transient), do: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+  def from_esaml_nameid_format(:email), do: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+
+  def from_esaml_nameid_format(:windows),
+    do: 'urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName'
+
+  def from_esaml_nameid_format(:unknown), do: :unknown
+
   @spec get_idp(binary) :: nil | IdpData.t()
   def get_idp(idp_id) do
     idps = Application.get_env(:samly, :identity_providers, %{})
@@ -49,9 +75,10 @@ defmodule Samly.Helper do
 
   def gen_idp_signin_req(sp, idp_metadata) do
     idp_signin_url = Esaml.esaml_idp_metadata(idp_metadata, :login_location)
-    # TODO: Expose an config
-    name_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
-    xml_frag = :esaml_sp.generate_authn_request(idp_signin_url, sp, name_format)
+    nameid_format =
+      Esaml.esaml_idp_metadata(idp_metadata, :name_format)
+      |> from_esaml_nameid_format()
+    xml_frag = :esaml_sp.generate_authn_request(idp_signin_url, sp, nameid_format)
     {idp_signin_url, xml_frag}
   end
 
