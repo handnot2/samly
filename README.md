@@ -55,7 +55,7 @@ end
 `Samly` needs a private key and a corresponding certificate. These are used when
 communicating with the Identity Provider.
 
-A convenient script, `gencert.sh`, is provided to generate the key and certificate.
+A convenient script, `gencert.sh`, is provided in [`samly_howto`](https://github.com/handnot2/samly_howto) to generate the key and certificate.
 Make sure `openssl` is available on your system. The name of the key file and
 certificate file generated should be provided as part of the Samly configuration.
 
