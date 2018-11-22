@@ -150,14 +150,13 @@ defmodule Samly.IdpData do
 
   @spec cert_config_ok?(%IdpData{}, %SpData{}) :: boolean
   defp cert_config_ok?(%IdpData{} = idp_data, %SpData{} = sp_data) do
-    if (idp_data.sign_metadata ||
-        idp_data.sign_requests ) &&
-        (sp_data.cert == :undefined || sp_data.key == :undefined) do
-          Logger.error("[Samly] SP cert or key missing - Skipping identity provider: #{idp_data.id}")
-          false
-        else
-          true
-        end
+    if (idp_data.sign_metadata || idp_data.sign_requests) &&
+         (sp_data.cert == :undefined || sp_data.key == :undefined) do
+      Logger.error("[Samly] SP cert or key missing - Skipping identity provider: #{idp_data.id}")
+      false
+    else
+      true
+    end
   end
 
   @default_metadata_file "idp_metadata.xml"
