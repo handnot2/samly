@@ -36,7 +36,7 @@ defmodule Samly.Provider do
     store_opts = store_env[:opts] || []
     State.init(store_provider, store_opts)
 
-    opts = Application.get_env(:samly, Samly.Provider, [])
+    opts = opts()
 
     # must be done prior to loading the providers
     idp_id_from =
@@ -56,6 +56,14 @@ defmodule Samly.Provider do
       end
 
     Application.put_env(:samly, :idp_id_from, idp_id_from)
+    refresh_providers()
+
+    {:ok, %{}}
+  end
+
+  @doc false
+  def refresh_providers do
+    opts = opts()
 
     service_providers = Samly.SpData.load_providers(opts[:service_providers] || [])
 
@@ -64,7 +72,7 @@ defmodule Samly.Provider do
 
     Application.put_env(:samly, :service_providers, service_providers)
     Application.put_env(:samly, :identity_providers, identity_providers)
-
-    {:ok, %{}}
   end
+
+  defp opts, do: Application.get_env(:samly, Samly.Provider, [])
 end
