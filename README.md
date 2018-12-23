@@ -15,7 +15,10 @@ plug enabled routes.
 defp deps() do
   [
     # ...
-    {:samly, "~> 0.9"},
+    {:samly, "~> 0.10"},
+    # v0.10.0 uses esaml v4.0.0 which in turn relies on cowboy 2.x
+    # If you need to work with cowboy 1.x, you need the following override:
+    # {:esaml, "~> 3.6", override: true}
   ]
 end
 ```
