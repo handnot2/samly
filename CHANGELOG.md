@@ -12,6 +12,10 @@
     assertion storage. It is possible to create custom stores by
     implementing `Samly.State.Store`.
 
++   Issue: #34 - Included filename in error messages
+    Include metadata/cert/key filenames when there is an error relevant to
+    those files.
+
 ### v0.9.3
 
 +   Uptake `esaml` v3.6.0 that includes fixes for schema validation errors.

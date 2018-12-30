@@ -125,11 +125,11 @@ defmodule Samly.IdpData do
       idp_data
     else
       {:reading, {:error, reason}} ->
-        Logger.error("[Samly] Failed to read metadata_file: #{inspect(reason)}")
+        Logger.error("[Samly] Failed to read metadata_file [#{inspect idp_data.metadata_file}]: #{inspect(reason)}")
         idp_data
 
       {:parsing, {:error, reason}} ->
-        Logger.error("[Samly] Invalid metadata_file content: #{inspect(reason)}")
+        Logger.error("[Samly] Invalid metadata_file content [#{inspect idp_data.metadata_file}]: #{inspect(reason)}")
         idp_data
     end
   end

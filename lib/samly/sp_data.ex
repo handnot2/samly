@@ -89,7 +89,7 @@ defmodule Samly.SpData do
       %SpData{sp_data | cert: cert}
     rescue
       _error ->
-        Logger.error("[Samly] Failed load SP certfile: #{inspect(opts_map)}")
+        Logger.error("[Samly] Failed load SP certfile [#{inspect certfile}]: #{inspect(opts_map)}")
         %SpData{sp_data | valid?: false}
     end
   end
@@ -104,7 +104,7 @@ defmodule Samly.SpData do
       %SpData{sp_data | key: key}
     rescue
       _error ->
-        Logger.error("[Samly] Failed load SP keyfile: #{inspect(opts_map)}")
+        Logger.error("[Samly] Failed load SP keyfile [#{inspect keyfile}]: #{inspect(opts_map)}")
         %SpData{sp_data | key: :undefined, valid?: false}
     end
   end
