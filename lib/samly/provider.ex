@@ -31,7 +31,11 @@ defmodule Samly.Provider do
 
   @doc false
   def init([]) do
-    State.init()
+    store_env = Application.get_env(:samly, Samly.State, [])
+    store_provider = store_env[:store] || Samly.State.ETS
+    store_opts = store_env[:opts] || []
+    State.init(store_provider, store_opts)
+
     opts = Application.get_env(:samly, Samly.Provider, [])
 
     # must be done prior to loading the providers

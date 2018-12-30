@@ -51,10 +51,10 @@ defmodule Samly.AuthHandler do
     sp = ensure_sp_uris_set(sp_rec, conn)
 
     target_url = (conn.params["target_url"] || "/") |> URI.decode_www_form()
-    nameid = get_session(conn, "samly_nameid")
+    assertion_key = get_session(conn, "samly_assertion_key")
 
-    case State.get_by_nameid(nameid) do
-      {^nameid, %Assertion{idp_id: ^idp_id}} ->
+    case State.get_assertion(conn, assertion_key) do
+      %Assertion{idp_id: ^idp_id} ->
         conn |> redirect(302, target_url)
 
       _ ->
@@ -86,24 +86,24 @@ defmodule Samly.AuthHandler do
     sp = ensure_sp_uris_set(sp_rec, conn)
 
     target_url = (conn.params["target_url"] || "/") |> URI.decode_www_form()
-    nameid = get_session(conn, "samly_nameid")
+    assertion_key = get_session(conn, "samly_assertion_key")
 
-    case State.get_by_nameid(nameid) do
-      {^nameid, %Assertion{idp_id: ^idp_id, authn: authn, subject: subject}} ->
+    case State.get_assertion(conn, assertion_key) do
+      %Assertion{idp_id: ^idp_id, authn: authn, subject: subject} ->
         session_index = Map.get(authn, "session_index", "")
         subject_rec = Subject.to_rec(subject)
 
         {idp_signout_url, req_xml_frag} =
           Helper.gen_idp_signout_req(sp, idp_rec, subject_rec, session_index)
 
-        State.delete(nameid)
+        conn = State.delete_assertion(conn, assertion_key)
         relay_state = State.gen_id()
 
         conn
         |> put_session("target_url", target_url)
         |> put_session("relay_state", relay_state)
         |> put_session("idp_id", idp_id)
-        |> delete_session("samly_nameid")
+        |> delete_session("samly_assertion_key")
         |> send_saml_request(
           idp_signout_url,
           idp.use_redirect_for_req,

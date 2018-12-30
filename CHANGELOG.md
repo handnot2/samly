@@ -2,10 +2,15 @@
 
 ### v0.10.0 (WIP)
 
-+   Fixed issue: #31 - Support for Cowboy 2.x
++   Issue: #31 - Support for Cowboy 2.x
     Uptake `esaml` v4.0.0 which includes support for Cowboy 2.x.
     If support for Cowboy 1.x is needed, you need an override with
     `esaml` v3.6.x in your application `mix.exs` file.
+
++   Issue: #32 - Support for custom State Storage
+    Includes support for ETS and Plug Sessions based authenticated SAML
+    assertion storage. It is possible to create custom stores by
+    implementing `Samly.State.Store`.
 
 ### v0.9.3
 

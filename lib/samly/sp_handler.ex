@@ -5,7 +5,7 @@ defmodule Samly.SPHandler do
   import Plug.Conn
   alias Plug.Conn
   require Samly.Esaml
-  alias Samly.{Assertion, Esaml, Helper, IdpData, State}
+  alias Samly.{Assertion, Esaml, Helper, IdpData, State, Subject}
 
   import Samly.RouterUtil, only: [ensure_sp_uris_set: 2, send_saml_request: 5, redirect: 3]
 
@@ -42,14 +42,14 @@ defmodule Samly.SPHandler do
       computed = updated_assertion.computed
       assertion = %Assertion{assertion | computed: computed, idp_id: idp_id}
 
-      # TODO: use idp_id + nameid
       nameid = assertion.subject.name
-      State.put(nameid, assertion)
+      assertion_key = {idp_id, nameid}
+      conn = State.put_assertion(conn, assertion_key, assertion)
       target_url = auth_target_url(conn, assertion, relay_state)
 
       conn
       |> configure_session(renew: true)
-      |> put_session("samly_nameid", nameid)
+      |> put_session("samly_assertion_key", assertion_key)
       |> redirect(302, target_url |> URI.decode_www_form())
     else
       {:halted, conn} -> conn
@@ -155,22 +155,17 @@ defmodule Samly.SPHandler do
     relay_state = conn.body_params["RelayState"]
 
     with {:ok, payload} <- Helper.decode_idp_signout_req(sp, saml_encoding, saml_request) do
-      # nameid = Esaml.esaml_logoutreq(payload, :name)
-      # issuer = Esaml.esaml_logoutreq(payload, :issuer)
       Esaml.esaml_logoutreq(name: nameid, issuer: _issuer) = payload
+      assertion_key = {idp_id, nameid}
 
-      return_status =
-        case State.get_by_nameid(nameid) do
-          {^nameid, %Assertion{idp_id: ^idp_id}} ->
-            State.delete(nameid)
-            :success
-
-          {^nameid, _saml_assertion} ->
-            State.delete(nameid)
-            :denied
+      {conn, return_status} =
+        case State.get_assertion(conn, assertion_key) do
+          %Assertion{idp_id: ^idp_id, subject: %Subject{name: ^nameid}} ->
+            conn = State.delete_assertion(conn, assertion_key)
+            {conn, :success}
 
           _ ->
-            :denied
+            {conn, :denied}
         end
 
       {idp_signout_url, resp_xml_frag} = Helper.gen_idp_signout_resp(sp, idp_rec, return_status)

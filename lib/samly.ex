@@ -15,14 +15,18 @@ defmodule Samly do
 
   ## Parameters
 
-  - conn: Plug connection
-  """
-  @spec get_active_assertion(Conn.t()) :: Assertion.t()
-  def get_active_assertion(conn) do
-    nameid = conn |> Conn.get_session("samly_nameid")
+  +   `conn` - Plug connection
 
-    case State.get_by_nameid(nameid) do
-      {^nameid, saml_assertion} -> saml_assertion
+  ## Examples
+
+      # When there is an authenticated SAML assertion
+      %Assertion{} = Samly.get_active_assertion()
+  """
+  @spec get_active_assertion(Conn.t()) :: Assertion.t() | nil
+  def get_active_assertion(conn) do
+    case Conn.get_session(conn, "samly_assertion_key") do
+      {_idp_id, _nameid} = assertion_key ->
+        State.get_assertion(conn, assertion_key)
       _ -> nil
     end
   end
@@ -31,12 +35,17 @@ defmodule Samly do
   Returns value of the specified attribute name in the given SAML Assertion.
 
   Checks for the attribute in `computed` map first and `attributes` map next.
-  Returns `nil` if not present in either.
+  Returns `nil` if attribute is not present.
 
   ## Parameters
 
-  -   assertion: SAML assertion obtained by calling `get_active_assertion/1`
-  -   name: Attribute name
+  +   `assertion` - SAML assertion obtained by calling `get_active_assertion/1`
+  +   `name`: Attribute name
+
+  ## Examples
+
+      assertion = Samly.get_active_assertion()
+      computed_fullname = Samly.get_attribute(assertion, "fullname")
   """
   @spec get_attribute(nil | Assertion.t(), String.t()) :: nil | String.t()
   def get_attribute(nil, _name), do: nil

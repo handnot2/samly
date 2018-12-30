@@ -22,8 +22,7 @@ defp deps() do
   ]
 end
 ```
-
-If you are usig `Samly` v0.7.x, checkout: [`Migrating from v0.7.x to v0.8.0`](https://github.com/handnot2/samly/wiki/Migrate-Samly-v0.7.x-to-v0.8.0).
+> Starting v0.10.0, Samly uses Cowboy 2.x. This implies that you need to use `phoenix v1.4` and `plug_cowboy v2.0`. Make sure to update your application's `mix.exs` dependencies to reflect this change. If you do not want to use `phoenix v1.4` and want to use Samly with `phoenix v1.3`, make sure to include `:esaml` v3.6 override in your `mix.exs`.
 
 ## Supervision Tree
 
@@ -201,6 +200,39 @@ config :samly, Samly.Provider,
 | `allow_idp_initiated_flow` | _(optional)_ Default is `false`. IDP initiated SSO is allowed only when this is set to `true`. |
 | `allowed_target_urls` | _(optional)_ Default is `[]`. `Samly` uses this **only** when `allow_idp_initiated_flow` parameter is set to `true`. Make sure to set this to one or more exact URLs you want to allow (whitelist). The URL to redirect the user after completing the SSO flow is sent from IDP in auth response as `relay_state`. This `relay_state` target URL is matched against this URL list. Set the value to `nil` if you do not want this whitelist capability.  |
 
+#### Authenticated SAML Assertion State Store
+
+> Since v0.10.0
+
+`Samly` internally maintains the the authenticated SAML assertions (from `LoginResponse` SAML requests).
+There are two built-in state store options available - one based on ETS and the other on Plug Sessions.
+The ETS store can be setup using the following configuration:
+
+```elixir
+config :samly, Samly.State,
+  store: Samly.State.ETS,
+  opts: [table: :my_ets_table]
+```
+
+This state configuration is optional. If omitted, `Samly` uses `Samly.State.ETS` provider by default.
+
+| Options | Description |
+|:------------|:-----------|
+| `opts` | _(optional)_ The `:table` option is the ETS table name for storing the assertions. This ETS table is created during the store provider initialization if it is not already present. Default is `samly_assertions_table`. |
+
+Use `Samly.State.Session` provider in a clustered deployment. This provider uses the Plug Sessions to keep
+the authenticated SAML assertions. This provider can be enabled using the following:
+
+```elixir
+config :samly, Samly.State,
+  store: Samly.State.Session,
+  opts: [key: :my_assertion_key]
+```
+
+| Options | Description |
+|:------------|:-----------|
+| `opts` | _(optional)_ The `:key` is the name of the session key where assertion is stored. Default is `samly_assertion`. |
+
 ## SAML Assertion
 
 Once authentication is completed successfully, IdP sends a "consume" SAML
@@ -227,6 +259,8 @@ the user is not authenticated.
 > source is setup in the IdP.
 
 ## Customization
+
+#### Pipeline
 
 `Samly` allows you to specify a Plug Pipeline if you need more control over
 the authenticated user's attributes and/or do a Just-in-time user creation.
@@ -287,6 +321,10 @@ config :samly, Samly.Provider,
     }
   ]
 ```
+
+#### State Store
+
+Take a look at the implementation of `Samly.State.ETS` or `Samly.State.Session` and use those as examples showing how to create your own state store (based on redis, memcached, database etc.).
 
 ## Security Related
 

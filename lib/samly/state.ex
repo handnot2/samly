@@ -1,28 +1,30 @@
 defmodule Samly.State do
   @moduledoc false
 
-  def init() do
-    if :ets.info(:esaml_nameids) == :undefined do
-      :ets.new(:esaml_nameids, [:set, :public, :named_table])
-    end
+  @state_store :state_store
+
+  def init(store_provider), do: init(store_provider, [])
+  def init(store_provider, opts) do
+    opts = store_provider.init(opts)
+    Application.put_env(:samly, @state_store, %{provider: store_provider, opts: opts})
+  end
+
+  def get_assertion(conn, assertion_key) do
+    %{provider: store_provider, opts: opts} = Application.get_env(:samly, @state_store)
+    store_provider.get_assertion(conn, assertion_key, opts)
+  end
+
+  def put_assertion(conn, assertion_key, assertion) do
+    %{provider: store_provider, opts: opts} = Application.get_env(:samly, @state_store)
+    store_provider.put_assertion(conn, assertion_key, assertion, opts)
+  end
+
+  def delete_assertion(conn, assertion_key) do
+    %{provider: store_provider, opts: opts} = Application.get_env(:samly, @state_store)
+    store_provider.delete_assertion(conn, assertion_key, opts)
   end
 
   def gen_id() do
     24 |> :crypto.strong_rand_bytes() |> Base.url_encode64()
-  end
-
-  def get_by_nameid(nameid) do
-    case :ets.lookup(:esaml_nameids, nameid) do
-      [{_nameid, _saml_assertion} = rec] -> rec
-      _ -> nil
-    end
-  end
-
-  def put(nameid, saml_assertion) do
-    :ets.insert(:esaml_nameids, {nameid, saml_assertion})
-  end
-
-  def delete(nameid) do
-    :ets.delete(:esaml_nameids, nameid)
   end
 end
