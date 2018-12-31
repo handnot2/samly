@@ -125,11 +125,21 @@ defmodule Samly.IdpData do
       idp_data
     else
       {:reading, {:error, reason}} ->
-        Logger.error("[Samly] Failed to read metadata_file [#{inspect idp_data.metadata_file}]: #{inspect(reason)}")
+        Logger.error(
+          "[Samly] Failed to read metadata_file [#{inspect(idp_data.metadata_file)}]: #{
+            inspect(reason)
+          }"
+        )
+
         idp_data
 
       {:parsing, {:error, reason}} ->
-        Logger.error("[Samly] Invalid metadata_file content [#{inspect idp_data.metadata_file}]: #{inspect(reason)}")
+        Logger.error(
+          "[Samly] Invalid metadata_file content [#{inspect(idp_data.metadata_file)}]: #{
+            inspect(reason)
+          }"
+        )
+
         idp_data
     end
   end
@@ -151,13 +161,13 @@ defmodule Samly.IdpData do
   @spec cert_config_ok?(%IdpData{}, %SpData{}) :: boolean
   defp cert_config_ok?(%IdpData{} = idp_data, %SpData{} = sp_data) do
     if (idp_data.sign_metadata ||
-        idp_data.sign_requests ) &&
-        (sp_data.cert == :undefined || sp_data.key == :undefined) do
-          Logger.error("[Samly] SP cert or key missing - Skipping identity provider: #{idp_data.id}")
-          false
-        else
-          true
-        end
+          idp_data.sign_requests) &&
+         (sp_data.cert == :undefined || sp_data.key == :undefined) do
+      Logger.error("[Samly] SP cert or key missing - Skipping identity provider: #{idp_data.id}")
+      false
+    else
+      true
+    end
   end
 
   @default_metadata_file "idp_metadata.xml"

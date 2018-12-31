@@ -27,7 +27,9 @@ defmodule Samly do
     case Conn.get_session(conn, "samly_assertion_key") do
       {_idp_id, _nameid} = assertion_key ->
         State.get_assertion(conn, assertion_key)
-      _ -> nil
+
+      _ ->
+        nil
     end
   end
 

@@ -47,7 +47,8 @@ defmodule Samly.State.Store do
   May raise an error if there is a failure. An authenticated session should not be
   established in that case.
   """
-  @callback put_assertion(Conn.t(), assertion_key(), Assertion.t(), opts()) :: Conn.t() | no_return()
+  @callback put_assertion(Conn.t(), assertion_key(), Assertion.t(), opts()) ::
+              Conn.t() | no_return()
 
   @doc """
   Removes the given SAML assertion from the store.

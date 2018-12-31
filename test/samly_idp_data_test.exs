@@ -50,12 +50,17 @@ defmodule SamlyIdpDataTest do
     sp_data3 = SpData.load_provider(@sp_config3)
     sp_data4 = SpData.load_provider(@sp_config4)
     sp_data5 = SpData.load_provider(@sp_config5)
-    [sps: %{
-      sp_data1.id => sp_data1,
-      sp_data2.id => sp_data2,
-      sp_data3.id => sp_data3,
-      sp_data4.id => sp_data4,
-      sp_data5.id => sp_data5}] |> Enum.into(context)
+
+    [
+      sps: %{
+        sp_data1.id => sp_data1,
+        sp_data2.id => sp_data2,
+        sp_data3.id => sp_data3,
+        sp_data4.id => sp_data4,
+        sp_data5.id => sp_data5
+      }
+    ]
+    |> Enum.into(context)
   end
 
   test "valid-idp-config-1", %{sps: sps} do

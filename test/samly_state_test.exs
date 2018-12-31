@@ -3,15 +3,17 @@ defmodule Samly.StateTest do
   use Plug.Test
 
   setup do
-    opts = Plug.Session.init(
-      store: :cookie,
-      key: "_samly_state_test_session",
-      encryption_salt: "salty enc",
-      signing_salt: "salty signing",
-      key_length: 64
-    )
+    opts =
+      Plug.Session.init(
+        store: :cookie,
+        key: "_samly_state_test_session",
+        encryption_salt: "salty enc",
+        signing_salt: "salty signing",
+        key_length: 64
+      )
 
     Samly.State.init(Samly.State.Session)
+
     conn =
       conn(:get, "/")
       |> Plug.Session.call(opts)

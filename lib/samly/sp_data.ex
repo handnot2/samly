@@ -83,13 +83,17 @@ defmodule Samly.SpData do
   defp load_cert(%SpData{certfile: ""} = sp_data, _) do
     %SpData{sp_data | cert: :undefined}
   end
+
   defp load_cert(%SpData{certfile: certfile} = sp_data, %{} = opts_map) do
     try do
       cert = :esaml_util.load_certificate(certfile)
       %SpData{sp_data | cert: cert}
     rescue
       _error ->
-        Logger.error("[Samly] Failed load SP certfile [#{inspect certfile}]: #{inspect(opts_map)}")
+        Logger.error(
+          "[Samly] Failed load SP certfile [#{inspect(certfile)}]: #{inspect(opts_map)}"
+        )
+
         %SpData{sp_data | valid?: false}
     end
   end
@@ -98,13 +102,14 @@ defmodule Samly.SpData do
   defp load_key(%SpData{keyfile: ""} = sp_data, _) do
     %SpData{sp_data | key: :undefined}
   end
+
   defp load_key(%SpData{keyfile: keyfile} = sp_data, %{} = opts_map) do
     try do
       key = :esaml_util.load_private_key(keyfile)
       %SpData{sp_data | key: key}
     rescue
       _error ->
-        Logger.error("[Samly] Failed load SP keyfile [#{inspect keyfile}]: #{inspect(opts_map)}")
+        Logger.error("[Samly] Failed load SP keyfile [#{inspect(keyfile)}]: #{inspect(opts_map)}")
         %SpData{sp_data | key: :undefined, valid?: false}
     end
   end

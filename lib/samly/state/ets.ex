@@ -31,12 +31,15 @@ defmodule Samly.State.ETS do
   @impl Samly.State.Store
   def init(opts) do
     assertions_table = Keyword.get(opts, :table, @assertions_table)
+
     if is_atom(assertions_table) == false do
-      raise "Samly.State.ETS table name must be an atom: #{inspect assertions_table}"
+      raise "Samly.State.ETS table name must be an atom: #{inspect(assertions_table)}"
     end
+
     if :ets.info(assertions_table) == :undefined do
       :ets.new(assertions_table, [:set, :public, :named_table])
     end
+
     assertions_table
   end
 

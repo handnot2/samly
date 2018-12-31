@@ -32,6 +32,7 @@ defmodule Samly.State.Session do
   @impl Samly.State.Store
   def get_assertion(conn, assertion_key, opts) do
     %{key: key} = opts
+
     case Conn.get_session(conn, key) do
       {^assertion_key, %Assertion{} = assertion} -> assertion
       _ -> nil
