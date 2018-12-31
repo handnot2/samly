@@ -204,7 +204,7 @@ config :samly, Samly.Provider,
 
 > Since v0.10.0
 
-`Samly` internally maintains the the authenticated SAML assertions (from `LoginResponse` SAML requests).
+`Samly` internally maintains the authenticated SAML assertions (from `LoginResponse` SAML requests).
 There are two built-in state store options available - one based on ETS and the other on Plug Sessions.
 The ETS store can be setup using the following configuration:
 

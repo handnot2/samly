@@ -1,6 +1,6 @@
 # CHANGELOG
 
-### v0.10.0 (WIP)
+### v0.10.0
 
 +   Issue: #31 - Support for Cowboy 2.x
     Uptake `esaml` v4.0.0 which includes support for Cowboy 2.x.
