@@ -16,7 +16,7 @@ defmodule Samly.SPHandler do
     metadata = Helper.sp_metadata(sp)
 
     conn
-    |> put_resp_header("Content-Type", "text/xml")
+    |> put_resp_header("content-type", "text/xml")
     |> send_resp(200, metadata)
 
     # rescue

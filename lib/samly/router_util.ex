@@ -77,14 +77,14 @@ defmodule Samly.RouterUtil do
       resp_body = :esaml_binding.encode_http_post(idp_url, signed_xml_payload, relay_state)
 
       conn
-      |> Conn.put_resp_header("Content-Type", "text/html")
+      |> Conn.put_resp_header("content-type", "text/html")
       |> Conn.send_resp(200, resp_body)
     end
   end
 
   def redirect(conn, status_code, dest) do
     conn
-    |> Conn.put_resp_header("Location", dest)
+    |> Conn.put_resp_header("location", dest)
     |> Conn.send_resp(status_code, "")
     |> Conn.halt()
   end
