@@ -41,7 +41,7 @@ defmodule Samly.AuthHandler do
     ]
 
     conn
-    |> put_resp_header("Content-Type", "text/html")
+    |> put_resp_header("content-type", "text/html")
     |> send_resp(200, EEx.eval_string(@sso_init_resp_template, opts))
   end
 

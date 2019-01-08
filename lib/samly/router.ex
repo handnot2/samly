@@ -18,11 +18,11 @@ defmodule Samly.Router do
     conn
     |> register_before_send(fn connection ->
       connection
-      |> put_resp_header("Cache-Control", "no-cache")
-      |> put_resp_header("Pragma", "no-cache")
-      |> put_resp_header("X-Frame-Options", "SAMEORIGIN")
-      |> put_resp_header("X-XSS-Protection", "1; mode=block")
-      |> put_resp_header("X-Content-Type-Options", "nosniff")
+      |> put_resp_header("cache-control", "no-cache")
+      |> put_resp_header("pragma", "no-cache")
+      |> put_resp_header("x-frame-options", "SAMEORIGIN")
+      |> put_resp_header("x-xss-protection", "1; mode=block")
+      |> put_resp_header("x-content-type-options", "nosniff")
     end)
   end
 end
