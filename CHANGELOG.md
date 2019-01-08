@@ -1,5 +1,10 @@
 # CHANGELOG
 
+### v0.10.1
+
++   Issues: #39, #40 - Downcase response header names
+    (PR from [calvinb](https://github.com/calvinb))
+
 ### v0.10.0
 
 +   Issue: #31 - Support for Cowboy 2.x
