@@ -47,12 +47,32 @@ defmodule Samly.Helper do
     :xmerl.export([:esaml_sp.generate_metadata(sp)], :xmerl_xml)
   end
 
-  def gen_idp_signin_req(sp, idp_metadata) do
+  def gen_idp_signin_req(sp, idp_metadata, name_format) do
     idp_signin_url = Esaml.esaml_idp_metadata(idp_metadata, :login_location)
-    # TODO: Expose an config
-    name_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
-    xml_frag = :esaml_sp.generate_authn_request(idp_signin_url, sp, name_format)
+
+    xml_frag =
+      :esaml_sp.generate_authn_request(idp_signin_url, sp, name_format_charlist(name_format))
+
     {idp_signin_url, xml_frag}
+  end
+
+  defp name_format_charlist(name_format) when is_list(name_format), do: name_format
+
+  defp name_format_charlist(name_format) when is_binary(name_format) do
+    name_format |> to_charlist()
+  end
+
+  defp name_format_charlist(nil), do: name_format_charlist(:transient)
+
+  defp name_format_charlist(name_format) do
+    case name_format do
+      :email -> 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+      :x509 -> 'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName'
+      :windows -> 'urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName'
+      :krb -> 'urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos'
+      :persistent -> 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+      :transient -> 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+    end
   end
 
   def gen_idp_signout_req(sp, idp_metadata, subject_rec, session_index) do

@@ -170,7 +170,8 @@ config :samly, Samly.Provider,
       #signed_assertion_in_resp: true,
       #signed_envelopes_in_resp: true,
       #allow_idp_initiated_flow: false,
-      #allowed_target_urls: ["http://do-good.org"]
+      #allowed_target_urls: ["http://do-good.org"],
+      #nameid_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
     }
   ]
 ```
@@ -199,6 +200,7 @@ config :samly, Samly.Provider,
 | `signed_assertion_in_resp`, `signed_envelopes_in_resp` | _(optional)_ Default is `true`. When `true`, `Samly` expects the requests and responses from IdP to be signed. |
 | `allow_idp_initiated_flow` | _(optional)_ Default is `false`. IDP initiated SSO is allowed only when this is set to `true`. |
 | `allowed_target_urls` | _(optional)_ Default is `[]`. `Samly` uses this **only** when `allow_idp_initiated_flow` parameter is set to `true`. Make sure to set this to one or more exact URLs you want to allow (whitelist). The URL to redirect the user after completing the SSO flow is sent from IDP in auth response as `relay_state`. This `relay_state` target URL is matched against this URL list. Set the value to `nil` if you do not want this whitelist capability.  |
+| `nameid_format` | _(optional)_ Default is `"urn:oasis:names:tc:SAML:2.0:nameid-format:transient"`. When this is overridden, `Samly` will put the value in the `Format` attribute of the `NameIDPolicy` element of the login request. Value may be a string, a character list, or one of the following atoms: `email`, `x509`, `windows`, `krb`, `persistent`, `transient`.                                                                                                |
 
 #### Authenticated SAML Assertion State Store
 

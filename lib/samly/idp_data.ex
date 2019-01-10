@@ -100,6 +100,7 @@ defmodule Samly.IdpData do
     %IdpData{}
     |> save_idp_config(idp_config)
     |> load_metadata(idp_config)
+    |> set_nameid_format(idp_config)
     |> update_esaml_recs(service_providers, idp_config)
   end
 
@@ -160,8 +161,7 @@ defmodule Samly.IdpData do
 
   @spec cert_config_ok?(%IdpData{}, %SpData{}) :: boolean
   defp cert_config_ok?(%IdpData{} = idp_data, %SpData{} = sp_data) do
-    if (idp_data.sign_metadata ||
-          idp_data.sign_requests) &&
+    if (idp_data.sign_metadata || idp_data.sign_requests) &&
          (sp_data.cert == :undefined || sp_data.key == :undefined) do
       Logger.error("[Samly] SP cert or key missing - Skipping identity provider: #{idp_data.id}")
       false
@@ -192,6 +192,13 @@ defmodule Samly.IdpData do
 
     %IdpData{idp_data | allowed_target_urls: target_urls}
   end
+
+  @spec set_nameid_format(%IdpData{}, map()) :: %IdpData{}
+  defp set_nameid_format(%IdpData{} = idp_data, %{nameid_format: nameid_format}) do
+    %IdpData{idp_data | nameid_format: nameid_format}
+  end
+
+  defp set_nameid_format(%IdpData{} = idp_data, _opts_map), do: idp_data
 
   @spec set_boolean_attr(%IdpData{}, map(), atom()) :: %IdpData{}
   defp set_boolean_attr(%IdpData{} = idp_data, %{} = opts_map, attr_name)
