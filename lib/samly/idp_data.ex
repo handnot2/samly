@@ -6,7 +6,7 @@ defmodule Samly.IdpData do
   require Samly.Esaml
   alias Samly.{Esaml, Helper, IdpData, SpData}
 
-  @type nameid_formats :: :esaml.name_format()
+  @type nameid_format :: :unknown | charlist()
   @type certs :: [binary()]
   @type url :: nil | binary()
 
@@ -55,7 +55,7 @@ defmodule Samly.IdpData do
           sso_post_url: url(),
           slo_redirect_url: url(),
           slo_post_url: url(),
-          nameid_format: nameid_formats(),
+          nameid_format: nameid_format(),
           fingerprints: [binary()],
           esaml_idp_rec: :esaml_idp_metadata,
           esaml_sp_rec: :esaml_sp,
@@ -100,7 +100,7 @@ defmodule Samly.IdpData do
     %IdpData{}
     |> save_idp_config(idp_config)
     |> load_metadata(idp_config)
-    |> set_nameid_format(idp_config)
+    |> override_nameid_format(idp_config)
     |> update_esaml_recs(service_providers, idp_config)
   end
 
@@ -193,12 +193,46 @@ defmodule Samly.IdpData do
     %IdpData{idp_data | allowed_target_urls: target_urls}
   end
 
-  @spec set_nameid_format(%IdpData{}, map()) :: %IdpData{}
-  defp set_nameid_format(%IdpData{} = idp_data, %{nameid_format: nameid_format}) do
+  @spec override_nameid_format(%IdpData{}, map()) :: %IdpData{}
+  defp override_nameid_format(%IdpData{} = idp_data, idp_config) do
+    nameid_format =
+      case Map.get(idp_config, :nameid_format, "") do
+        "" ->
+          idp_data.nameid_format
+
+        format when is_binary(format) ->
+          to_charlist(format)
+
+        :email ->
+          'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+
+        :x509 ->
+          'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName'
+
+        :windows ->
+          'urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName'
+
+        :krb ->
+          'urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos'
+
+        :persistent ->
+          'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+
+        :transient ->
+          'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+
+        invalid_nameid_format ->
+          Logger.error(
+            "[Samly] invalid nameid_format [#{inspect(idp_data.metadata_file)}]: #{
+              inspect(invalid_nameid_format)
+            }"
+          )
+
+          idp_data.nameid_format
+      end
+
     %IdpData{idp_data | nameid_format: nameid_format}
   end
-
-  defp set_nameid_format(%IdpData{} = idp_data, _opts_map), do: idp_data
 
   @spec set_boolean_attr(%IdpData{}, map(), atom()) :: %IdpData{}
   defp set_boolean_attr(%IdpData{} = idp_data, %{} = opts_map, attr_name)
@@ -263,18 +297,6 @@ defmodule Samly.IdpData do
     }
   end
 
-  @spec nameid_map(nil | binary) :: nameid_formats()
-  defp nameid_map("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"), do: :email
-  defp nameid_map("urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"), do: :x509
-  defp nameid_map("urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos"), do: :krb
-  defp nameid_map("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"), do: :persistent
-  defp nameid_map("urn:oasis:names:tc:SAML:2.0:nameid-format:transient"), do: :transient
-
-  defp nameid_map("urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName"),
-    do: :windows
-
-  defp nameid_map(_unknown), do: :unknown
-
   @spec idp_cert_fingerprints(certs()) :: [binary()]
   defp idp_cert_fingerprints(certs) when is_list(certs) do
     certs
@@ -330,9 +352,12 @@ defmodule Samly.IdpData do
     md_elem |> xpath(@entity_id_selector |> add_ns()) |> hd() |> String.trim()
   end
 
-  @spec get_nameid_format(:xmlElement) :: nameid_formats()
+  @spec get_nameid_format(:xmlElement) :: nameid_format()
   def get_nameid_format(md_elem) do
-    get_data(md_elem, @nameid_format_selector) |> nameid_map()
+    case get_data(md_elem, @nameid_format_selector) do
+      "" -> :unknown
+      nameid_format -> to_charlist(nameid_format)
+    end
   end
 
   @spec get_req_signed(:xmlElement) :: binary()
