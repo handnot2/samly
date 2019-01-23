@@ -47,11 +47,11 @@ defmodule Samly.Helper do
     :xmerl.export([:esaml_sp.generate_metadata(sp)], :xmerl_xml)
   end
 
-  def gen_idp_signin_req(sp, idp_metadata) do
+  def gen_idp_signin_req(sp, idp_metadata, nameid_format) do
     idp_signin_url = Esaml.esaml_idp_metadata(idp_metadata, :login_location)
-    # TODO: Expose an config
-    name_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
-    xml_frag = :esaml_sp.generate_authn_request(idp_signin_url, sp, name_format)
+
+    xml_frag = :esaml_sp.generate_authn_request(idp_signin_url, sp, nameid_format)
+
     {idp_signin_url, xml_frag}
   end
 
