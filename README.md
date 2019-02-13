@@ -15,14 +15,14 @@ plug enabled routes.
 defp deps() do
   [
     # ...
-    {:samly, "~> 0.10"},
-    # v0.10.0 uses esaml v4.0.0 which in turn relies on cowboy 2.x
+    {:samly, "~> 1.0.0-rc.0"},
+    # v1.0.0-rc.0 uses esaml v4.2 which in turn relies on cowboy 2.x
     # If you need to work with cowboy 1.x, you need the following override:
-    # {:esaml, "~> 3.6", override: true}
+    # {:esaml, "~> 3.7", override: true}
   ]
 end
 ```
-> Starting v0.10.0, Samly uses Cowboy 2.x. This implies that you need to use `phoenix v1.4` and `plug_cowboy v2.0`. Make sure to update your application's `mix.exs` dependencies to reflect this change. If you do not want to use `phoenix v1.4` and want to use Samly with `phoenix v1.3`, make sure to include `:esaml` v3.6 override in your `mix.exs`.
+> Starting v0.10.0, Samly uses Cowboy 2.x. This implies that you need to use `phoenix v1.4` and `plug_cowboy v2.0`. Make sure to update your application's `mix.exs` dependencies to reflect this change. If you do not want to use `phoenix v1.4` and want to use Samly with `phoenix v1.3`, make sure to include `:esaml` v3.7 override in your `mix.exs`.
 
 ## Supervision Tree
 
