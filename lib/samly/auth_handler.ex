@@ -8,21 +8,33 @@ defmodule Samly.AuthHandler do
   import Samly.RouterUtil, only: [ensure_sp_uris_set: 2, send_saml_request: 5, redirect: 3]
 
   @sso_init_resp_template """
-  <body onload=\"document.forms[0].submit()\">
-    <noscript>
-      <p><strong>Note:</strong>
-        Since your browser does not support JavaScript, you must press
-        the button below once to proceed.
-      </p>
-    </noscript>
-    <form method=\"post\" action=\"<%= action %>\">
-      <%= if target_url do %>
-      <input type=\"hidden\" name=\"target_url\" value=\"<%= target_url %>\" />
-      <% end %>
-      <input type=\"hidden\" name=\"_csrf_token\" value=\"<%= csrf_token %>\" />
-      <noscript><input type=\"submit\" value=\"Submit\" /></noscript>
-    </form>
-  </body>
+  <!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"
+    \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+  <html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">
+    <head>
+      <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>
+    </head>
+    <body>
+      <script nonce=\"<%= nonce %>\">
+        document.addEventListener(\"DOMContentLoaded\", function () {
+          document.getElementById(\"sso-req-form\").submit();
+        });
+      </script>
+      <noscript>
+        <p><strong>Note:</strong>
+          Since your browser does not support JavaScript, you must press
+          the button below to proceed.
+        </p>
+      </noscript>
+      <form id=\"sso-req-form\" method=\"post\" action=\"<%= action %>\">
+        <%= if target_url do %>
+        <input type=\"hidden\" name=\"target_url\" value=\"<%= target_url %>\" />
+        <% end %>
+        <input type=\"hidden\" name=\"_csrf_token\" value=\"<%= csrf_token %>\" />
+        <noscript><input type=\"submit\" value=\"Submit\" /></noscript>
+      </form>
+    </body>
+  </html>
   """
 
   def initiate_sso_req(conn) do
@@ -35,6 +47,7 @@ defmodule Samly.AuthHandler do
       end
 
     opts = [
+      nonce: conn.private[:samly_nonce],
       action: conn.request_path,
       target_url: target_url,
       csrf_token: get_csrf_token()
