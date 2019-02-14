@@ -1,5 +1,23 @@
 # CHANGELOG
 
+### v1.0.0-rc.0
+
++   Issue: #33 - Content Security Policy
+    Enabled `Content-Security-Policy` in the HTTP response.
+
++   PR: #41 - Config support for nameid format
+    `Samly` uses the nameid format from the IdP metadata XML file.
+    It is possible now to override this using `nameid_fomat` config setting.
+    If this format information is not present in the IdP metadata XML and not
+    specified in the config setting, it defaults to `:transient`.
+    Thanks to [calvinb](https://github.com/calvinb) for the PR.
+
++   Uptake `esaml 4.2` bringing in support for encrypted assertions.
+    Check [Assertion Encryption](https://github.com/handnot2/esaml#assertion-encryption)
+    for supported encryption algorithms. Use this information to enable assertion
+    encryption on IdP. Thanks to [tcrossland](https://github.com/tcrossland)
+    for the `esaml` PR.
+
 ### v0.10.1
 
 +   Issues: #39, #40 - Downcase response header names
