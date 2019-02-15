@@ -15,6 +15,9 @@ defmodule Samly.Assertion do
   require Samly.Esaml
   alias Samly.{Esaml, Subject}
 
+  @type attr_name_t :: String.t()
+  @type attr_value_t :: String.t() | [String.t()]
+
   defstruct version: "2.0",
             issue_instant: "",
             recipient: "",
@@ -33,9 +36,9 @@ defmodule Samly.Assertion do
           issuer: String.t(),
           subject: Subject.t(),
           conditions: map,
-          attributes: map,
+          attributes: %{required(attr_name_t()) => attr_value_t()},
           authn: map,
-          computed: map,
+          computed: %{required(attr_name_t()) => attr_value_t()},
           idp_id: String.t()
         }
 
@@ -65,6 +68,17 @@ defmodule Samly.Assertion do
   end
 
   defp stringize(proplist) do
-    proplist |> Enum.map(fn {k, v} -> {to_string(k), List.to_string(v)} end) |> Enum.into(%{})
+    proplist
+    |> Enum.map(fn
+      {k, []} ->
+        {to_string(k), ""}
+
+      {k, values} when is_list(values) and is_list(hd(values)) ->
+        {to_string(k), Enum.map(values, fn v -> List.to_string(v) end)}
+
+      {k, v} when is_list(v) ->
+        {to_string(k), List.to_string(v)}
+    end)
+    |> Enum.into(%{})
   end
 end

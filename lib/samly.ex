@@ -22,7 +22,7 @@ defmodule Samly do
       # When there is an authenticated SAML assertion
       %Assertion{} = Samly.get_active_assertion()
   """
-  @spec get_active_assertion(Conn.t()) :: Assertion.t() | nil
+  @spec get_active_assertion(Conn.t()) :: nil | Assertion.t()
   def get_active_assertion(conn) do
     case Conn.get_session(conn, "samly_assertion_key") do
       {_idp_id, _nameid} = assertion_key ->
@@ -37,7 +37,8 @@ defmodule Samly do
   Returns value of the specified attribute name in the given SAML Assertion.
 
   Checks for the attribute in `computed` map first and `attributes` map next.
-  Returns `nil` if attribute is not present.
+  Returns a UTF-8 binary or a list of UTF-8 binaries (in case of multi-valued)
+  if the given attribute is present. Returns `nil` if attribute is not present.
 
   ## Parameters
 
@@ -47,14 +48,15 @@ defmodule Samly do
   ## Examples
 
       assertion = Samly.get_active_assertion()
+      # returns a list if the attribute is multi-valued
+      roles = Samly.get_attribute(assertion, "roles")
       computed_fullname = Samly.get_attribute(assertion, "fullname")
   """
-  @spec get_attribute(nil | Assertion.t(), String.t()) :: nil | String.t()
+  @spec get_attribute(nil | Assertion.t(), Assertion.attr_name_t()) ::
+          nil | Assertion.attr_value_t()
   def get_attribute(nil, _name), do: nil
 
   def get_attribute(%Assertion{} = assertion, name) do
-    computed = assertion.computed
-    attributes = assertion.attributes
-    Map.get(computed, name) || Map.get(attributes, name)
+    Map.get(assertion.computed, name) || Map.get(assertion.attributes, name)
   end
 end
