@@ -102,6 +102,7 @@ defmodule Samly.IdpData do
     |> load_metadata(idp_config)
     |> override_nameid_format(idp_config)
     |> update_esaml_recs(service_providers, idp_config)
+    |> verify_slo_url()
   end
 
   @spec save_idp_config(%IdpData{}, map()) :: %IdpData{}
@@ -168,6 +169,15 @@ defmodule Samly.IdpData do
     else
       true
     end
+  end
+
+  @spec verify_slo_url(%IdpData{}) :: %IdpData{}
+  defp verify_slo_url(%IdpData{} = idp_data) do
+    if idp_data.valid? && idp_data.slo_redirect_url == nil && idp_data.slo_post_url == nil do
+      Logger.warn("[Samly] SLO Endpoint missing in [#{inspect(idp_data.metadata_file)}]")
+    end
+
+    idp_data
   end
 
   @default_metadata_file "idp_metadata.xml"
