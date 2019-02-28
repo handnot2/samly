@@ -15,8 +15,8 @@ plug enabled routes.
 defp deps() do
   [
     # ...
-    {:samly, "~> 1.0.0-rc.0"},
-    # v1.0.0-rc.0 uses esaml v4.2 which in turn relies on cowboy 2.x
+    {:samly, "~> 1.0.0-rc.1"},
+    # v1.0.0-rc.1 uses esaml v4.2 which in turn relies on cowboy 2.x
     # If you need to work with cowboy 1.x, you need the following override:
     # {:esaml, "~> 3.7", override: true}
   ]
@@ -199,8 +199,8 @@ config :samly, Samly.Provider,
 | `sign_requests`, `sign_metadata` | _(optional)_ Default is `true`. |
 | `signed_assertion_in_resp`, `signed_envelopes_in_resp` | _(optional)_ Default is `true`. When `true`, `Samly` expects the requests and responses from IdP to be signed. |
 | `allow_idp_initiated_flow` | _(optional)_ Default is `false`. IDP initiated SSO is allowed only when this is set to `true`. |
-| `allowed_target_urls` | _(optional)_ Default is `[]`. `Samly` uses this **only** when `allow_idp_initiated_flow` parameter is set to `true`. Make sure to set this to one or more exact URLs you want to allow (whitelist). The URL to redirect the user after completing the SSO flow is sent from IDP in auth response as `relay_state`. This `relay_state` target URL is matched against this URL list. Set the value to `nil` if you do not want this whitelist capability.  |
-| `nameid_format` | _(optional)_ When this is specified, `Samly` will put the value in the `Format` attribute of the `NameIDPolicy` element of the login request. Value may be a string, a character list, or one of the following atoms: `:email`, `:x509`, `:windows`, `:krb`, `:persistent`, `:transient`.                                                                                                |
+| `allowed_target_urls` | _(optional)_ Default is `[]`. `Samly` uses this **only** when `allow_idp_initiated_flow` parameter is set to `true`. Make sure to set this to one or more exact URLs you want to allow (whitelist). The URL to redirect the user after completing the SSO flow is sent from IDP in auth response as `relay_state`. This `relay_state` target URL is matched against this URL list. Set the value to `nil` if you do not want this whitelist capability. |
+| `nameid_format` | _(optional)_ When specified, `Samly` includes the value as the `NameIDPolicy` element's `Format` attribute in the login request. Value must either be a string or one of the following atoms: `:email`, `:x509`, `:windows`, `:krb`, `:persistent`, `:transient`. Use the string value when you need to specify a non-standard/custom nameid format supported by your IdP. |
 
 #### Authenticated SAML Assertion State Store
 

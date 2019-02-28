@@ -2,6 +2,7 @@ defmodule Samly.RouterUtil do
   @moduledoc false
 
   alias Plug.Conn
+  require Logger
   require Samly.Esaml
   alias Samly.{Esaml, IdpData, Helper}
 
@@ -29,6 +30,20 @@ defmodule Samly.RouterUtil do
       conn |> Conn.put_private(:samly_idp, idp)
     else
       conn |> Conn.send_resp(403, "invalid_request unknown IdP") |> Conn.halt()
+    end
+  end
+
+  def check_target_url(conn, _opts) do
+    try do
+      target_url = conn.params["target_url"] && URI.decode_www_form(conn.params["target_url"])
+      conn |> Conn.put_private(:samly_target_url, target_url)
+    rescue
+      ArgumentError ->
+        Logger.error(
+          "[Samly] target_url must be x-www-form-urlencoded: #{inspect(conn.params["target_url"])}"
+        )
+
+        conn |> Conn.send_resp(400, "target_url must be x-www-form-urlencoded") |> Conn.halt()
     end
   end
 
@@ -85,7 +100,7 @@ defmodule Samly.RouterUtil do
 
   def redirect(conn, status_code, dest) do
     conn
-    |> Conn.put_resp_header("location", dest)
+    |> Conn.put_resp_header("location", URI.encode(dest))
     |> Conn.send_resp(status_code, "")
     |> Conn.halt()
   end

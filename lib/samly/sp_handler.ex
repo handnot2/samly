@@ -50,7 +50,7 @@ defmodule Samly.SPHandler do
       conn
       |> configure_session(renew: true)
       |> put_session("samly_assertion_key", assertion_key)
-      |> redirect(302, target_url |> URI.decode_www_form())
+      |> redirect(302, target_url)
     else
       {:halted, conn} -> conn
       {:error, reason} -> conn |> send_resp(403, "access_denied #{inspect(reason)}")
@@ -133,7 +133,7 @@ defmodule Samly.SPHandler do
          target_url when target_url != nil <- get_session(conn, "target_url") do
       conn
       |> configure_session(drop: true)
-      |> redirect(302, target_url |> URI.decode_www_form())
+      |> redirect(302, target_url)
     else
       error -> conn |> send_resp(403, "invalid_request #{inspect(error)}")
     end
@@ -152,7 +152,7 @@ defmodule Samly.SPHandler do
 
     saml_encoding = conn.body_params["SAMLEncoding"]
     saml_request = conn.body_params["SAMLRequest"]
-    relay_state = conn.body_params["RelayState"]
+    relay_state = conn.body_params["RelayState"] |> URI.decode_www_form()
 
     with {:ok, payload} <- Helper.decode_idp_signout_req(sp, saml_encoding, saml_request) do
       Esaml.esaml_logoutreq(name: nameid, issuer: _issuer) = payload

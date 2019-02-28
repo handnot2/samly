@@ -40,16 +40,12 @@ defmodule Samly.AuthHandler do
   def initiate_sso_req(conn) do
     import Plug.CSRFProtection, only: [get_csrf_token: 0]
 
-    target_url =
-      case conn.params["target_url"] do
-        nil -> nil
-        url -> URI.decode_www_form(url)
-      end
+    target_url = conn.private[:samly_target_url] || "/"
 
     opts = [
       nonce: conn.private[:samly_nonce],
-      action: conn.request_path,
-      target_url: target_url,
+      action: URI.encode(conn.request_path),
+      target_url: URI.encode_www_form(target_url),
       csrf_token: get_csrf_token()
     ]
 
@@ -63,7 +59,7 @@ defmodule Samly.AuthHandler do
     %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
 
-    target_url = (conn.params["target_url"] || "/") |> URI.decode_www_form()
+    target_url = conn.private[:samly_target_url] || "/"
     assertion_key = get_session(conn, "samly_assertion_key")
 
     case State.get_assertion(conn, assertion_key) do
@@ -85,7 +81,7 @@ defmodule Samly.AuthHandler do
           idp_signin_url,
           idp.use_redirect_for_req,
           req_xml_frag,
-          relay_state |> URI.encode_www_form()
+          relay_state
         )
     end
 
@@ -100,7 +96,7 @@ defmodule Samly.AuthHandler do
     %IdpData{esaml_idp_rec: idp_rec, esaml_sp_rec: sp_rec} = idp
     sp = ensure_sp_uris_set(sp_rec, conn)
 
-    target_url = (conn.params["target_url"] || "/") |> URI.decode_www_form()
+    target_url = conn.private[:samly_target_url] || "/"
     assertion_key = get_session(conn, "samly_assertion_key")
 
     case State.get_assertion(conn, assertion_key) do
@@ -123,7 +119,7 @@ defmodule Samly.AuthHandler do
           idp_signout_url,
           idp.use_redirect_for_req,
           req_xml_frag,
-          relay_state |> URI.encode_www_form()
+          relay_state
         )
 
       _ ->

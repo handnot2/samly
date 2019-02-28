@@ -72,6 +72,7 @@ defmodule Samly.Helper do
          {:ok, assertion_rec} <- :esaml_sp.validate_assertion(xml_frag, sp) do
       {:ok, Assertion.from_rec(assertion_rec)}
     else
+      {:error, reason} -> {:error, reason}
       error -> {:error, {:invalid_request, "#{inspect(error)}"}}
     end
   end

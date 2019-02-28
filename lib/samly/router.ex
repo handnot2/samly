@@ -19,7 +19,7 @@ defmodule Samly.Router do
        default-src 'none';
        script-src 'self' 'nonce-<%= nonce %>' 'report-sample';
        img-src 'self' 'report-sample';
-       report-uri /sso/csp-report;
+       report-to /sso/csp-report;
        """
        |> String.replace("\n", " ")
 
@@ -30,7 +30,7 @@ defmodule Samly.Router do
       nonce = connection.private[:samly_nonce]
 
       connection
-      |> put_resp_header("cache-control", "no-cache")
+      |> put_resp_header("cache-control", "no-cache, no-store, must-revalidate")
       |> put_resp_header("pragma", "no-cache")
       |> put_resp_header("x-frame-options", "SAMEORIGIN")
       |> put_resp_header("content-security-policy", EEx.eval_string(@csp, nonce: nonce))

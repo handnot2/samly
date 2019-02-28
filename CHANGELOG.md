@@ -1,5 +1,16 @@
 # CHANGELOG
 
+### v1.0.0-rc.1
+
++   `target_url` query parameter for the sign-in/sign-out requests must be
+    `x-www-form-urlencoded`.
+
++   Redirect URLs are properly encoded.
+
++   Switched to `report-to` in content security policy.
+
++   `cache-control` header value updated.
+
 ### v1.0.0-rc.0
 
 +   Issue: #33 - Content Security Policy
