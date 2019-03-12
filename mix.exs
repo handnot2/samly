@@ -1,8 +1,8 @@
 defmodule Samly.Mixfile do
   use Mix.Project
 
-  @version "1.0.0-rc.1"
-  @description "SAML SP SSO made easy"
+  @version "1.0.0"
+  @description "SAML Single-Sign-On Authentication for Plug/Phoenix Applications"
   @source_url "https://github.com/handnot2/samly"
   @blog_url "https://handnot2.github.io/blog/auth/saml-auth-for-phoenix"
 

@@ -1,6 +1,6 @@
 # CHANGELOG
 
-### v1.0.0-rc.1
+### v1.0.0
 
 +   `target_url` query parameter for the sign-in/sign-out requests must be
     `x-www-form-urlencoded`.
@@ -10,8 +10,6 @@
 +   Switched to `report-to` in content security policy.
 
 +   `cache-control` header value updated.
-
-### v1.0.0-rc.0
 
 +   Issue: #33 - Content Security Policy
     Enabled `Content-Security-Policy` in the HTTP response.

@@ -1,6 +1,18 @@
 # Samly
 
-SAML 2.0 SP SSO made easy. This is a Plug library that can be used to enable SAML 2.0 Single Sign On authentication in a Plug/Phoenix application.
+A SAML 2.0 Service Provider Single-Sign-On Authentication library. This Plug library can be used to SAML enable a Plug/Phoenix application.
+
+This has been used in the wild with the following Identity Providers:
+
++ Okta
++ Ping Identity
++ OneLogin
++ ADFS
++ Nexus GO
++ Shibboleth
++ SimpleSAMLphp
+
+Please send a note by DM if you have successfully used `Samly` with other Identity Providers.
 
 [![Inline docs](http://inch-ci.org/github/handnot2/samly.svg)](http://inch-ci.org/github/handnot2/samly)
 
@@ -12,17 +24,17 @@ plug enabled routes.
 ```elixir
 # mix.exs
 
+# v1.0.0 uses esaml v4.2 which in turn relies on cowboy 2.x
+# If you need to work with cowboy 1.x, you need the following override:
+# {:esaml, "~> 3.7", override: true}
+
 defp deps() do
   [
     # ...
-    {:samly, "~> 1.0.0-rc.1"},
-    # v1.0.0-rc.1 uses esaml v4.2 which in turn relies on cowboy 2.x
-    # If you need to work with cowboy 1.x, you need the following override:
-    # {:esaml, "~> 3.7", override: true}
+    {:samly, "~> 1.0.0"},
   ]
 end
 ```
-> Starting v0.10.0, Samly uses Cowboy 2.x. This implies that you need to use `phoenix v1.4` and `plug_cowboy v2.0`. Make sure to update your application's `mix.exs` dependencies to reflect this change. If you do not want to use `phoenix v1.4` and want to use Samly with `phoenix v1.3`, make sure to include `:esaml` v3.7 override in your `mix.exs`.
 
 ## Supervision Tree
 
@@ -33,7 +45,7 @@ Add `Samly.Provider` to your application supervision tree.
 
 children = [
   # ...
-  worker(Samly.Provider, []),
+  {Samly.Provider, []},
 ]
 ```
 
@@ -54,12 +66,15 @@ end
 
 ## Certificate and Key for Samly
 
-`Samly` needs a private key and a corresponding certificate. These are used when
-communicating with the Identity Provider.
+`Samly` needs a private key and a corresponding certificate. These are used to
+sign the SAML requests when communicating with the Identity Provider. This certificate
+should be made available to `Samly` via config settings. It should also be made
+available to the Identity Provider so it can verify the SAML signed requests.
 
-A convenient script, `gencert.sh`, is provided in [`samly_howto`](https://github.com/handnot2/samly_howto) to generate the key and certificate.
-Make sure `openssl` is available on your system. The name of the key file and
-certificate file generated should be provided as part of the Samly configuration.
+You can create a self-signed certificate for this purpose. You can use `phx.gen.cert`
+mix task that is available as part of Phoenix 1.4 or use `openssl` directly to generate
+the key and corresponding certificate.
+(Check out [`samly_howto`](https://github.com/handnot2/samly_howto) `README.md` for this.)
 
 ## Identity Provider Metadata
 
@@ -72,14 +87,14 @@ For example, `SimpleSAMLPhp` IdP provides a URL for the metadata. You can fetch
 it using `wget`.
 
 ```
-wget http://samly.idp:8082/simplesaml/saml2/idp/metadata.php -O idp_metadata.xml
+wget --no-check-certificate -O idp1_metadata.xml https://idp1.samly:9091/simplesaml/saml2/idp/metadata.php
 ```
 
 If you are using the `SimpleSAMLPhp` administrative Web UI, login with you
-admin credentials (`http://samly.idp:8082/simplesaml`). Go to the `Federation`
+admin credentials (`https://idp1.samly:9091/simplesaml`). Go to the `Federation`
 tab. At the top there will be a section titled "SAML 2.0 IdP Metadata". Click
 on the `Show metadata` link. Copy the metadata XML from this page and save it
-in a local file (`idp_metadata.xml` for example).
+in a local file (`idp1_metadata.xml` for example).
 
 Make sure to save this XML file and provide the path to the saved file in
 `Samly` configuration.
@@ -98,7 +113,7 @@ Service Provider SAML URLs.
 #### URL Path Segment
 
 In this model, the idp_id is present as a URL path segment. Here is an
-example URL: `http://do-good.org/sso/auth/signin/affiliates`. The idp_id
+example URL: `https://do-good.org/sso/auth/signin/affiliates`. The idp_id
 in this URL is "affiliates". If you have more than one IdP, only this last
 part changes. The URLs for this model are:
 
@@ -106,9 +121,9 @@ part changes. The URLs for this model are:
 |:----|:----|
 | Sign-in button/link in Web UI | `/sso/auth/signin/affiliates` |
 | Sign-out button/link in Web UI | `/sso/auth/signout/affiliates` |
-| SP Metadata URL | `http://do-good.org/sso/sp/metadata/affiliates` |
-| SAML Assertion Consumer Service | `http://do-good.org/sso/sp/consume/affiliates` |
-| SAML SingleLogout Service | `http://do-good.org/sso/sp/logout/affiliates` |
+| SP Metadata URL | `https://do-good.org/sso/sp/metadata/affiliates` |
+| SAML Assertion Consumer Service | `https://do-good.org/sso/sp/consume/affiliates` |
+| SAML SingleLogout Service | `https://do-good.org/sso/sp/logout/affiliates` |
 
 The path segment model is the default one in `Samly`. If there is only one Identity Provider, use this mode.
 
@@ -121,21 +136,29 @@ The path segment model is the default one in `Samly`. If there is only one Ident
 
 #### Subdomain in Host Name
 
-In this model, the subdomain name is used as the idp_id. Here is an example URL: `http://ngo.do-good.org/sso/auth/signin`. Here "ngo" is the idp_id. The URLs supported by `Samly`
+In this model, the subdomain name is used as the idp_id. Here is an example URL: `https://ngo.do-good.org/sso/auth/signin`. Here `ngo` is the idp_id. The URLs supported by `Samly`
 in this model look different.
 
 | Description | URL |
 |:----|:----|
 | Sign-in button/link in Web UI | `/sso/auth/signin` |
 | Sign-out button/link in Web UI | `/sso/auth/signout` |
-| SP Metadata URL | `http://ngo.do-good.org/sso/sp/metadata` |
-| SAML Assertion Consumer Service | `http://ngo.do-good.org/sso/sp/consume` |
-| SAML SingleLogout Service | `http://ngo.do-good.org/sso/sp/logout` |
+| SP Metadata URL | `https://ngo.do-good.org/sso/sp/metadata` |
+| SAML Assertion Consumer Service | `https://ngo.do-good.org/sso/sp/consume` |
+| SAML SingleLogout Service | `https://ngo.do-good.org/sso/sp/logout` |
 
 > Take a look at [`samly_howto`](https://github.com/handnot2/samly_howto) - a reference/demo
 > application on how to use this library.
 >
 > Make sure to use HTTPS URLs in production deployments.
+
+#### Target URL for Sign-In and Sign-Out Actions
+
+The sign-in and sign-out URLs (HTTP GET) mentioned above optionally take a `target_url`
+query parameter. `Samly` will redirect the browser to these URLs upon successfuly
+completing the sign-in/sign-out operations initiated from your application.
+
+> This `target_url` query parameter value must be `x-www-form-urlencoded`.
 
 ## Samly Configuration
 
@@ -148,21 +171,21 @@ config :samly, Samly.Provider,
     %{
       id: "do-good-affiliates-sp",
       entity_id: "urn:do-good.org:affiliates-app",
-      certfile: "path/to/samly/certfile.crt",
+      certfile: "path/to/samly/certfile.pem",
       keyfile: "path/to/samly/keyfile.pem",
       #contact_name: "Affiliates Admin",
       #contact_email: "affiliates-admin@do-good.org",
       #org_name: "Do Good",
       #org_displayname: "Goodly, No evil!",
-      #org_url: "http://do-good.org"
+      #org_url: "https://do-good.org"
     }
   ],
   identity_providers: [
     %{
       id: "affiliates",
       sp_id: "do-good-affiliates-sp",
-      base_url: "http://do-good.org/sso",
-      metadata_file: "idp_metadata.xml",
+      base_url: "https://do-good.org/sso",
+      metadata_file: "idp1_metadata.xml",
       #pre_session_create_pipeline: MySamlyPipeline,
       #use_redirect_for_req: false,
       #sign_requests: true,
@@ -170,7 +193,7 @@ config :samly, Samly.Provider,
       #signed_assertion_in_resp: true,
       #signed_envelopes_in_resp: true,
       #allow_idp_initiated_flow: false,
-      #allowed_target_urls: ["http://do-good.org"],
+      #allowed_target_urls: ["https://do-good.org"],
       #nameid_format: :transient
     }
   ]
@@ -204,8 +227,6 @@ config :samly, Samly.Provider,
 
 #### Authenticated SAML Assertion State Store
 
-> Since v0.10.0
-
 `Samly` internally maintains the authenticated SAML assertions (from `LoginResponse` SAML requests).
 There are two built-in state store options available - one based on ETS and the other on Plug Sessions.
 The ETS store can be setup using the following configuration:
@@ -222,8 +243,10 @@ This state configuration is optional. If omitted, `Samly` uses `Samly.State.ETS`
 |:------------|:-----------|
 | `opts` | _(optional)_ The `:table` option is the ETS table name for storing the assertions. This ETS table is created during the store provider initialization if it is not already present. Default is `samly_assertions_table`. |
 
-Use `Samly.State.Session` provider in a clustered deployment. This provider uses the Plug Sessions to keep
-the authenticated SAML assertions. This provider can be enabled using the following:
+> Use `Samly.State.Session` provider in a clustered deployment. This provider uses
+> the Plug Sessions to keep the authenticated SAML assertions.
+
+This session based provider can be enabled using the following:
 
 ```elixir
 config :samly, Samly.State,
@@ -233,12 +256,12 @@ config :samly, Samly.State,
 
 | Options | Description |
 |:------------|:-----------|
-| `opts` | _(optional)_ The `:key` is the name of the session key where assertion is stored. Default is `samly_assertion`. |
+| `opts` | _(optional)_ The `:key` is the name of the session key where assertion is stored. Default is `:samly_assertion`. |
 
 ## SAML Assertion
 
 Once authentication is completed successfully, IdP sends a "consume" SAML
-request to `Samly`. `Samly` in turn performs its own checks (including checking
+request to `Samly`. `Samly` in-turn performs its own checks (including checking
 the integrity of the "consume" request). At this point, the SAML assertion
 with the authenticated user subject and attributes is available.
 
@@ -344,6 +367,8 @@ in `Samly.Subject.in_response_to` field. It is the responsibility of the consumi
     expects the SAML reqsponses to be signed (both assertion and envelopes). If your IdP is
     not configured to sign, you will have to explicitly turn them off in the configuration.
     It is highly recommended to turn signing on in production deployments.
++   Encypted Assertions are supported in `Samly`. There are no explicit config settings for this. Decryption happens automatically when encrypted assertions are detected in the SAML response.
+    > [Supported Encryption algorithms](https://github.com/handnot2/esaml#assertion-encryption)
 +   Make sure to use HTTPS URLs in production deployments.
 
 ## FAQ
@@ -352,67 +377,19 @@ in `Samly.Subject.in_response_to` field. It is the responsibility of the consumi
 
 Docker based setup of [`SimpleSAMLPhp`](https://simplesamlphp.org) is made available
 at [`samly_simplesaml`](https://github.com/handnot2/samly_simplesaml) Git Repo.
+Check out the `README.md` file of this repo.
 
-```sh
-git clone https://github.com/handnot2/samly_simplesaml
-cd samly_simplesaml
-
-# Ubuntu 16.04 based
-./build.sh
-
-# Follow along README.md (skip SAML Service Provider registration part for now)
-# Edit setup/params/params.yml with appropriate information
-# Add the IDP host name to your /etc/hosts resolving to 127.0.0.1
-# 127.0.0.1 samly.idp
-# Compose exposes and binds to port 8082 by default.
-
-docker-compose up -d
-docker-compose restart
-```
-
-You should have a working SAML 2.0 IdP that you can work with.
+There is also a Docker based setup of [`Shibboleth`](https://www.shibboleth.net/).
+Checkout the corresponding `README.md` file in [`samly_shibboleth`](https://github.com/handnot2/samly_shibboleth) Git Repo.
 
 #### Any sample Phoenix application that shows how to use Samly?
 
 Clone the [`samly_howto`](https://github.com/handnot2/samly_howto) Git Repo.
-
-```sh
-git clone https://github.com/handnot2/samly_howto
-
-# Add the SP host name to your /etc/hosts resolving to 127.0.0.1
-# 127.0.0.1 samly.howto
-
-cd samly_howto
-
-# Use gencert.sh to create a self-signed certificate for the SAML Service Provider
-# embedded in your app (by `Samly`). We will register this and the `Samly` URLs
-# with IdP shortly. Take a look at this script and adjust the certificate subject
-# if needed.
-
-./gencert.sh
-
-# Get NPM assets
-
-cd assets && npm install && cd ..
-
-# Fetch the IdP metadata XML. `Samly` needs this to make sure that it can
-# validate the request/responses to/from IdP.
-
-wget http://samly.idp:8082/simplesaml/saml2/idp/metadata.php -O idp_metadata.xml
-
-mix deps.get
-mix compile
-
-HOST=samly.howto PORT=4003 iex -S mix phx.server
-```
-
-> Important: Make sure that your have registered this application with
-> the IdP before you explore this application using a browser.
-
-Open `http://samly.howto:4003` in your browser and check out the app.
+Detailed instructions on how to setup and run this application are available
+in the `README.md` file in this repo.
 
 > It is recommended that you use the `SamlyHowto` application to
-> sort out any configuration issues by making this demo application work
+> sort out any configuration issues by making that demo application work
 > successfully with your Identity Provider (IdP) before attempting your
 > application.
 >
@@ -420,14 +397,21 @@ Open `http://samly.howto:4003` in your browser and check out the app.
 
 #### How to register the service provider with IdP
 
-Complete the setup by registering `samly_howto` as a Service Provider with the IdP.
+If you are using `samly_simplesaml` or `samly_shibboleth`, the instructions
+you followed there would take care of registering your Phoenix SAML Service provider
+appliccation. For any other IdP, follow the instructions from the respective
+IdP vendor.
 
-```sh
-mkdir -p samly_simplesaml/setup/sp/samly_howto # use the correct path
-cp samly.crt samly_simplesaml/setup/sp/samly_howto/sp.crt
-cd samly_simplesaml
-docker-compose restart
-```
+#### Common Errors
 
-> The IdP related instructions are very specific to the docker based development
-> setup of SimpleSAMLphp IdP. But similar ideas work for your own IdP setup.
+`access_denied {:error, :bad_recipient}` - Check the `base_url` in your `Samly`
+config setting under `indentity_providers`.
+
+`access_denied {:error, :bad_audience}` - Make sure that the `entity_id` in
+the `Samly` config setting is correct.
+
+`access_denied {:envelope, {:error, :cert_no_accepted}}` - Make sure the
+Identity Provider metadata XML file you are using in the `Samly` config setting
+is correct and corresponds to the IdP you are attempting to talk to. You get
+this error if the certificate used by the IdP to sign the SAML responses
+has changed and you don't have the updated IdP metadata XML file on the `Samly` end.
