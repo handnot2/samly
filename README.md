@@ -294,6 +294,7 @@ with the IdP but before a session is created.
 
 This is just a vanilla Plug Pipeline. The SAML assertion from
 the IdP is made available in the Plug connection as a "private".
+(The pipeline plugs have access to the `idp_id` in this assertion.)
 If you want to derive new attributes, create an Elixir map data (`%{}`)
 and update the `computed` field of the SAML assertion and put it back
 in the Plug connection private with `Conn.put_private` call.
@@ -310,6 +311,9 @@ defmodule MySamlyPipeline do
 
   def compute_attributes(conn, _opts) do
     assertion = conn.private[:samly_assertion]
+
+    # This assertion has the idp_id
+    # %Assertion{idp_id: idp_id} = assertion
 
     first_name = Map.get(assertion.attributes, "first_name")
     last_name  = Map.get(assertion.attributes, "last_name")
