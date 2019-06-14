@@ -62,13 +62,13 @@ defmodule Samly.IdpData do
           valid?: boolean()
         }
 
-  @entdesc "md:EntityDescriptor"
-  @idpdesc "md:IDPSSODescriptor"
+  @entdesc "EntityDescriptor"
+  @idpdesc "IDPSSODescriptor"
   @signedreq "WantAuthnRequestsSigned"
   @nameid "md:NameIDFormat"
   @keydesc "md:KeyDescriptor"
-  @ssos "md:SingleSignOnService"
-  @slos "md:SingleLogoutService"
+  @ssos "SingleSignOnService"
+  @slos "SingleLogoutService"
   @redirect "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
   @post "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
 
@@ -82,6 +82,13 @@ defmodule Samly.IdpData do
   @signing_keys_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@keydesc}[@use != 'encryption']"l
   @enc_keys_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@keydesc}[@use = 'encryption']"l
   @cert_selector ~x"./ds:KeyInfo/ds:X509Data/ds:X509Certificate/text()"s
+
+
+  defp entity_by_id_selector(id), do: ~x"/EntitiesDescriptor/EntityDescriptor[@entityID = '#{id}'][1]" # TODO some EntityDescriptor are prefixed with "md:"
+  defp sso_redirect_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@redirect}']/@Location"s
+  defp sso_post_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@post}']/@Location"s
+  defp slo_redirect_url_selector, do: ~x"/#{@entdesc}/#{@slos}[@Binding = '#{@redirect}']/@Location"s
+  defp slo_post_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@post}']/@Location"s
 
   @type id :: binary()
 
@@ -121,9 +128,9 @@ defmodule Samly.IdpData do
   end
 
   @spec load_metadata(%IdpData{}, map()) :: %IdpData{}
-  defp load_metadata(idp_data, _opts_map) do
+  defp load_metadata(idp_data, opts_map) do
     with {:reading, {:ok, raw_xml}} <- {:reading, File.read(idp_data.metadata_file)},
-         {:parsing, {:ok, idp_data}} <- {:parsing, from_xml(raw_xml, idp_data)} do
+         {:parsing, {:ok, idp_data}} <- {:parsing, from_xml(raw_xml, idp_data, opts_map)} do
       idp_data
     else
       {:reading, {:error, reason}} ->
@@ -251,8 +258,8 @@ defmodule Samly.IdpData do
     if is_boolean(v), do: Map.put(idp_data, attr_name, v), else: idp_data
   end
 
-  @spec from_xml(binary, %IdpData{}) :: {:ok, %IdpData{}}
-  def from_xml(metadata_xml, idp_data) when is_binary(metadata_xml) do
+  @spec from_xml(binary, %IdpData{}, %{}) :: {:ok, %IdpData{}}
+  def from_xml(metadata_xml, idp_data, opts) when is_binary(metadata_xml) do
     xml_opts = [
       space: :normalize,
       namespace_conformant: true,
@@ -261,21 +268,45 @@ defmodule Samly.IdpData do
     ]
 
     md_xml = SweetXml.parse(metadata_xml, xml_opts)
+
+    entityID = case opts[:entity_id] do
+      nil -> # not provided, we assume file has only one EntityDescriptor
+        get_entity_id(md_xml)
+      e ->
+        e
+    end
+
+    IO.puts "entity_md_xml:"
+    entity_md_xml = get_entity_descriptor(md_xml, entityID) |> IO.inspect
     signing_certs = get_signing_certs(md_xml)
 
-    {:ok,
-     %IdpData{
-       idp_data
-       | entity_id: get_entity_id(md_xml),
-         signed_requests: get_req_signed(md_xml),
-         certs: signing_certs,
-         fingerprints: idp_cert_fingerprints(signing_certs),
-         sso_redirect_url: get_sso_redirect_url(md_xml),
-         sso_post_url: get_sso_post_url(md_xml),
-         slo_redirect_url: get_slo_redirect_url(md_xml),
-         slo_post_url: get_slo_post_url(md_xml),
-         nameid_format: get_nameid_format(md_xml)
-     }}
+    IO.puts "slo_redirect_url:"
+    slo_redirect_url = get_slo_redirect_url(entity_md_xml) |> IO.inspect
+    IO.puts "slo_post_url:"
+    slo_post_url = get_slo_post_url(entity_md_xml) |> IO.inspect
+    IO.puts "sso_redirect_url:"
+    sso_redirect_url = get_sso_redirect_url(entity_md_xml) |> IO.inspect
+    IO.puts "sso_post_url:"
+    sso_post_url = get_sso_post_url(entity_md_xml) |> IO.inspect
+
+    case entity_md_xml do
+      nil ->
+        {:error, :entity_not_found}
+      _ ->
+        {:ok,
+          %IdpData{
+            idp_data
+            | entity_id: entityID,
+            signed_requests: get_req_signed(md_xml),
+            certs: signing_certs,
+            fingerprints: idp_cert_fingerprints(signing_certs),
+            sso_redirect_url: get_sso_redirect_url(entity_md_xml),
+            sso_post_url: get_sso_post_url(entity_md_xml),
+            slo_redirect_url: slo_redirect_url,
+            slo_post_url: slo_post_url,
+            nameid_format: get_nameid_format(entity_md_xml)
+          }}
+    end
   end
 
   # @spec to_esaml_idp_metadata(IdpData.t(), map()) :: :esaml_idp_metadata
@@ -395,16 +426,16 @@ defmodule Samly.IdpData do
   end
 
   @spec get_sso_redirect_url(:xmlElement) :: url()
-  def get_sso_redirect_url(md_elem), do: get_url(md_elem, @sso_redirect_url_selector)
+  def get_sso_redirect_url(md_elem), do: get_url(md_elem, sso_redirect_url_selector())
 
   @spec get_sso_post_url(:xmlElement) :: url()
-  def get_sso_post_url(md_elem), do: get_url(md_elem, @sso_post_url_selector)
+  def get_sso_post_url(md_elem), do: get_url(md_elem, sso_post_url_selector())
 
   @spec get_slo_redirect_url(:xmlElement) :: url()
-  def get_slo_redirect_url(md_elem), do: get_url(md_elem, @slo_redirect_url_selector)
+  def get_slo_redirect_url(md_elem), do: get_url(md_elem, slo_redirect_url_selector())
 
   @spec get_slo_post_url(:xmlElement) :: url()
-  def get_slo_post_url(md_elem), do: get_url(md_elem, @slo_post_url_selector)
+  def get_slo_post_url(md_elem), do: get_url(md_elem, slo_post_url_selector())
 
   @spec get_url(:xmlElement, %SweetXpath{}) :: url()
   defp get_url(md_elem, selector) do
@@ -425,4 +456,12 @@ defmodule Samly.IdpData do
     |> SweetXml.add_namespace("md", "urn:oasis:names:tc:SAML:2.0:metadata")
     |> SweetXml.add_namespace("ds", "http://www.w3.org/2000/09/xmldsig#")
   end
+
+  @spec get_entity_descriptor(:xmlElement, entityID :: binary()) :: :xmlElement | nil
+  defp get_entity_descriptor(md_xml, entityID) do
+    IO.puts "Using selector:"
+    selector = entity_by_id_selector(entityID) |> IO.inspect
+    SweetXml.xpath(md_xml, selector)
+  end
+
 end
