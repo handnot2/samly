@@ -62,11 +62,12 @@ defmodule Samly.IdpData do
           valid?: boolean()
         }
 
+  @entsdesc "EntitiesDescriptor"
   @entdesc "EntityDescriptor"
   @idpdesc "IDPSSODescriptor"
   @signedreq "WantAuthnRequestsSigned"
-  @nameid "md:NameIDFormat"
-  @keydesc "md:KeyDescriptor"
+  @nameid "NameIDFormat"
+  @keydesc "KeyDescriptor"
   @ssos "SingleSignOnService"
   @slos "SingleLogoutService"
   @redirect "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
@@ -79,16 +80,23 @@ defmodule Samly.IdpData do
   @sso_post_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@post}']/@Location"s
   @slo_redirect_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@redirect}']/@Location"s
   @slo_post_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@post}']/@Location"s
-  @signing_keys_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@keydesc}[@use != 'encryption']"l
-  @enc_keys_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@keydesc}[@use = 'encryption']"l
-  @cert_selector ~x"./ds:KeyInfo/ds:X509Data/ds:X509Certificate/text()"s
+
+  @signing_keys_selector ~x"/#{@entsdesc}/#{@idpdesc}/#{@keydesc}[@use != 'encryption']"l
+  @cert_selector ~x"/#{@entsdesc}/ds:KeyInfo/ds:X509Data/ds:X509Certificate/text()"s
 
 
-  defp entity_by_id_selector(id), do: ~x"/EntitiesDescriptor/EntityDescriptor[@entityID = '#{id}'][1]" # TODO some EntityDescriptor are prefixed with "md:"
+  defp entity_by_id_selector(id), do: ~x"//#{@entdesc}[@entityID = '#{id}'][1]" # TODO some EntityDescriptor are prefixed with "md:"
   defp sso_redirect_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@redirect}']/@Location"s
   defp sso_post_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@post}']/@Location"s
   defp slo_redirect_url_selector, do: ~x"/#{@entdesc}/#{@slos}[@Binding = '#{@redirect}']/@Location"s
   defp slo_post_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@post}']/@Location"s
+
+
+  defp nameid_format_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@nameid}[1]/text()"s # TODO for now [1].
+
+  #defp signing_keys_selector, do: ~x"./ds:Signature/ds:KeyInfo/ds:X509Data/ds:X509Certificate/text()[@use != 'encryption']"l
+  defp signing_keys_in_idp_selector, do: ~x"./#{@idpdesc}/#{@keydesc}[@use != 'encryption']"l
+  defp cert_selector, do: ~x"./ds:KeyInfo/ds:X509Data/ds:X509Certificate/text()"s
 
   @type id :: binary()
 
@@ -276,23 +284,29 @@ defmodule Samly.IdpData do
         e
     end
 
-    IO.puts "entity_md_xml:"
-    entity_md_xml = get_entity_descriptor(md_xml, entityID) |> IO.inspect
-    signing_certs = get_signing_certs(md_xml)
+    entity_md_xml = get_entity_descriptor(md_xml, entityID)
 
-    IO.puts "slo_redirect_url:"
-    slo_redirect_url = get_slo_redirect_url(entity_md_xml) |> IO.inspect
-    IO.puts "slo_post_url:"
-    slo_post_url = get_slo_post_url(entity_md_xml) |> IO.inspect
-    IO.puts "sso_redirect_url:"
-    sso_redirect_url = get_sso_redirect_url(entity_md_xml) |> IO.inspect
-    IO.puts "sso_post_url:"
-    sso_post_url = get_sso_post_url(entity_md_xml) |> IO.inspect
+    
 
     case entity_md_xml do
       nil ->
         {:error, :entity_not_found}
       _ ->
+        signing_certs = get_signing_certs_in_idp(entity_md_xml)
+        IO.puts "Got #{signing_certs |> length} signing_certs from #{entityID}"
+
+        IO.puts "slo_redirect_url:"
+        slo_redirect_url = get_slo_redirect_url(entity_md_xml) |> IO.inspect
+        IO.puts "slo_post_url:"
+        slo_post_url = get_slo_post_url(entity_md_xml) |> IO.inspect
+        IO.puts "sso_redirect_url:"
+        sso_redirect_url = get_sso_redirect_url(entity_md_xml) |> IO.inspect
+        IO.puts "sso_post_url:"
+        sso_post_url = get_sso_post_url(entity_md_xml) |> IO.inspect
+
+        IO.puts "nameid_format:"
+        nameid_format = get_nameid_format(entity_md_xml) |> IO.inspect
+
         {:ok,
           %IdpData{
             idp_data
@@ -304,7 +318,7 @@ defmodule Samly.IdpData do
             sso_post_url: get_sso_post_url(entity_md_xml),
             slo_redirect_url: slo_redirect_url,
             slo_post_url: slo_post_url,
-            nameid_format: get_nameid_format(entity_md_xml)
+            nameid_format: nameid_format 
           }}
     end
   end
@@ -395,7 +409,7 @@ defmodule Samly.IdpData do
 
   @spec get_nameid_format(:xmlElement) :: nameid_format()
   def get_nameid_format(md_elem) do
-    case get_data(md_elem, @nameid_format_selector) do
+    case get_data(md_elem, nameid_format_selector()) do
       "" -> :unknown
       nameid_format -> to_charlist(nameid_format)
     end
@@ -404,11 +418,10 @@ defmodule Samly.IdpData do
   @spec get_req_signed(:xmlElement) :: binary()
   def get_req_signed(md_elem), do: get_data(md_elem, @req_signed_selector)
 
-  @spec get_signing_certs(:xmlElement) :: certs()
-  def get_signing_certs(md_elem), do: get_certs(md_elem, @signing_keys_selector)
+  #@spec get_signing_certs(:xmlElement) :: certs()
+  #def get_signing_certs(md_elem), do: get_certs(md_elem, signing_keys_selector())
 
-  @spec get_enc_certs(:xmlElement) :: certs()
-  def get_enc_certs(md_elem), do: get_certs(md_elem, @enc_keys_selector)
+  def get_signing_certs_in_idp(md_elem), do: get_certs(md_elem, signing_keys_in_idp_selector())
 
   @spec get_certs(:xmlElement, %SweetXpath{}) :: certs()
   defp get_certs(md_elem, key_selector) do
@@ -416,7 +429,7 @@ defmodule Samly.IdpData do
     |> xpath(key_selector |> add_ns())
     |> Enum.map(fn e ->
       # Extract base64 encoded cert from XML (strip away any whitespace)
-      cert = xpath(e, @cert_selector |> add_ns())
+      cert = xpath(e, cert_selector() |> add_ns())
 
       cert
       |> String.split()
@@ -459,9 +472,12 @@ defmodule Samly.IdpData do
 
   @spec get_entity_descriptor(:xmlElement, entityID :: binary()) :: :xmlElement | nil
   defp get_entity_descriptor(md_xml, entityID) do
-    IO.puts "Using selector:"
-    selector = entity_by_id_selector(entityID) |> IO.inspect
-    SweetXml.xpath(md_xml, selector)
+    selector = entity_by_id_selector(entityID)
+    try do
+      SweetXml.xpath(md_xml, selector)
+    rescue
+      e -> {:error, :entity_not_found}
+    end
   end
 
 end
