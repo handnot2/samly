@@ -88,7 +88,7 @@ defmodule Samly.IdpData do
   defp entity_by_id_selector(id), do: ~x"//#{@entdesc}[@entityID = '#{id}'][1]" # TODO some EntityDescriptor are prefixed with "md:"
   defp sso_redirect_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@redirect}']/@Location"s
   defp sso_post_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@post}']/@Location"s
-  defp slo_redirect_url_selector, do: ~x"/#{@entdesc}/#{@slos}[@Binding = '#{@redirect}']/@Location"s
+  defp slo_redirect_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@redirect}']/@Location"s
   defp slo_post_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@post}']/@Location"s
 
 
