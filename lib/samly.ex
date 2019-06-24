@@ -59,4 +59,9 @@ defmodule Samly do
   def get_attribute(%Assertion{} = assertion, name) do
     Map.get(assertion.computed, name) || Map.get(assertion.attributes, name)
   end
+
+  def logout(conn) do
+    conn
+    |> Conn.delete_session("samly_assertion_key")
+  end
 end
