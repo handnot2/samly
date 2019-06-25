@@ -74,27 +74,16 @@ defmodule Samly.IdpData do
   @post "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
 
   @entity_id_selector ~x"//#{@entdesc}/@entityID"sl
-  @nameid_format_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@nameid}/text()"s
   @req_signed_selector ~x"//#{@entdesc}/#{@idpdesc}/@#{@signedreq}"s
-  @sso_redirect_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@redirect}']/@Location"s
-  @sso_post_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@post}']/@Location"s
-  @slo_redirect_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@redirect}']/@Location"s
-  @slo_post_url_selector ~x"//#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@post}']/@Location"s
-
-  @signing_keys_selector ~x"/#{@entsdesc}/#{@idpdesc}/#{@keydesc}[@use != 'encryption']"l
-  @cert_selector ~x"/#{@entsdesc}/ds:KeyInfo/ds:X509Data/ds:X509Certificate/text()"s
 
 
-  defp entity_by_id_selector(id), do: ~x"//#{@entdesc}[@entityID = '#{id}'][1]" # TODO some EntityDescriptor are prefixed with "md:"
+  defp entity_by_id_selector(id), do: ~x"/#{@entsdesc}/#{@entdesc}[@entityID = '#{id}'][1]" # TODO some EntityDescriptor are prefixed with "md:"
+  # These functions work on EntityDescriptor element
   defp sso_redirect_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@redirect}']/@Location"s
   defp sso_post_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@post}']/@Location"s
   defp slo_redirect_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@redirect}']/@Location"s
   defp slo_post_url_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@post}']/@Location"s
-
-
   defp nameid_format_selector, do: ~x"/#{@entdesc}/#{@idpdesc}/#{@nameid}[1]/text()"s # TODO for now [1].
-
-  #defp signing_keys_selector, do: ~x"./ds:Signature/ds:KeyInfo/ds:X509Data/ds:X509Certificate/text()[@use != 'encryption']"l
   defp signing_keys_in_idp_selector, do: ~x"./#{@idpdesc}/#{@keydesc}[@use != 'encryption']"l
   defp cert_selector, do: ~x"./ds:KeyInfo/ds:X509Data/ds:X509Certificate/text()"s
 
@@ -314,8 +303,8 @@ defmodule Samly.IdpData do
             signed_requests: get_req_signed(md_xml),
             certs: signing_certs,
             fingerprints: idp_cert_fingerprints(signing_certs),
-            sso_redirect_url: get_sso_redirect_url(entity_md_xml),
-            sso_post_url: get_sso_post_url(entity_md_xml),
+            sso_redirect_url: sso_redirect_url,
+            sso_post_url: sso_post_url,
             slo_redirect_url: slo_redirect_url,
             slo_post_url: slo_post_url,
             nameid_format: nameid_format 
@@ -476,7 +465,7 @@ defmodule Samly.IdpData do
     try do
       SweetXml.xpath(md_xml, selector)
     rescue
-      e -> {:error, :entity_not_found}
+      _ -> {:error, :entity_not_found}
     end
   end
 
