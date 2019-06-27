@@ -268,12 +268,11 @@ defmodule Samly.IdpData do
 
     md_xml = SweetXml.parse(metadata_xml, xml_opts)
 
-    entityID = case opts[:entity_id] do
-      nil ->
-        get_entity_id(md_xml)
-      e ->
-        e
-    end
+    entityID =
+      case federation_metadata?(opts) do
+        false -> get_entity_id(md_xml)
+        true -> opts[:entity_id]
+      end
 
     entity_md_xml = get_entity_descriptor(md_xml, entityID)
 
@@ -300,6 +299,8 @@ defmodule Samly.IdpData do
           }}
     end
   end
+
+  defp federation_metadata?(opts), do: opts[:entity_id] != nil
 
   # @spec to_esaml_idp_metadata(IdpData.t(), map()) :: :esaml_idp_metadata
   defp to_esaml_idp_metadata(%IdpData{} = idp_data, %{} = idp_config) do
