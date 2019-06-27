@@ -44,6 +44,14 @@ defmodule SamlyIdpDataTest do
     metadata_file: "test/data/idp_metadata.xml"
   }
 
+  @federation_idp_config1 %{
+    id: "some_random_id",
+    entity_id: "https://test.eduid.ch/idp/shibboleth",
+    sp_id: "sp2",
+    base_url: "http://samly.howto:4003/sso",
+    metadata_file: "test/data/idp_federation_metadata.xml"
+  }
+
   setup context do
     sp_data1 = SpData.load_provider(@sp_config1)
     sp_data2 = SpData.load_provider(@sp_config2)
@@ -280,5 +288,28 @@ defmodule SamlyIdpDataTest do
 
     %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
     assert idp_data.nameid_format == :unknown
+  end
+
+  test "valid federation config", %{sps: sps} do
+    idp_data = IdpData.load_provider(@federation_idp_config1, sps)
+    %IdpData{
+      entity_id: entity_id,
+      sso_post_url: sso_post_url,
+      sso_redirect_url: sso_redirect_url,
+      slo_redirect_url: slo_redirect_url,
+      slo_post_url: nil,
+      nameid_format: id_formats,
+      certs: certs
+    } = idp_data
+
+    assert entity_id == "https://test.eduid.ch/idp/shibboleth"
+    assert sso_post_url == "https://login.test.eduid.ch/idp/profile/SAML2/POST/SSO"
+    assert sso_redirect_url == "https://login.test.eduid.ch/idp/profile/SAML2/Redirect/SSO"
+    assert slo_redirect_url == "https://login.test.eduid.ch/idp/profile/SAML2/Redirect/SLO"
+
+    assert 1 == length(certs)
+    # TODO Should we keep a list of nameid formats or just one value?
+    assert ["urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"]
+    == id_formats |> Enum.map(&to_string/1) |> Enum.sort()
   end
 end
