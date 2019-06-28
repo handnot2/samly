@@ -217,6 +217,7 @@ config :samly, Samly.Provider,
 | `sp_id` | _(mandatory)_ The service provider definition to be used with this Identity Provider definition |
 | `base_url` | _(optional)_ If missing `Samly` will use the current URL to derive this. It is better to define this in production deployment. |
 | `metadata_file` | _(mandatory)_ Path to the IdP metadata XML file obtained from the Identity Provider. |
+| `entity_id` | _(optional)_ In case metadata file contains federation definition (root element is `EntitiesDescriptor`) this field is necessary. Based on that samly will extract appropriate idp element.
 | `pre_session_create_pipeline` | _(optional)_ Check the customization section. |
 | `use_redirect_for_req` | _(optional)_ Default is `false`. When this is `false`, `Samly` will POST to the IdP SAML endpoints. |
 | `sign_requests`, `sign_metadata` | _(optional)_ Default is `true`. |
