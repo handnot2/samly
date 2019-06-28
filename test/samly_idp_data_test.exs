@@ -290,7 +290,7 @@ defmodule SamlyIdpDataTest do
     assert idp_data.nameid_format == :unknown
   end
 
-  test "valid federation config", %{sps: sps} do
+  test "Federation metadata can be provided for an idp along with its entityID", %{sps: sps} do
     idp_data = IdpData.load_provider(@federation_idp_config1, sps)
     %IdpData{
       entity_id: entity_id,
@@ -298,7 +298,7 @@ defmodule SamlyIdpDataTest do
       sso_redirect_url: sso_redirect_url,
       slo_redirect_url: slo_redirect_url,
       slo_post_url: nil,
-      nameid_format: id_formats,
+      nameid_format: id_format,
       certs: certs
     } = idp_data
 
@@ -308,8 +308,6 @@ defmodule SamlyIdpDataTest do
     assert slo_redirect_url == "https://login.test.eduid.ch/idp/profile/SAML2/Redirect/SLO"
 
     assert 1 == length(certs)
-    # TODO Should we keep a list of nameid formats or just one value?
-    assert ["urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient"]
-    == id_formats |> Enum.map(&to_string/1) |> Enum.sort()
+    assert 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient' == id_format
   end
 end

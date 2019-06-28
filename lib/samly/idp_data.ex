@@ -83,7 +83,7 @@ defmodule Samly.IdpData do
   @sso_post_url_selector ~x"/#{@entdesc}/#{@idpdesc}/#{@ssos}[@Binding = '#{@post}']/@Location"s
   @slo_redirect_url_selector ~x"/#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@redirect}']/@Location"s
   @slo_post_url_selector ~x"/#{@entdesc}/#{@idpdesc}/#{@slos}[@Binding = '#{@post}']/@Location"s
-  @nameid_format_selector ~x"/#{@entdesc}/#{@idpdesc}/#{@nameid}/text()"s # TODO How to deal with multiple nameid formats?
+  @nameid_format_selector ~x"/#{@entdesc}/#{@idpdesc}/#{@nameid}/text()[1]"s # TODO How to deal with multiple nameid formats?
   @signing_keys_in_idp_selector ~x"./#{@idpdesc}/#{@keydesc}[@use != 'encryption']"l
   @cert_selector ~x"./ds:KeyInfo/ds:X509Data/ds:X509Certificate/text()"s
 
