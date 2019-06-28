@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><md:EntitiesDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui" xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="AAITest-20190613090159" Name="urn:mace:switch.ch:aaitest" validUntil="2019-06-18T07:01:59Z" xsi:schemaLocation="urn:oasis:names:tc:SAML:2.0:metadata saml-schema-metadata-2.0.xsd urn:mace:shibboleth:metadata:1.0 shibboleth-metadata-1.0.xsd http://www.w3.org/2000/09/xmldsig# xmldsig-core-schema.xsd"><ds:Signature>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><EntitiesDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:mdrpi="urn:oasis:names:tc:SAML:metadata:rpi" xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui" xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="AAITest-20190613090159" Name="urn:mace:switch.ch:aaitest" validUntil="2019-06-18T07:01:59Z" xsi:schemaLocation="urn:oasis:names:tc:SAML:2.0:metadata saml-schema-metadata-2.0.xsd urn:mace:shibboleth:metadata:1.0 shibboleth-metadata-1.0.xsd http://www.w3.org/2000/09/xmldsig# xmldsig-core-schema.xsd"><ds:Signature>
 <ds:SignedInfo>
 <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
 <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
@@ -136,7 +136,7 @@ kTrorHQ4/wGoDIpifcLse8Rj3PZdMQ==
     <!-- Identity Provider Metadata -->
 
 	<!-- AAI Demo Home Organisation -->
-	<md:EntityDescriptor entityID="https://aai-demo-idp.switch.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aai-demo-idp.switch.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -150,9 +150,9 @@ kTrorHQ4/wGoDIpifcLse8Rj3PZdMQ==
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">aai-demo-idp.switch.ch</shibmd:Scope>
+				<shibScope regexp="false">aai-demo-idp.switch.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="de">AAI Demo Home Organisation</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="en">AAI Demo Home Organisation</mdui:DisplayName>
@@ -169,7 +169,7 @@ kTrorHQ4/wGoDIpifcLse8Rj3PZdMQ==
 					<mdui:DomainHint>example.org</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -194,21 +194,21 @@ JLuwKIc2AqbiZQxOuWf/+la8SBstg/xzsU0cLX43tD6b5AZajCylvU1RaxEkFBRb
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-demo-idp.switch.ch:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-demo-idp.switch.ch:8443/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-demo-idp.switch.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-demo-idp.switch.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-demo-idp.switch.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-demo-idp.switch.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-demo-idp.switch.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-demo-idp.switch.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">aai-demo-idp.switch.ch</shibmd:Scope>
+				<shibScope regexp="false">aai-demo-idp.switch.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -233,12 +233,12 @@ JLuwKIc2AqbiZQxOuWf/+la8SBstg/xzsU0cLX43tD6b5AZajCylvU1RaxEkFBRb
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-demo-idp.switch.ch:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-demo-idp.switch.ch:8443/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">aai-demo-idp.switch.ch</OrganizationName>
@@ -247,10 +247,10 @@ JLuwKIc2AqbiZQxOuWf/+la8SBstg/xzsU0cLX43tD6b5AZajCylvU1RaxEkFBRb
 			<OrganizationURL xml:lang="de">http://www.aai-demo-idp.switch.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="en">http://www.aai-demo-idp.switch.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- ETH Zurich (BI test) -->
-	<md:EntityDescriptor entityID="https://aai-logon-bi-test.ethz.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aai-logon-bi-test.ethz.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -264,9 +264,9 @@ JLuwKIc2AqbiZQxOuWf/+la8SBstg/xzsU0cLX43tD6b5AZajCylvU1RaxEkFBRb
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor errorURL="http://www.id.ethz.ch/servicedesk" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor errorURL="http://www.id.ethz.ch/servicedesk" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">aai-logon-bi-test.ethz.ch</shibmd:Scope>
+				<shibScope regexp="false">aai-logon-bi-test.ethz.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="de">ETH Zürich (BI test)</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="en">ETH Zurich (BI test)</mdui:DisplayName>
@@ -283,7 +283,7 @@ JLuwKIc2AqbiZQxOuWf/+la8SBstg/xzsU0cLX43tD6b5AZajCylvU1RaxEkFBRb
 					<mdui:GeolocationHint>geo:46.022244,8.916146</mdui:GeolocationHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -326,22 +326,22 @@ Nc+ngn1OAVc=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">aai-logon-bi-test.ethz.ch</shibmd:Scope>
+				<shibScope regexp="false">aai-logon-bi-test.ethz.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -384,12 +384,12 @@ Nc+ngn1OAVc=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-logon-bi-test.ethz.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">aai-logon-bi-test.ethz.ch</OrganizationName>
@@ -398,10 +398,10 @@ Nc+ngn1OAVc=
 			<OrganizationURL xml:lang="de">http://www.aai-logon-bi-test.ethz.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="en">http://www.aai-logon-bi-test.ethz.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- HES-SO Test IdP -->
-	<md:EntityDescriptor entityID="https://aai-logon-test.hes-so.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aai-logon-test.hes-so.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -415,9 +415,9 @@ Nc+ngn1OAVc=
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">aai-logon-test.hes-so.ch</shibmd:Scope>
+				<shibScope regexp="false">aai-logon-test.hes-so.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">HES-SO Test IdP</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="fr">HES-SO Test IdP</mdui:DisplayName>
@@ -428,7 +428,7 @@ Nc+ngn1OAVc=
 					<mdui:DomainHint>aai-logon-test.hes-so.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -453,22 +453,22 @@ yIjEdB67LkSbGlrCa0glLGKZFnAqEXxgKGgFLOZS0dZhGf0byWcVLjLtfoM8ntyN
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-logon-test.hes-so.ch/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-logon-test.hes-so.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-logon-test.hes-so.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-logon-test.hes-so.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-logon-test.hes-so.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://aai-logon-test.hes-so.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-logon-test.hes-so.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-logon-test.hes-so.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-logon-test.hes-so.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://aai-logon-test.hes-so.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">aai-logon-test.hes-so.ch</shibmd:Scope>
+				<shibScope regexp="false">aai-logon-test.hes-so.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -493,12 +493,12 @@ yIjEdB67LkSbGlrCa0glLGKZFnAqEXxgKGgFLOZS0dZhGf0byWcVLjLtfoM8ntyN
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-logon-test.hes-so.ch/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-logon-test.hes-so.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">aai-logon-test.hes-so.ch</OrganizationName>
@@ -507,10 +507,10 @@ yIjEdB67LkSbGlrCa0glLGKZFnAqEXxgKGgFLOZS0dZhGf0byWcVLjLtfoM8ntyN
 			<OrganizationURL xml:lang="en">http://www.aai-logon-test.hes-so.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="fr">http://www.aai-logon-test.hes-so.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- HUG Idp TEST -->
-	<md:EntityDescriptor entityID="https://aai-test.hcuge.ch/idp">
+	<EntityDescriptor entityID="https://aai-test.hcuge.ch/idp">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -524,9 +524,9 @@ yIjEdB67LkSbGlrCa0glLGKZFnAqEXxgKGgFLOZS0dZhGf0byWcVLjLtfoM8ntyN
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">aai-test.hcuge.ch</shibmd:Scope>
+				<shibScope regexp="false">aai-test.hcuge.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">HUG Test IdP</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="fr">HUG Idp TEST</mdui:DisplayName>
@@ -539,7 +539,7 @@ yIjEdB67LkSbGlrCa0glLGKZFnAqEXxgKGgFLOZS0dZhGf0byWcVLjLtfoM8ntyN
 					<mdui:GeolocationHint>geo:46.19383,6.14882</mdui:GeolocationHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -584,15 +584,15 @@ a1oLA25R+SSx9x3c3AwNzRByoW7HfR7SaINGhlv8z/xiFDQm53x0IOCWA1EeKozQ
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-			<md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-test.hcuge.ch/saml/idp/profile/redirect/sls"/>
-			<md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-test.hcuge.ch/saml/idp/profile/post/sls"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-test.hcuge.ch/saml/idp/profile/redirectorpost/sso"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-test.hcuge.ch/saml/idp/profile/redirectorpost/sso"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-test.hcuge.ch/saml/idp/profile/ecp/sso"/>
-		</md:IDPSSODescriptor>
+			</KeyDescriptor>
+			<SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-test.hcuge.ch/saml/idp/profile/redirect/sls"/>
+			<SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-test.hcuge.ch/saml/idp/profile/post/sls"/>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-test.hcuge.ch/saml/idp/profile/redirectorpost/sso"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-test.hcuge.ch/saml/idp/profile/redirectorpost/sso"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-test.hcuge.ch/saml/idp/profile/ecp/sso"/>
+		</IDPSSODescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">aai-test.hcuge.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">HUG Test IdP</OrganizationDisplayName>
@@ -600,10 +600,10 @@ a1oLA25R+SSx9x3c3AwNzRByoW7HfR7SaINGhlv8z/xiFDQm53x0IOCWA1EeKozQ
 			<OrganizationURL xml:lang="en">http://www.aai-test.hcuge.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="fr">http://www.aai-test.hcuge.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- FHNW-DEV - Fachhochschule Nordwestschweiz -->
-	<md:EntityDescriptor entityID="https://aai-logon.dev.fhnw.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aai-logon.dev.fhnw.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -617,9 +617,9 @@ a1oLA25R+SSx9x3c3AwNzRByoW7HfR7SaINGhlv8z/xiFDQm53x0IOCWA1EeKozQ
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">dev.fhnw.ch</shibmd:Scope>
+				<shibScope regexp="false">dev.fhnw.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">FHNW-DEV - Fachhochschule Nordwestschweiz</mdui:DisplayName>
 					<mdui:Description xml:lang="en">FHNW-DEV IdP of: dev.fhnw.ch</mdui:Description>
@@ -627,7 +627,7 @@ a1oLA25R+SSx9x3c3AwNzRByoW7HfR7SaINGhlv8z/xiFDQm53x0IOCWA1EeKozQ
 				<mdui:DiscoHints>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -652,21 +652,21 @@ CG9Wz9KLfaxssPHaavd96MVteM8=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-logon.dev.fhnw.ch/shibboleth-idp/Artifact" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-logon.dev.fhnw.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-logon.dev.fhnw.ch/shibboleth-idp/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-logon.dev.fhnw.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-logon.dev.fhnw.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-logon.dev.fhnw.ch/shibboleth-idp/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-logon.dev.fhnw.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-logon.dev.fhnw.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">dev.fhnw.ch</shibmd:Scope>
+				<shibScope regexp="false">dev.fhnw.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -691,22 +691,22 @@ CG9Wz9KLfaxssPHaavd96MVteM8=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-logon.dev.fhnw.ch/shibboleth-idp/AA"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-logon.dev.fhnw.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">dev.fhnw.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">FHNW-DEV - Fachhochschule Nordwestschweiz</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.dev.fhnw.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- Bootstrapped Home Organization e-xpertsolutions.com -->
-	<md:EntityDescriptor entityID="https://fedauth.e-xpertsolutions.com">
+	<EntityDescriptor entityID="https://fedauth.e-xpertsolutions.com">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -720,9 +720,9 @@ CG9Wz9KLfaxssPHaavd96MVteM8=
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">e-xpertsolutions.com</shibmd:Scope>
+				<shibScope regexp="false">e-xpertsolutions.com</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">Bootstrapped Home Organization e-xpertsolutions.com</mdui:DisplayName>
 					<mdui:Description xml:lang="en">Bootstrapped IdP of: e-xpertsolutions.com</mdui:Description>
@@ -730,7 +730,7 @@ CG9Wz9KLfaxssPHaavd96MVteM8=
 				<mdui:DiscoHints>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -760,20 +760,20 @@ JNnDUuUfZAZMhvke/Df73gMbaQ3zQmwe9UhYggnwutBDf6PlDQ==
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://fedauth.e-xpertsolutions.com/saml/idp/profile/redirectorpost/sso"/>
-		</md:IDPSSODescriptor>
+			</KeyDescriptor>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://fedauth.e-xpertsolutions.com/saml/idp/profile/redirectorpost/sso"/>
+		</IDPSSODescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">e-xpertsolutions.com</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">Bootstrapped Home Organization e-xpertsolutions.com</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.e-xpertsolutions.com/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- Graduate Institute - Test IdP -->
-	<md:EntityDescriptor entityID="https://idp-dev.graduateinstitute.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://idp-dev.graduateinstitute.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -790,9 +790,9 @@ JNnDUuUfZAZMhvke/Df73gMbaQ3zQmwe9UhYggnwutBDf6PlDQ==
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">graduateinstitute.ch</shibmd:Scope>
+				<shibScope regexp="false">graduateinstitute.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">Graduate Institute - Test IdP</mdui:DisplayName>
 					<mdui:Description xml:lang="en">Test IdP of the Graduate Institute of International and Development Studies</mdui:Description>
@@ -801,7 +801,7 @@ JNnDUuUfZAZMhvke/Df73gMbaQ3zQmwe9UhYggnwutBDf6PlDQ==
 					<mdui:GeolocationHint>geo:46.22097,6.14375</mdui:GeolocationHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -826,19 +826,19 @@ pa1lQomsWHiCP19hC2za2mWHu/WdtcLLphdA3t2K6+dmR9WX6O8YzcSyk6gLtZF9
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp-dev.graduateinstitute.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="1"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp-dev.graduateinstitute.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp-dev.graduateinstitute.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://idp-dev.graduateinstitute.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp-dev.graduateinstitute.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp-dev.graduateinstitute.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://idp-dev.graduateinstitute.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">graduateinstitute.ch</shibmd:Scope>
+				<shibScope regexp="false">graduateinstitute.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -863,26 +863,26 @@ pa1lQomsWHiCP19hC2za2mWHu/WdtcLLphdA3t2K6+dmR9WX6O8YzcSyk6gLtZF9
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp-dev.graduateinstitute.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">graduateinstitute.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">Graduate Institute - Test IdP</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.graduateinstitute.ch/</OrganizationURL>
 		</Organization>                
-		<ContactPerson xmlns:remd="http://refeds.org/metadata" contactType="other" remd:contactType="http://refeds.org/metadata/contactType/security">
+		<ContactPerson xmlns:remd="http://refeds.org/metadata" contactType="other" recontactType="http://refeds.org/metadata/contactType/security">
 			<GivenName>Wilfred</GivenName>
 			<SurName>Gander</SurName>
 			<EmailAddress>mailto:wilfred.gander@graduateinstitute.ch</EmailAddress>
 			
 		</ContactPerson>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- HCUGE Proxy (testing) -->
-	<md:EntityDescriptor entityID="https://hug-proxy.switch.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://hug-proxy.switch.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -896,9 +896,9 @@ pa1lQomsWHiCP19hC2za2mWHu/WdtcLLphdA3t2K6+dmR9WX6O8YzcSyk6gLtZF9
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor errorURL="https://www.switch.ch/aai" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor errorURL="https://www.switch.ch/aai" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">hcuge.ch</shibmd:Scope>
+				<shibScope regexp="false">hcuge.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">HCUGE Proxy (testing)</mdui:DisplayName>
 					<mdui:Description xml:lang="en">HCUGE Proxy (testing)</mdui:Description>
@@ -906,7 +906,7 @@ pa1lQomsWHiCP19hC2za2mWHu/WdtcLLphdA3t2K6+dmR9WX6O8YzcSyk6gLtZF9
 				<mdui:DiscoHints>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -936,20 +936,20 @@ kGvnsME0QPNqtMrddUyoYZY0rDZxsMIZysGZMA==
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://hug-proxy.switch.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+			</KeyDescriptor>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://hug-proxy.switch.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">hcuge.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">HCUGE Proxy (testing)</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.hcuge.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- HEP Vaud - TEST - Haute école pédagogique du canton de Vaud -->
-	<md:EntityDescriptor entityID="https://aai-login-int.hepl.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aai-login-int.hepl.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -963,9 +963,9 @@ kGvnsME0QPNqtMrddUyoYZY0rDZxsMIZysGZMA==
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">hepl.ch</shibmd:Scope>
+				<shibScope regexp="false">hepl.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">HEP Vaud - TEST - Haute école pédagogique du canton de Vaud</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="fr">HEP Vaud - TEST - Haute école pédagogique du canton de Vaud</mdui:DisplayName>
@@ -979,7 +979,7 @@ kGvnsME0QPNqtMrddUyoYZY0rDZxsMIZysGZMA==
 					<mdui:GeolocationHint>geo:46.5128606,6.621523</mdui:GeolocationHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1004,8 +1004,8 @@ q86sgQ1la6oiGuWbDpjrCofMaqgU0fGSZ5A7uz1WHwv5XmxGiqUFrGRGJWiuKL8z
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-			<md:KeyDescriptor use="signing">
+			</KeyDescriptor>
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1050,8 +1050,8 @@ nT2DecWFfixBKpGwMp0OfspUijtXEFbEHmVjYXavlIIm
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-			<md:KeyDescriptor use="signing">
+			</KeyDescriptor>
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1076,17 +1076,17 @@ LS8+eshenGJr2pxeZJcAM9xqyU8=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-login-int.hepl.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-login-int.hepl.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+			</KeyDescriptor>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-login-int.hepl.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-login-int.hepl.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">hepl.ch</shibmd:Scope>
+				<shibScope regexp="false">hepl.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1111,8 +1111,8 @@ q86sgQ1la6oiGuWbDpjrCofMaqgU0fGSZ5A7uz1WHwv5XmxGiqUFrGRGJWiuKL8z
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-			<md:KeyDescriptor use="signing">
+			</KeyDescriptor>
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1157,8 +1157,8 @@ nT2DecWFfixBKpGwMp0OfspUijtXEFbEHmVjYXavlIIm
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-			<md:KeyDescriptor use="signing">
+			</KeyDescriptor>
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1183,10 +1183,10 @@ LS8+eshenGJr2pxeZJcAM9xqyU8=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-login-int.hepl.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">hepl.ch</OrganizationName>
@@ -1195,10 +1195,10 @@ LS8+eshenGJr2pxeZJcAM9xqyU8=
 			<OrganizationURL xml:lang="en">http://www.hepl.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="fr">http://www.hepl.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- HFTM Test Identity Provider -->
-	<md:EntityDescriptor entityID="https://aai.hftm.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aai.hftm.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -1212,9 +1212,9 @@ LS8+eshenGJr2pxeZJcAM9xqyU8=
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">hftm.ch</shibmd:Scope>
+				<shibScope regexp="false">hftm.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">HFTM Test Identity Provider</mdui:DisplayName>
 					<mdui:Description xml:lang="en">Bootstrapped IdP of: hftm.ch</mdui:Description>
@@ -1222,7 +1222,7 @@ LS8+eshenGJr2pxeZJcAM9xqyU8=
 				<mdui:DiscoHints>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1246,20 +1246,20 @@ g8NmxpkGQDpxXle7HwRW7Lw9WWWOQvuVOYLE
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai.hftm.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+			</KeyDescriptor>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai.hftm.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">hftm.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">HFTM Test Identity Provider</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.hftm.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- HSLU - Hochschule Luzern (Test IdP) -->
-	<md:EntityDescriptor entityID="https://idp.hslu-lab.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://idp.hslu-lab.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -1273,9 +1273,9 @@ g8NmxpkGQDpxXle7HwRW7Lw9WWWOQvuVOYLE
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor errorURL="http://hotline.hslu.ch/" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor errorURL="http://hotline.hslu.ch/" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">hslu.ch</shibmd:Scope>
+				<shibScope regexp="false">hslu.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="de">HSLU - Hochschule Luzern (Test IdP)</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="en">HSLU - Lucerne University of Applied Sciences and Arts (Test IdP)</mdui:DisplayName>
@@ -1331,7 +1331,7 @@ g8NmxpkGQDpxXle7HwRW7Lw9WWWOQvuVOYLE
 					<mdui:GeolocationHint>geo:47.054246,8.295853</mdui:GeolocationHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1355,18 +1355,18 @@ yhtEPzc4dxhh5e6U3pfMqkFkAiEKsg6TnGbEVQuDMy5922C83RMUqT4z3kA=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp.hslu-lab.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="1"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.hslu-lab.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.hslu-lab.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.hslu-lab.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.hslu-lab.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">hslu.ch</shibmd:Scope>
+				<shibScope regexp="false">hslu.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1390,10 +1390,10 @@ yhtEPzc4dxhh5e6U3pfMqkFkAiEKsg6TnGbEVQuDMy5922C83RMUqT4z3kA=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp.hslu-lab.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">hslu.ch</OrganizationName>
@@ -1402,10 +1402,10 @@ yhtEPzc4dxhh5e6U3pfMqkFkAiEKsg6TnGbEVQuDMy5922C83RMUqT4z3kA=
 			<OrganizationURL xml:lang="de">http://www.hslu.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="en">http://www.hslu.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- HSR - Hochschule für Technik Rapperswil -->
-	<md:EntityDescriptor entityID="https://aai.hsr.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aai.hsr.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -1419,9 +1419,9 @@ yhtEPzc4dxhh5e6U3pfMqkFkAiEKsg6TnGbEVQuDMy5922C83RMUqT4z3kA=
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">hsr.ch</shibmd:Scope>
+				<shibScope regexp="false">hsr.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">HSR - Hochschule für Technik Rapperswil</mdui:DisplayName>
 					<mdui:Description xml:lang="en">University of Applied Sciences Rapperswil (Test)</mdui:Description>
@@ -1429,7 +1429,7 @@ yhtEPzc4dxhh5e6U3pfMqkFkAiEKsg6TnGbEVQuDMy5922C83RMUqT4z3kA=
 				<mdui:DiscoHints>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1453,20 +1453,20 @@ jy1NpjCN4pndPueRmR7J9VMMN1ARCpsJ
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai.hsr.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+			</KeyDescriptor>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai.hsr.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">hsr.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">HSR - Hochschule für Technik Rapperswil</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.hsr.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- University of Geneva Lab Identity Provider -->
-	<md:EntityDescriptor entityID="https://idp-lab.unige.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://idp-lab.unige.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -1480,9 +1480,9 @@ jy1NpjCN4pndPueRmR7J9VMMN1ARCpsJ
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">idp-lab.unige.ch</shibmd:Scope>
+				<shibScope regexp="false">idp-lab.unige.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">University of Geneva Lab Identity Provider</mdui:DisplayName>
 					<mdui:Description xml:lang="en">University of Geneva Lab Identity Provider</mdui:Description>
@@ -1491,7 +1491,7 @@ jy1NpjCN4pndPueRmR7J9VMMN1ARCpsJ
 					<mdui:DomainHint>idp-lab.unige.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1515,18 +1515,18 @@ ifJgPU+WUNfbazu78ifV63eAtUl+nBkhi5gMinY7oXtD0vK69FnXB2oZJHp3o5k=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp-lab.unige.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp-lab.unige.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp-lab.unige.ch/idp/profile/SAML2/SOAP/ECP"/>
-		</md:IDPSSODescriptor>
+			</KeyDescriptor>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp-lab.unige.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp-lab.unige.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp-lab.unige.ch/idp/profile/SAML2/SOAP/ECP"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">idp-lab.unige.ch</shibmd:Scope>
+				<shibScope regexp="false">idp-lab.unige.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1550,20 +1550,20 @@ ifJgPU+WUNfbazu78ifV63eAtUl+nBkhi5gMinY7oXtD0vK69FnXB2oZJHp3o5k=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp-lab.unige.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">idp-lab.unige.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">University of Geneva Lab Identity Provider</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.idp-lab.unige.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- University of Geneva Test Identity Provider -->
-	<md:EntityDescriptor entityID="https://idp-test.unige.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://idp-test.unige.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -1577,9 +1577,9 @@ ifJgPU+WUNfbazu78ifV63eAtUl+nBkhi5gMinY7oXtD0vK69FnXB2oZJHp3o5k=
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor errorURL="http://www.unige.ch/dinf/ntic/aai/errors/error-origin.php" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor errorURL="http://www.unige.ch/dinf/ntic/aai/errors/error-origin.php" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">idp-test.unige.ch</shibmd:Scope>
+				<shibScope regexp="false">idp-test.unige.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">University of Geneva Test Identity Provider</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="fr">Test IdP Université de Genève</mdui:DisplayName>
@@ -1590,7 +1590,7 @@ ifJgPU+WUNfbazu78ifV63eAtUl+nBkhi5gMinY7oXtD0vK69FnXB2oZJHp3o5k=
 					<mdui:DomainHint>idp-test.unige.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1615,23 +1615,23 @@ Ofim
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp-test.unige.ch/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp-test.unige.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp-test.unige.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp-test.unige.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp-test.unige.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://idp-test.unige.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp-lab.unige.ch/idp/profile/SAML2/SOAP/ECP"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp-test.unige.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp-test.unige.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp-test.unige.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://idp-test.unige.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp-lab.unige.ch/idp/profile/SAML2/SOAP/ECP"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">idp-test.unige.ch</shibmd:Scope>
+				<shibScope regexp="false">idp-test.unige.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1656,12 +1656,12 @@ Ofim
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp-test.unige.ch/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp-test.unige.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">idp-test.unige.ch</OrganizationName>
@@ -1670,13 +1670,13 @@ Ofim
 			<OrganizationURL xml:lang="en">http://www.idp-test.unige.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="fr">http://www.idp-test.unige.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- libraries.ch Test -->
-	<md:EntityDescriptor entityID="https://login-idp-test.libraries.ch/idp/shibboleth">
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+	<EntityDescriptor entityID="https://login-idp-test.libraries.ch/idp/shibboleth">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">libraries.ch</shibmd:Scope>
+				<shibScope regexp="false">libraries.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="de">libraries.ch Test</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="en">libraries.ch Test</mdui:DisplayName>
@@ -1692,7 +1692,7 @@ Ofim
 					<mdui:GeolocationHint>geo:47.37643,8.54772</mdui:GeolocationHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1717,21 +1717,21 @@ Pw1Zuf7Bd34xBf3BlRiN3GY0ZO0WmhPCOiyXB6g1WlyKGcoIPUsuGAg0wF0=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://login-idp-test.libraries.ch/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://login-idp-test.libraries.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://login-idp-test.libraries.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login-idp-test.libraries.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://login-idp-test.libraries.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://login-idp-test.libraries.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login-idp-test.libraries.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://login-idp-test.libraries.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">libraries.ch</shibmd:Scope>
+				<shibScope regexp="false">libraries.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1756,12 +1756,12 @@ Pw1Zuf7Bd34xBf3BlRiN3GY0ZO0WmhPCOiyXB6g1WlyKGcoIPUsuGAg0wF0=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://login-idp-test.libraries.ch/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://login-idp-test.libraries.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">libraries.ch</OrganizationName>
@@ -1770,10 +1770,10 @@ Pw1Zuf7Bd34xBf3BlRiN3GY0ZO0WmhPCOiyXB6g1WlyKGcoIPUsuGAg0wF0=
 			<OrganizationURL xml:lang="de">http://www.libraries.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="en">http://www.libraries.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- PHLU - Pädagogische Hochschule Luzern (Test IdP) -->
-	<md:EntityDescriptor entityID="https://idp.phlu-lab.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://idp.phlu-lab.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -1787,9 +1787,9 @@ Pw1Zuf7Bd34xBf3BlRiN3GY0ZO0WmhPCOiyXB6g1WlyKGcoIPUsuGAg0wF0=
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor errorURL="http://hotline.hslu.ch" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor errorURL="http://hotline.hslu.ch" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">phlu.ch</shibmd:Scope>
+				<shibScope regexp="false">phlu.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="de">PHLU - Pädagogische Hochschule Luzern (Test IdP)</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="en">PHLU - University of Teacher Education Lucerne (Test IdP)</mdui:DisplayName>
@@ -1806,7 +1806,7 @@ Pw1Zuf7Bd34xBf3BlRiN3GY0ZO0WmhPCOiyXB6g1WlyKGcoIPUsuGAg0wF0=
 					<mdui:GeolocationHint>geo:47.051064,8.302218</mdui:GeolocationHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1830,19 +1830,19 @@ vmCeOyaeLrfAWjuUhp+l56XmsmAt2QwMhDtF7ad/WhdWvYx8fsU0da7sr44=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.phlu-lab.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.phlu-lab.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.phlu-lab.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+			</KeyDescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://idp.phlu-lab.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://idp.phlu-lab.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://idp.phlu-lab.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">phlu.ch</shibmd:Scope>
+				<shibScope regexp="false">phlu.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1866,12 +1866,12 @@ vmCeOyaeLrfAWjuUhp+l56XmsmAt2QwMhDtF7ad/WhdWvYx8fsU0da7sr44=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://idp.phlu-lab.ch/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://idp.phlu-lab.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">phlu.ch</OrganizationName>
@@ -1880,10 +1880,10 @@ vmCeOyaeLrfAWjuUhp+l56XmsmAt2QwMhDtF7ad/WhdWvYx8fsU0da7sr44=
 			<OrganizationURL xml:lang="de">http://www.phlu.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="en">http://www.phlu.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- PSI - Paul Scherrer Institut -->
-	<md:EntityDescriptor entityID="https://aaitest-logon.psi.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aaitest-logon.psi.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -1897,9 +1897,9 @@ vmCeOyaeLrfAWjuUhp+l56XmsmAt2QwMhDtF7ad/WhdWvYx8fsU0da7sr44=
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor errorURL="http://www.psi.ch/computing/contact" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor errorURL="http://www.psi.ch/computing/contact" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">psi.ch</shibmd:Scope>
+				<shibScope regexp="false">psi.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="de">PSI - Paul Scherrer Institut</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="en">PSI - Paul Scherrer Institut</mdui:DisplayName>
@@ -1915,7 +1915,7 @@ vmCeOyaeLrfAWjuUhp+l56XmsmAt2QwMhDtF7ad/WhdWvYx8fsU0da7sr44=
 					<mdui:DomainHint>psi.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1940,22 +1940,22 @@ CzdA8Q==
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aaitest-logon.psi.ch:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aaitest-logon.psi.ch:8443/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aaitest-logon.psi.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aaitest-logon.psi.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aaitest-logon.psi.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://aaitest-logon.psi.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aaitest-logon.psi.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aaitest-logon.psi.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aaitest-logon.psi.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://aaitest-logon.psi.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">psi.ch</shibmd:Scope>
+				<shibScope regexp="false">psi.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -1980,12 +1980,12 @@ CzdA8Q==
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aaitest-logon.psi.ch:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aaitest-logon.psi.ch:8443/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">psi.ch</OrganizationName>
@@ -1994,10 +1994,10 @@ CzdA8Q==
 			<OrganizationURL xml:lang="de">http://www.psi.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="en">http://www.psi.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- Université de Neuchâtel - test IdP -->
-	<md:EntityDescriptor entityID="https://test-idp.unine.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://test-idp.unine.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -2011,9 +2011,9 @@ CzdA8Q==
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">test-idp.unine.ch</shibmd:Scope>
+				<shibScope regexp="false">test-idp.unine.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">Université de Neuchâtel - test IdP</mdui:DisplayName>
 					<mdui:Description xml:lang="en">Université de Neuchâtel - test IdP - test-idp.unine.ch</mdui:Description>
@@ -2022,7 +2022,7 @@ CzdA8Q==
 					<mdui:DomainHint>test-idp.unine.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2047,22 +2047,22 @@ m/2zNvNzNBGi9p84KZ+Fn9S9GaFIx2wm9mWFCGQ4ClGXyXL9jnNADyYlrjuN30uA
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://test-idp.unine.ch/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://test-idp.unine.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://test-idp.unine.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://test-idp.unine.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://test-idp.unine.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://test-idp.unine.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://test-idp.unine.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://test-idp.unine.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://test-idp.unine.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://test-idp.unine.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test-idp.unine.ch</shibmd:Scope>
+				<shibScope regexp="false">test-idp.unine.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2087,22 +2087,22 @@ m/2zNvNzNBGi9p84KZ+Fn9S9GaFIx2wm9mWFCGQ4ClGXyXL9jnNADyYlrjuN30uA
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://test-idp.unine.ch/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://test-idp.unine.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">test-idp.unine.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">Université de Neuchâtel - test IdP</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.test-idp.unine.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- CHUV Test IdP -->
-	<md:EntityDescriptor entityID="https://testidp.chuv.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://testidp.chuv.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -2116,9 +2116,9 @@ m/2zNvNzNBGi9p84KZ+Fn9S9GaFIx2wm9mWFCGQ4ClGXyXL9jnNADyYlrjuN30uA
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.chuv.ch</shibmd:Scope>
+				<shibScope regexp="false">test.chuv.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">CHUV Test IdP</mdui:DisplayName>
 					<mdui:Description xml:lang="en">Test Identity Provider for CHUV</mdui:Description>
@@ -2127,7 +2127,7 @@ m/2zNvNzNBGi9p84KZ+Fn9S9GaFIx2wm9mWFCGQ4ClGXyXL9jnNADyYlrjuN30uA
 					<mdui:DomainHint>test.chuv.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2151,22 +2151,22 @@ K/Ry6U7sfhKgKvE76zKVzuNbTS8HqzEkLi08JNGBgWc=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://testidp.chuv.ch:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://testidp.chuv.ch:8443/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://testidp.chuv.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://testidp.chuv.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://testidp.chuv.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://testidp.chuv.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://testidp.chuv.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://testidp.chuv.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://testidp.chuv.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://testidp.chuv.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.chuv.ch</shibmd:Scope>
+				<shibScope regexp="false">test.chuv.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2190,22 +2190,22 @@ K/Ry6U7sfhKgKvE76zKVzuNbTS8HqzEkLi08JNGBgWc=
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://testidp.chuv.ch:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://testidp.chuv.ch:8443/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">test.chuv.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">CHUV Test IdP</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.test.chuv.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- SWITCH edu-ID [Test] -->
-	<md:EntityDescriptor entityID="https://test.eduid.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://test.eduid.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -2219,9 +2219,9 @@ K/Ry6U7sfhKgKvE76zKVzuNbTS8HqzEkLi08JNGBgWc=
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.eduid.ch</shibmd:Scope>
+				<shibScope regexp="false">test.eduid.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="de">SWITCH edu-ID [Test]</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="en">SWITCH edu-ID [Test]</mdui:DisplayName>
@@ -2241,7 +2241,7 @@ K/Ry6U7sfhKgKvE76zKVzuNbTS8HqzEkLi08JNGBgWc=
 					<mdui:DomainHint>edu-id.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2265,21 +2265,21 @@ OKNguza3bi3RRsZUlDAJHSGHm+Fc3QLUPCDLZc0+OKcQbThC
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://login.test.eduid.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="1"/>
-			<md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.test.eduid.ch/idp/profile/SAML2/Redirect/SLO"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.test.eduid.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://login.test.eduid.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://login.test.eduid.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://login.test.eduid.ch/idp/profile/SAML2/SOAP/ECP"/>
-		</md:IDPSSODescriptor>
+			<SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.test.eduid.ch/idp/profile/SAML2/Redirect/SLO"/>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.test.eduid.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://login.test.eduid.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://login.test.eduid.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://login.test.eduid.ch/idp/profile/SAML2/SOAP/ECP"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.eduid.ch</shibmd:Scope>
+				<shibScope regexp="false">test.eduid.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2303,10 +2303,10 @@ OKNguza3bi3RRsZUlDAJHSGHm+Fc3QLUPCDLZc0+OKcQbThC
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://login.test.eduid.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">test.eduid.ch</OrganizationName>
@@ -2319,10 +2319,10 @@ OKNguza3bi3RRsZUlDAJHSGHm+Fc3QLUPCDLZc0+OKcQbThC
 			<OrganizationURL xml:lang="fr">http://www.test.eduid.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="it">http://www.test.eduid.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- FHNW-TEST - Fachhochschule Nordwestschweiz -->
-	<md:EntityDescriptor entityID="https://aai-logon.test.fhnw.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aai-logon.test.fhnw.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -2336,9 +2336,9 @@ OKNguza3bi3RRsZUlDAJHSGHm+Fc3QLUPCDLZc0+OKcQbThC
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.fhnw.ch</shibmd:Scope>
+				<shibScope regexp="false">test.fhnw.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="de">FHNW-TEST - Fachhochschule Nordwestschweiz</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="en">FHNW-TEST - Fachhochschule Nordwestschweiz</mdui:DisplayName>
@@ -2349,7 +2349,7 @@ OKNguza3bi3RRsZUlDAJHSGHm+Fc3QLUPCDLZc0+OKcQbThC
 					<mdui:DomainHint>test.fhnw.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2374,22 +2374,22 @@ yAC9nH+QiapYyPz1qWWsvFRG7/lpA2hc
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-logon.test.fhnw.ch:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-logon.test.fhnw.ch:8443/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-logon.test.fhnw.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-logon.test.fhnw.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-logon.test.fhnw.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://aai-logon.test.fhnw.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-logon.test.fhnw.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-logon.test.fhnw.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-logon.test.fhnw.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://aai-logon.test.fhnw.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.fhnw.ch</shibmd:Scope>
+				<shibScope regexp="false">test.fhnw.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2414,12 +2414,12 @@ yAC9nH+QiapYyPz1qWWsvFRG7/lpA2hc
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-logon.test.fhnw.ch:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-logon.test.fhnw.ch:8443/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">test.fhnw.ch</OrganizationName>
@@ -2428,10 +2428,10 @@ yAC9nH+QiapYyPz1qWWsvFRG7/lpA2hc
 			<OrganizationURL xml:lang="de">http://www.test.fhnw.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="en">http://www.test.fhnw.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- SWITCH IdP Hosting Test Login -->
-	<md:EntityDescriptor entityID="https://test.idph.switch.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://test.idph.switch.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -2445,9 +2445,9 @@ yAC9nH+QiapYyPz1qWWsvFRG7/lpA2hc
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.idph.switch.ch</shibmd:Scope>
+				<shibScope regexp="false">test.idph.switch.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">SWITCH IdP Hosting Test Login</mdui:DisplayName>
 					<mdui:Description xml:lang="en">Test login for SWITCH IdP hosting</mdui:Description>
@@ -2455,7 +2455,7 @@ yAC9nH+QiapYyPz1qWWsvFRG7/lpA2hc
 				<mdui:DiscoHints>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2485,19 +2485,19 @@ I+Gw1TCc5NpI1S7PWrG94x7O9SnYNL/OzyLNew==
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://test.idph.switch.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="1"/>
-			<md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://test.idph.switch.ch/idp/profile/SAML2/Redirect/SLO"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://test.idph.switch.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://test.idph.switch.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+			<SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://test.idph.switch.ch/idp/profile/SAML2/Redirect/SLO"/>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://test.idph.switch.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://test.idph.switch.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.idph.switch.ch</shibmd:Scope>
+				<shibScope regexp="false">test.idph.switch.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2527,20 +2527,20 @@ I+Gw1TCc5NpI1S7PWrG94x7O9SnYNL/OzyLNew==
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://test.idph.switch.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">test.idph.switch.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">SWITCH IdP Hosting Test Login</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.test.idph.switch.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- University of Bern Test IdP -->
-	<md:EntityDescriptor entityID="https://aai-login.test.unibe.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aai-login.test.unibe.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -2554,9 +2554,9 @@ I+Gw1TCc5NpI1S7PWrG94x7O9SnYNL/OzyLNew==
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor errorURL="http://www.id.unibe.ch/content/helpdesk/index_ger.html" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+		<IDPSSODescriptor errorURL="http://www.id.unibe.ch/content/helpdesk/index_ger.html" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.unibe.ch</shibmd:Scope>
+				<shibScope regexp="false">test.unibe.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="de">Universität Bern Test IdP</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="en">University of Bern Test IdP</mdui:DisplayName>
@@ -2573,7 +2573,7 @@ I+Gw1TCc5NpI1S7PWrG94x7O9SnYNL/OzyLNew==
 					<mdui:GeolocationHint>geo:46.9505,7.43814</mdui:GeolocationHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2598,17 +2598,17 @@ iHTraMOaCZWrdTour6KckJigCYEL6t11LM0eNw==
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-login.test.unibe.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-login.test.unibe.ch/idp/profile/SAML2/POST/SSO"/>
-		</md:IDPSSODescriptor>
+			</KeyDescriptor>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-login.test.unibe.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-login.test.unibe.ch/idp/profile/SAML2/POST/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.unibe.ch</shibmd:Scope>
+				<shibScope regexp="false">test.unibe.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2633,10 +2633,10 @@ iHTraMOaCZWrdTour6KckJigCYEL6t11LM0eNw==
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-login.test.unibe.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">test.unibe.ch</OrganizationName>
@@ -2645,10 +2645,10 @@ iHTraMOaCZWrdTour6KckJigCYEL6t11LM0eNw==
 			<OrganizationURL xml:lang="de">http://www.test.unibe.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="en">http://www.test.unibe.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- Université de Fribourg Test Home Organization -->
-	<md:EntityDescriptor entityID="https://testidp.unifr.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://testidp.unifr.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -2662,9 +2662,9 @@ iHTraMOaCZWrdTour6KckJigCYEL6t11LM0eNw==
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.unifr.ch</shibmd:Scope>
+				<shibScope regexp="false">test.unifr.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">Université de Fribourg Test Home Organization</mdui:DisplayName>
 					<mdui:Description xml:lang="en">L'Université suisse bilingue. Die zweisprachige Universität.</mdui:Description>
@@ -2673,7 +2673,7 @@ iHTraMOaCZWrdTour6KckJigCYEL6t11LM0eNw==
 					<mdui:DomainHint>test.unifr.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2697,22 +2697,22 @@ qbvKmYxW/Y+CBrSxVLCBVQboAn6dFKGGIz+fCOY21W7uJCeNrioaeHCnFUB0tYZ6
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://testidp.unifr.ch/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://testidp.unifr.ch/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://testidp.unifr.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://testidp.unifr.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://testidp.unifr.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://testidp.unifr.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://testidp.unifr.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://testidp.unifr.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://testidp.unifr.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://testidp.unifr.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.unifr.ch</shibmd:Scope>
+				<shibScope regexp="false">test.unifr.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2736,22 +2736,22 @@ qbvKmYxW/Y+CBrSxVLCBVQboAn6dFKGGIz+fCOY21W7uJCeNrioaeHCnFUB0tYZ6
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://testidp.unifr.ch/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://testidp.unifr.ch/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">test.unifr.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">Université de Fribourg Test Home Organization</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.test.unifr.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- Universita della Svizzera Italiana -->
-	<md:EntityDescriptor entityID="https://tlogin.usi.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://tlogin.usi.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -2764,9 +2764,9 @@ qbvKmYxW/Y+CBrSxVLCBVQboAn6dFKGGIz+fCOY21W7uJCeNrioaeHCnFUB0tYZ6
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.unisi.ch</shibmd:Scope>
+				<shibScope regexp="false">test.unisi.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">Universita della Svizzera Italiana</mdui:DisplayName>
 					<mdui:DisplayName xml:lang="it">Universita della Svizzera Italiana</mdui:DisplayName>
@@ -2777,7 +2777,7 @@ qbvKmYxW/Y+CBrSxVLCBVQboAn6dFKGGIz+fCOY21W7uJCeNrioaeHCnFUB0tYZ6
 					<mdui:DomainHint>test.unisi.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2801,22 +2801,22 @@ PIR6n9TcuIrrjSOKccQkfLNs+WFFD0pLZgl7Qcv18y7031/mQLDi4SF2R/zZuolo
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://tlogin.usi.ch:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://tlogin.usi.ch:8443/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://tlogin.usi.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://tlogin.usi.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://tlogin.usi.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://tlogin.usi.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://tlogin.usi.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://tlogin.usi.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://tlogin.usi.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://tlogin.usi.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.unisi.ch</shibmd:Scope>
+				<shibScope regexp="false">test.unisi.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2840,12 +2840,12 @@ PIR6n9TcuIrrjSOKccQkfLNs+WFFD0pLZgl7Qcv18y7031/mQLDi4SF2R/zZuolo
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://tlogin.usi.ch:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://tlogin.usi.ch:8443/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">test.unisi.ch</OrganizationName>
@@ -2854,10 +2854,10 @@ PIR6n9TcuIrrjSOKccQkfLNs+WFFD0pLZgl7Qcv18y7031/mQLDi4SF2R/zZuolo
 			<OrganizationURL xml:lang="en">http://www.test.unisi.ch/</OrganizationURL>
 			<OrganizationURL xml:lang="it">http://www.test.unisi.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	<!-- Test Virtual Home Organization -->
-	<md:EntityDescriptor entityID="https://aai-logon.test.vho-switchaai.ch/idp/shibboleth">
+	<EntityDescriptor entityID="https://aai-logon.test.vho-switchaai.ch/idp/shibboleth">
 		<Extensions>
 			<mdattr:EntityAttributes xmlns:mdattr="urn:oasis:names:tc:SAML:metadata:attribute">
 				<saml:Attribute xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Name="http://macedir.org/entity-category-support" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri">
@@ -2871,9 +2871,9 @@ PIR6n9TcuIrrjSOKccQkfLNs+WFFD0pLZgl7Qcv18y7031/mQLDi4SF2R/zZuolo
 			</mdattr:EntityAttributes>
 
 		</Extensions>
-		<md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
+		<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol urn:mace:shibboleth:1.0">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.vho-switchaai.ch</shibmd:Scope>
+				<shibScope regexp="false">test.vho-switchaai.ch</shibScope>
 				<mdui:UIInfo>
 					<mdui:DisplayName xml:lang="en">Test Virtual Home Organization</mdui:DisplayName>
 					<mdui:Description xml:lang="en">Test Virtual Home Organization</mdui:Description>
@@ -2882,7 +2882,7 @@ PIR6n9TcuIrrjSOKccQkfLNs+WFFD0pLZgl7Qcv18y7031/mQLDi4SF2R/zZuolo
 					<mdui:DomainHint>test.vho-switchaai.ch</mdui:DomainHint>
 				</mdui:DiscoHints>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2908,22 +2908,22 @@ NaJ5zpd0pEiy3dSqZQ==
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-logon.test.vho-switchaai.ch:8443/idp/profile/SAML1/SOAP/ArtifactResolution" index="1"/>
 			<ArtifactResolutionService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-logon.test.vho-switchaai.ch:8443/idp/profile/SAML2/SOAP/ArtifactResolution" index="2"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
-			<md:SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-logon.test.vho-switchaai.ch/idp/profile/Shibboleth/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-logon.test.vho-switchaai.ch/idp/profile/SAML2/Redirect/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-logon.test.vho-switchaai.ch/idp/profile/SAML2/POST/SSO"/>
-			<md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://aai-logon.test.vho-switchaai.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
-		</md:IDPSSODescriptor>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+			<SingleSignOnService Binding="urn:mace:shibboleth:1.0:profiles:AuthnRequest" Location="https://aai-logon.test.vho-switchaai.ch/idp/profile/Shibboleth/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://aai-logon.test.vho-switchaai.ch/idp/profile/SAML2/Redirect/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://aai-logon.test.vho-switchaai.ch/idp/profile/SAML2/POST/SSO"/>
+			<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://aai-logon.test.vho-switchaai.ch/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+		</IDPSSODescriptor>
 		<AttributeAuthorityDescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
 			<Extensions>
-				<shibmd:Scope regexp="false">test.vho-switchaai.ch</shibmd:Scope>
+				<shibScope regexp="false">test.vho-switchaai.ch</shibScope>
 			</Extensions>
-			<md:KeyDescriptor use="signing">
+			<KeyDescriptor use="signing">
 				<ds:KeyInfo>
 					<ds:X509Data>
 						<ds:X509Certificate>
@@ -2949,20 +2949,20 @@ NaJ5zpd0pEiy3dSqZQ==
 						</ds:X509Certificate>
 					</ds:X509Data>
 				</ds:KeyInfo>
-			</md:KeyDescriptor>
+			</KeyDescriptor>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:1.0:bindings:SOAP-binding" Location="https://aai-logon.test.vho-switchaai.ch:8443/idp/profile/SAML1/SOAP/AttributeQuery"/>
 			<AttributeService Binding="urn:oasis:names:tc:SAML:2.0:bindings:SOAP" Location="https://aai-logon.test.vho-switchaai.ch:8443/idp/profile/SAML2/SOAP/AttributeQuery"/>
-            <md:NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
-            <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</md:NameIDFormat>
+            <NameIDFormat>urn:mace:shibboleth:1.0:nameIdentifier</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+            <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
 		</AttributeAuthorityDescriptor>
 		<Organization>
 			<OrganizationName xml:lang="en">test.vho-switchaai.ch</OrganizationName>
 			<OrganizationDisplayName xml:lang="en">Test Virtual Home Organization</OrganizationDisplayName>
 			<OrganizationURL xml:lang="en">http://www.test.vho-switchaai.ch/</OrganizationURL>
 		</Organization>
-	</md:EntityDescriptor>
+	</EntityDescriptor>
 
 	
 
-</md:EntitiesDescriptor>
+</EntitiesDescriptor>

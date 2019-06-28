@@ -451,7 +451,7 @@ defmodule Samly.IdpData do
 
   @spec get_entity_descriptor(:xmlElement, entityID :: binary()) :: :xmlElement | nil
   defp get_entity_descriptor(md_xml, entityID) do
-    selector = entity_by_id_selector(entityID)
+    selector = entity_by_id_selector(entityID) |> add_ns()
     try do
       SweetXml.xpath(md_xml, selector)
     rescue
