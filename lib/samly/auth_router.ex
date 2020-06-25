@@ -6,7 +6,7 @@ defmodule Samly.AuthRouter do
   import Samly.RouterUtil, only: [check_idp_id: 2, check_target_url: 2]
 
   plug :fetch_session
-  plug Plug.CSRFProtection
+  # plug Plug.CSRFProtection
   plug :match
   plug :check_idp_id
   plug :check_target_url
