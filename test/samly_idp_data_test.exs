@@ -64,13 +64,17 @@ defmodule SamlyIdpDataTest do
   end
 
   test "valid-idp-config-1", %{sps: sps} do
-    %IdpData{} = idp_data = IdpData.load_provider(@idp_config1, sps)
+    %IdpData{} =
+      idp_data = IdpData.load_provider(@idp_config1, sps, %{idp_id_from: :path_segment})
+
     assert idp_data.valid?
   end
 
   # verify defaults
   test "valid-idp-config-2", %{sps: sps} do
-    %IdpData{} = idp_data = IdpData.load_provider(@idp_config1, sps)
+    %IdpData{} =
+      idp_data = IdpData.load_provider(@idp_config1, sps, %{idp_id_from: :path_segment})
+
     refute idp_data.use_redirect_for_req
     assert idp_data.sign_requests
     assert idp_data.sign_metadata
@@ -88,7 +92,7 @@ defmodule SamlyIdpDataTest do
         signed_envelopes_in_resp: true
       })
 
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     refute idp_data.use_redirect_for_req
     assert idp_data.sign_requests
     assert idp_data.sign_metadata
@@ -106,7 +110,7 @@ defmodule SamlyIdpDataTest do
         signed_envelopes_in_resp: false
       })
 
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.use_redirect_for_req
     refute idp_data.sign_requests
     refute idp_data.sign_metadata
@@ -116,51 +120,51 @@ defmodule SamlyIdpDataTest do
 
   test "valid-idp-config-5", %{sps: sps} do
     idp_config = %{@idp_config1 | base_url: nil}
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.valid?
     assert idp_data.base_url == nil
   end
 
   test "valid-idp-config-6", %{sps: sps} do
     idp_config = Map.put(@idp_config1, :pre_session_create_pipeline, MyPipeline)
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.valid?
     assert idp_data.pre_session_create_pipeline == MyPipeline
   end
 
   test "valid-idp-config-7", %{sps: sps} do
     idp_config = %{@idp_config1 | metadata_file: "test/data/azure_fed_metadata.xml"}
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.valid?
   end
 
   test "valid-idp-config-8", %{sps: sps} do
     idp_config = %{@idp_config1 | metadata_file: "test/data/onelogin_idp_metadata.xml"}
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.valid?
   end
 
   test "valid-idp-config-9", %{sps: sps} do
     idp_config = %{@idp_config1 | metadata_file: "test/data/shibboleth_idp_metadata.xml"}
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.valid?
   end
 
   test "valid-idp-config-10", %{sps: sps} do
     idp_config = %{@idp_config1 | metadata_file: "test/data/simplesaml_idp_metadata.xml"}
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.valid?
   end
 
   test "valid-idp-config-11", %{sps: sps} do
     idp_config = %{@idp_config1 | metadata_file: "test/data/testshib_metadata.xml"}
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.valid?
   end
 
   test "url-test-1", %{sps: sps} do
     idp_config = %{@idp_config1 | metadata_file: "test/data/shibboleth_idp_metadata.xml"}
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.valid?
 
     Esaml.esaml_idp_metadata(
@@ -175,7 +179,7 @@ defmodule SamlyIdpDataTest do
   test "url-test-2", %{sps: sps} do
     idp_config = %{@idp_config1 | metadata_file: "test/data/shibboleth_idp_metadata.xml"}
     idp_config = Map.put(idp_config, :use_redirect_for_req, true)
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.valid?
 
     Esaml.esaml_idp_metadata(
@@ -188,7 +192,9 @@ defmodule SamlyIdpDataTest do
   end
 
   test "sp entity_id test-1", %{sps: sps} do
-    %IdpData{} = idp_data = IdpData.load_provider(@idp_config2, sps)
+    %IdpData{} =
+      idp_data = IdpData.load_provider(@idp_config2, sps, %{idp_id_from: :path_segment})
+
     assert idp_data.valid?
     Esaml.esaml_sp(entity_id: entity_id) = idp_data.esaml_sp_rec
     assert entity_id == :undefined
@@ -197,13 +203,13 @@ defmodule SamlyIdpDataTest do
   @tag :skip
   test "invalid-idp-config-1", %{sps: sps} do
     idp_config = %{@idp_config1 | id: ""}
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     refute idp_data.valid?
   end
 
   test "invalid-idp-config-2", %{sps: sps} do
     idp_config = %{@idp_config1 | sp_id: "unknown-sp"}
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     refute idp_data.valid?
   end
 
@@ -216,7 +222,7 @@ defmodule SamlyIdpDataTest do
         sign_metadata: false
       })
 
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.valid?
   end
 
@@ -229,7 +235,7 @@ defmodule SamlyIdpDataTest do
         sign_metadata: false
       })
 
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     refute idp_data.valid?
   end
 
@@ -242,12 +248,14 @@ defmodule SamlyIdpDataTest do
         sign_metadata: false
       })
 
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     refute idp_data.valid?
   end
 
   test "nameid-format-in-metadata-but-not-config-should-use-metadata", %{sps: sps} do
-    %IdpData{} = idp_data = IdpData.load_provider(@idp_config1, sps)
+    %IdpData{} =
+      idp_data = IdpData.load_provider(@idp_config1, sps, %{idp_id_from: :path_segment})
+
     assert idp_data.nameid_format == 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
   end
 
@@ -258,7 +266,7 @@ defmodule SamlyIdpDataTest do
         nameid_format: :email
       })
 
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.nameid_format == 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
   end
 
@@ -268,7 +276,7 @@ defmodule SamlyIdpDataTest do
         nameid_format: :persistent
       })
 
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.nameid_format == 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
   end
 
@@ -278,7 +286,7 @@ defmodule SamlyIdpDataTest do
         metadata_file: "test/data/shibboleth_idp_metadata.xml"
       })
 
-    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
+    %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps, %{idp_id_from: :path_segment})
     assert idp_data.nameid_format == :unknown
   end
 end

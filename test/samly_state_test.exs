@@ -12,12 +12,13 @@ defmodule Samly.StateTest do
         key_length: 64
       )
 
-    Samly.State.init(Samly.State.Session)
+    Samly.State.init(:samly, Samly.State.Session)
 
     conn =
       conn(:get, "/")
       |> Plug.Session.call(opts)
       |> fetch_session()
+      |> Plug.Conn.put_private(:samly_config, %{otp_app: :samly})
 
     [conn: conn]
   end

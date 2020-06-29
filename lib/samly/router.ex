@@ -3,6 +3,7 @@ defmodule Samly.Router do
 
   use Plug.Router
 
+  plug :config_samly, builder_opts()
   plug :secure_samly
   plug :match
   plug :dispatch
@@ -37,5 +38,10 @@ defmodule Samly.Router do
       |> put_resp_header("x-xss-protection", "1; mode=block")
       |> put_resp_header("x-content-type-options", "nosniff")
     end)
+  end
+
+  defp config_samly(conn, opts) do
+    opts = Keyword.put_new(opts, :otp_app, :samly)
+    put_private(conn, :samly_config, opts)
   end
 end

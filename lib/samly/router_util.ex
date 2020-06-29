@@ -9,7 +9,9 @@ defmodule Samly.RouterUtil do
   @subdomain_re ~r/^(?<subdomain>([^.]+))?\./
 
   def check_idp_id(conn, _opts) do
-    idp_id_from = Application.get_env(:samly, :idp_id_from)
+    otp_app = conn.private[:samly_config][:otp_app]
+
+    idp_id_from = Application.get_env(otp_app, Samly.Config).idp_id_from
 
     idp_id =
       if idp_id_from == :subdomain do
@@ -24,7 +26,7 @@ defmodule Samly.RouterUtil do
         end
       end
 
-    idp = idp_id && Helper.get_idp(idp_id)
+    idp = idp_id && Helper.get_idp(otp_app, idp_id)
 
     if idp do
       conn |> Conn.put_private(:samly_idp, idp)
@@ -60,7 +62,10 @@ defmodule Samly.RouterUtil do
         }
 
         base_url = URI.to_string(uri)
-        idp_id_from = Application.get_env(:samly, :idp_id_from)
+
+        otp_app = conn.private[:samly_config][:otp_app]
+
+        idp_id_from = Application.get_env(otp_app, Samly.Config).idp_id_from
 
         path_segment_idp_id =
           if idp_id_from == :subdomain do

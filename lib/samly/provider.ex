@@ -24,19 +24,24 @@ defmodule Samly.Provider do
   require Samly.Esaml
   alias Samly.{State}
 
+  @genserver_options ~W(name timeout debug spawn_opts hibernate_after)a
+
   @doc false
-  def start_link(gs_opts \\ []) do
-    GenServer.start_link(__MODULE__, [], gs_opts)
+  def start_link(opts \\ []) do
+    {gs_opts, init_args} = Keyword.split(opts, @genserver_options)
+    GenServer.start_link(__MODULE__, init_args, gs_opts)
   end
 
   @doc false
-  def init([]) do
-    store_env = Application.get_env(:samly, Samly.State, [])
+  def init(opts) do
+    otp_app = Keyword.get(opts, :otp_app, :samly)
+
+    store_env = Application.get_env(otp_app, Samly.State, [])
     store_provider = store_env[:store] || Samly.State.ETS
     store_opts = store_env[:opts] || []
-    State.init(store_provider, store_opts)
+    State.init(otp_app, store_provider, store_opts)
 
-    opts = Application.get_env(:samly, Samly.Provider, [])
+    opts = Application.get_env(otp_app, Samly.Provider, [])
 
     # must be done prior to loading the providers
     idp_id_from =
@@ -55,15 +60,19 @@ defmodule Samly.Provider do
           :path_segment
       end
 
-    Application.put_env(:samly, :idp_id_from, idp_id_from)
+    new_config =
+      Application.get_env(otp_app, Samly.Config, %{})
+      |> Map.put(:idp_id_from, idp_id_from)
+
+    Application.put_env(otp_app, Samly.Config, new_config)
 
     service_providers = Samly.SpData.load_providers(opts[:service_providers] || [])
 
     identity_providers =
-      Samly.IdpData.load_providers(opts[:identity_providers] || [], service_providers)
+      Samly.IdpData.load_providers(opts[:identity_providers] || [], service_providers, new_config)
 
-    Application.put_env(:samly, :service_providers, service_providers)
-    Application.put_env(:samly, :identity_providers, identity_providers)
+    Application.put_env(otp_app, Samly.ServiceProviders, service_providers)
+    Application.put_env(otp_app, Samly.IdentityProviders, identity_providers)
 
     {:ok, %{}}
   end

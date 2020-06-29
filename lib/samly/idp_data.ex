@@ -85,23 +85,23 @@ defmodule Samly.IdpData do
 
   @type id :: binary()
 
-  @spec load_providers([map], %{required(id()) => %SpData{}}) ::
+  @spec load_providers([map], %{required(id()) => %SpData{}}, map()) ::
           %{required(id()) => %IdpData{}} | no_return()
-  def load_providers(prov_config, service_providers) do
+  def load_providers(prov_config, service_providers, config) do
     prov_config
-    |> Enum.map(fn idp_config -> load_provider(idp_config, service_providers) end)
+    |> Enum.map(fn idp_config -> load_provider(idp_config, service_providers, config) end)
     |> Enum.filter(fn idp_data -> idp_data.valid? end)
     |> Enum.map(fn idp_data -> {idp_data.id, idp_data} end)
     |> Enum.into(%{})
   end
 
-  @spec load_provider(map(), %{required(id()) => %SpData{}}) :: %IdpData{} | no_return
-  def load_provider(idp_config, service_providers) do
+  @spec load_provider(map(), %{required(id()) => %SpData{}}, map()) :: %IdpData{} | no_return
+  def load_provider(idp_config, service_providers, config) do
     %IdpData{}
     |> save_idp_config(idp_config)
     |> load_metadata(idp_config)
     |> override_nameid_format(idp_config)
-    |> update_esaml_recs(service_providers, idp_config)
+    |> update_esaml_recs(service_providers, idp_config, config)
     |> verify_slo_url()
   end
 
@@ -146,12 +146,12 @@ defmodule Samly.IdpData do
     end
   end
 
-  @spec update_esaml_recs(%IdpData{}, %{required(id()) => %SpData{}}, map()) :: %IdpData{}
-  defp update_esaml_recs(idp_data, service_providers, opts_map) do
+  @spec update_esaml_recs(%IdpData{}, %{required(id()) => %SpData{}}, map(), map()) :: %IdpData{}
+  defp update_esaml_recs(idp_data, service_providers, opts_map, config) do
     case Map.get(service_providers, idp_data.sp_id) do
       %SpData{} = sp ->
         idp_data = %IdpData{idp_data | esaml_idp_rec: to_esaml_idp_metadata(idp_data, opts_map)}
-        idp_data = %IdpData{idp_data | esaml_sp_rec: get_esaml_sp(sp, idp_data)}
+        idp_data = %IdpData{idp_data | esaml_sp_rec: get_esaml_sp(sp, idp_data, config)}
         %IdpData{idp_data | valid?: cert_config_ok?(idp_data, sp)}
 
       _ ->
@@ -320,9 +320,9 @@ defmodule Samly.IdpData do
     "sha256:" <> (:sha256 |> :crypto.hash(dercert) |> Base.encode64())
   end
 
-  # @spec get_esaml_sp(%SpData{}, %IdpData{}) :: :esaml_sp
-  defp get_esaml_sp(%SpData{} = sp_data, %IdpData{} = idp_data) do
-    idp_id_from = Application.get_env(:samly, :idp_id_from)
+  # @spec get_esaml_sp(%SpData{}, %IdpData{}, map()) :: :esaml_sp
+  defp get_esaml_sp(%SpData{} = sp_data, %IdpData{} = idp_data, config) do
+    idp_id_from = config.idp_id_from
     path_segment_idp_id = if idp_id_from == :subdomain, do: nil, else: idp_data.id
 
     sp_entity_id =
