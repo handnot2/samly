@@ -85,6 +85,11 @@ defmodule Samly.IdpData do
 
   @type id :: binary()
 
+  def store() do
+    Application.get_env(:samly, Samly.Provider, [])
+    |> Keyword.get(:idp_data_store, Samly.IdpDataStore.Config)
+  end
+
   @spec load_providers([map], %{required(id()) => %SpData{}}) ::
           %{required(id()) => %IdpData{}} | no_return()
   def load_providers(prov_config, service_providers) do
