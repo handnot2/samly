@@ -22,7 +22,7 @@ defmodule Samly.Provider do
   require Logger
 
   require Samly.Esaml
-  alias Samly.{State}
+  alias Samly.{State, IdpData}
 
   @doc false
   def start_link(gs_opts \\ []) do
@@ -58,12 +58,9 @@ defmodule Samly.Provider do
     Application.put_env(:samly, :idp_id_from, idp_id_from)
 
     service_providers = Samly.SpData.load_providers(opts[:service_providers] || [])
-
-    identity_providers =
-      Samly.IdpData.load_providers(opts[:identity_providers] || [], service_providers)
-
     Application.put_env(:samly, :service_providers, service_providers)
-    Application.put_env(:samly, :identity_providers, identity_providers)
+
+    :ok = IdpData.store().init(opts[:identity_providers], service_providers)
 
     {:ok, %{}}
   end
