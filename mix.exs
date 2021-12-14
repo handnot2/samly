@@ -29,11 +29,11 @@ defmodule Samly.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps() do
     [
-      {:plug, "~> 1.6"},
+      {:plug, "~> 1.12"},
       {:esaml, github: "Recruitee/esaml", branch: "main"},
-      {:sweet_xml, "~> 0.6.6"},
-      {:ex_doc, "~> 0.19.0", only: :dev, runtime: false},
-      {:inch_ex, "~> 1.0", only: [:dev, :test]}
+      {:sweet_xml, "~> 0.7"},
+      {:ex_doc, "~> 0.26", only: :dev, runtime: false},
+      {:inch_ex, "~> 2.0", only: [:dev, :test]}
     ]
   end
 
