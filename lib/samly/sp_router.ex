@@ -23,8 +23,9 @@ defmodule Samly.SPRouter do
   # so... let's just make something work and move on.
   get "/logout/*idp_id_seg" do
     conn
-    |> configure_session(drop: true)
-    |> redirect(302, "https://app.blockitnow.com/login")
+    |> Plug.Conn.put_resp_header("location", URI.encode("https://app.blockitnow.com/login"))
+    |> Plug.Conn.send_resp(302, "")
+    |> Plug.Conn.halt()
   end
 
   post "/logout/*idp_id_seg" do
