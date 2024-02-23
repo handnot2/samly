@@ -170,7 +170,7 @@ defmodule Samly.IdpData do
   @spec verify_slo_url(%IdpData{}) :: %IdpData{}
   defp verify_slo_url(%IdpData{} = idp_data) do
     if idp_data.valid? && idp_data.slo_redirect_url == nil && idp_data.slo_post_url == nil do
-      Logger.warn("[Samly] SLO Endpoint missing in [#{inspect(idp_data.metadata_file)}]")
+      Logger.warning("[Samly] SLO Endpoint missing in [#{inspect(idp_data.metadata_file)}]")
     end
 
     idp_data
