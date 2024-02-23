@@ -128,18 +128,14 @@ defmodule Samly.IdpData do
     else
       {:reading, {:error, reason}} ->
         Logger.error(
-          "[Samly] Failed to read metadata_file [#{inspect(idp_data.metadata_file)}]: #{
-            inspect(reason)
-          }"
+          "[Samly] Failed to read metadata_file [#{inspect(idp_data.metadata_file)}]: #{inspect(reason)}"
         )
 
         idp_data
 
       {:parsing, {:error, reason}} ->
         Logger.error(
-          "[Samly] Invalid metadata_file content [#{inspect(idp_data.metadata_file)}]: #{
-            inspect(reason)
-          }"
+          "[Samly] Invalid metadata_file content [#{inspect(idp_data.metadata_file)}]: #{inspect(reason)}"
         )
 
         idp_data
@@ -214,28 +210,26 @@ defmodule Samly.IdpData do
           to_charlist(format)
 
         :email ->
-          'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+          ~c"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
 
         :x509 ->
-          'urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName'
+          ~c"urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName"
 
         :windows ->
-          'urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName'
+          ~c"urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName"
 
         :krb ->
-          'urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos'
+          ~c"urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos"
 
         :persistent ->
-          'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+          ~c"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
 
         :transient ->
-          'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+          ~c"urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
 
         invalid_nameid_format ->
           Logger.error(
-            "[Samly] invalid nameid_format [#{inspect(idp_data.metadata_file)}]: #{
-              inspect(invalid_nameid_format)
-            }"
+            "[Samly] invalid nameid_format [#{inspect(idp_data.metadata_file)}]: #{inspect(invalid_nameid_format)}"
           )
 
           idp_data.nameid_format

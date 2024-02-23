@@ -19,6 +19,14 @@ defmodule Samly.SPRouter do
     conn |> Samly.SPHandler.consume_signin_response()
   end
 
+  # Hmm - if we handle the logout out response we won't have a session with a relay_state/target_url
+  # so... let's just make something work and move on.
+  get "/logout/*idp_id_seg" do
+    conn
+    |> configure_session(drop: true)
+    |> redirect(302, "https://app.blockitnow.com/login")
+  end
+
   post "/logout/*idp_id_seg" do
     cond do
       conn.params["SAMLResponse"] != nil -> Samly.SPHandler.handle_logout_response(conn)

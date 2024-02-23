@@ -248,7 +248,7 @@ defmodule SamlyIdpDataTest do
 
   test "nameid-format-in-metadata-but-not-config-should-use-metadata", %{sps: sps} do
     %IdpData{} = idp_data = IdpData.load_provider(@idp_config1, sps)
-    assert idp_data.nameid_format == 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+    assert idp_data.nameid_format == ~c"urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
   end
 
   test "nameid-format-in-config-but-not-metadata-should-use-config", %{sps: sps} do
@@ -259,7 +259,7 @@ defmodule SamlyIdpDataTest do
       })
 
     %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
-    assert idp_data.nameid_format == 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+    assert idp_data.nameid_format == ~c"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
   end
 
   test "nameid-format-in-metadata-and-config-should-use-config", %{sps: sps} do
@@ -269,7 +269,7 @@ defmodule SamlyIdpDataTest do
       })
 
     %IdpData{} = idp_data = IdpData.load_provider(idp_config, sps)
-    assert idp_data.nameid_format == 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+    assert idp_data.nameid_format == ~c"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
   end
 
   test "nameid-format-in-neither-metadata-nor-config-should-be-unknown", %{sps: sps} do
