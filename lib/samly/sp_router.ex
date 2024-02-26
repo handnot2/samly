@@ -22,10 +22,23 @@ defmodule Samly.SPRouter do
   # Hmm - if we handle the logout out response we won't have a session with a relay_state/target_url
   # so... let's just make something work and move on.
   get "/logout/*idp_id_seg" do
-    conn
-    |> Plug.Conn.put_resp_header("location", URI.encode("https://app.blockitnow.com/login"))
-    |> Plug.Conn.send_resp(302, "")
-    |> Plug.Conn.halt()
+    case conn.params["idp_id_seg"] do
+      # HCA - after logout log in again
+      "hca-" <> lol ->
+        conn
+        |> Plug.Conn.put_resp_header(
+          "location",
+          URI.encode("https://api.blockitnow.com/sso/auth/signin/hca-#{lol}")
+        )
+        |> Plug.Conn.send_resp(302, "")
+        |> Plug.Conn.halt()
+
+      _ ->
+        conn
+        |> Plug.Conn.put_resp_header("location", URI.encode("https://app.blockitnow.com/login"))
+        |> Plug.Conn.send_resp(302, "")
+        |> Plug.Conn.halt()
+    end
   end
 
   post "/logout/*idp_id_seg" do
